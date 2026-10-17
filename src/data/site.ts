@@ -15,22 +15,24 @@
  */
 
 export type Plano = {
-  /** Nome do plano, ex.: 'Plano Casa'. */
+  /** Nome do plano. Aparece no cartão e na mensagem do WhatsApp ("Tenho interesse no plano ..."). */
   nome: string;
-  /** Velocidade como deve aparecer, ex.: '500 Mega'. */
-  velocidade: string;
-  /** Preço como deve aparecer, ex.: 'R$ 99,90'. */
+  /** Velocidade de download, como deve aparecer. */
+  download: string;
+  /** Velocidade de upload, como deve aparecer. */
+  upload: string;
+  /** Preço por mês: "R$", espaço e o valor com vírgula e dois centavos. */
   preco: string;
   /** Opcional. Padrão: 'por mês'. */
   periodo?: string;
-  /** Itens incluídos no plano (só o que for verdade). */
-  beneficios: string[];
-  /** Opcional. Texto do selo de destaque, ex.: 'Mais procurado'. */
+  /** Opcional. Itens incluídos no plano (só o que for verdade). Sem itens, a lista não aparece. */
+  beneficios?: string[];
+  /** Opcional. Texto de um selo de destaque no cartão. */
   selo?: string;
 };
 
 export type Foto = {
-  /** Nome do arquivo em src/assets/fotos/, ex.: 'loja.jpg'. */
+  /** Nome do arquivo em src/assets/fotos/. */
   arquivo: string | null;
   /** Descrição da foto para leitores de tela. */
   alt: string;
@@ -62,6 +64,7 @@ export type Site = {
   cnpj: string | null;
   cidades: string[];
   planos: Plano[];
+  avisoPlanos: string;
   fotos: { destaque: Foto; loja: Foto };
   diferenciais: Diferencial[];
 };
@@ -94,16 +97,16 @@ export const site: Site = {
   // Mensagem que já vem escrita quando a pessoa abre o WhatsApp por qualquer botão do site.
   mensagemWhatsapp: 'Olá! Vim pelo site da Info Missões.',
 
-  // TODO: telefone com DDD, ex.: '(55) 3333-3333'.
+  // TODO: telefone com DDD, no mesmo formato do WhatsApp.
   telefone: null,
 
-  // TODO: endereço da loja, ex.: 'Rua Exemplo, 123, Centro, Santo Ângelo/RS'.
+  // TODO: endereço da loja: rua, número, bairro e cidade/UF.
   endereco: null,
 
-  // TODO (opcional): horário de atendimento da loja, ex.: 'Segunda a sexta, das 8h às 18h'.
+  // TODO (opcional): horário de atendimento da loja: dias e horas.
   horario: null,
 
-  // TODO: CNPJ, ex.: '00.000.000/0001-00'.
+  // TODO: CNPJ, com 14 dígitos (com ou sem pontuação).
   cnpj: null,
 
   // Cidades atendidas, na ordem em que aparecem no site.
@@ -119,10 +122,16 @@ export const site: Site = {
     'São Luiz Gonzaga',
   ],
 
-  // TODO: até 3 planos. NUNCA inventar velocidade, preço ou benefício.
-  // Exemplo de formato:
-  // { nome: 'Plano Casa', velocidade: '500 Mega', preco: 'R$ 99,90', beneficios: ['Instalação ...'], selo: 'Mais procurado' }
-  planos: [],
+  // Planos, na ordem em que aparecem (até 3). Só o que a Info Missões informou:
+  // NUNCA inventar velocidade, preço, benefício, selo ou condição.
+  planos: [
+    { nome: '300 Mega', download: '300 Mega', upload: '300 Mega', preco: 'R$ 85,90' },
+    { nome: '500 Mega', download: '500 Mega', upload: '250 Mega', preco: 'R$ 99,90' },
+    { nome: '700 Mega', download: '700 Mega', upload: '400 Mega', preco: 'R$ 120,90' },
+  ],
+
+  // Aviso fixo que aparece embaixo dos planos.
+  avisoPlanos: 'Consulte as condições de instalação no WhatsApp.',
 
   fotos: {
     // TODO: foto do destaque (proporção 4:5, em pé). Ex.: equipe instalando, técnico, cidade.

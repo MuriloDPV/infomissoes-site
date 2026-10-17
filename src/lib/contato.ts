@@ -26,6 +26,12 @@ export function linkTelefone(numero: string | null): string | null {
   return n ? `tel:+${n}` : null;
 }
 
+/** Valor de um preço no padrão brasileiro ("R$ 85,90" → "85,90") ou null se não estiver nesse formato. */
+export function valorPreco(texto: string | null | undefined): string | null {
+  const m = /^R\$\s?((?:\d{1,3}(?:\.\d{3})+|\d+),\d{2})$/.exec(texto?.trim() ?? '');
+  return m ? m[1] : null;
+}
+
 export function cnpjValido(texto: string | null): boolean {
   return !!texto && digitos(texto).length === 14;
 }

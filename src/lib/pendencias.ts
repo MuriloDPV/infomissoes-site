@@ -1,6 +1,6 @@
 // Lista o que falta em src/data/site.ts. Usado pelo `npm run todos`.
 import type { Site } from '../data/site.ts';
-import { cnpjValido, numeroBR } from './contato.ts';
+import { cnpjValido, numeroBR, valorPreco } from './contato.ts';
 
 export type Pendencia = { campo: string; descricao: string };
 
@@ -42,10 +42,12 @@ export function pendencias(site: Site): Relatorio {
 
   if (site.cidades.length === 0) falta('cidades', 'cidades atendidas (sem elas aparece um texto geral sobre a região)');
 
-  if (site.planos.length === 0) falta('planos', 'planos: nome, velocidade, preço e benefícios (sem eles aparece "Consulte os planos")');
+  if (site.planos.length === 0) falta('planos', 'planos: nome, download, upload e preço (sem eles aparece "Consulte os planos")');
   site.planos.forEach((p, i) => {
-    const vazio = (['nome', 'velocidade', 'preco'] as const).filter((k) => !p[k]?.trim());
+    const vazio = (['nome', 'download', 'upload', 'preco'] as const).filter((k) => !p[k]?.trim());
     if (vazio.length) invalidos.push({ campo: `planos[${i}]`, descricao: `faltam: ${vazio.join(', ')}` });
+    else if (!valorPreco(p.preco))
+      invalidos.push({ campo: `planos[${i}].preco`, descricao: `"${p.preco}" não está no formato "R$ 99,90"` });
   });
   if (site.planos.length > 3)
     invalidos.push({ campo: 'planos', descricao: `${site.planos.length} planos; o layout foi feito para até 3` });

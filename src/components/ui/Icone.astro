@@ -19,7 +19,9 @@ export type IconeNome =
   | 'loja'
   | 'celular'
   | 'casa'
-  | 'sinal';
+  | 'sinal'
+  | 'download'
+  | 'upload';
 
 interface Props {
   nome: IconeNome;
@@ -54,6 +56,8 @@ const tracos: Record<Exclude<IconeNome, 'whatsapp'>, string> = {
   celular: '<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
   sinal:
     '<circle cx="12" cy="12" r="2.25" fill="currentColor" stroke="none"/><path d="M8.6 8.6a4.8 4.8 0 0 0 0 6.8"/><path d="M15.4 8.6a4.8 4.8 0 0 1 0 6.8"/><path d="M5.6 5.6a9 9 0 0 0 0 12.8"/><path d="M18.4 5.6a9 9 0 0 1 0 12.8"/>',
+  download: '<path d="M12 4v15"/><path d="m18 13-6 6-6-6"/>',
+  upload: '<path d="M12 20V5"/><path d="m6 11 6-6 6 6"/>',
   casa: '<path d="M3 10.2a2 2 0 0 1 .7-1.5l7-6a2 2 0 0 1 2.6 0l7 6a2 2 0 0 1 .7 1.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 21v-6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v6"/>',
 };
 

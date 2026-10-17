@@ -2,14 +2,12 @@
 // Planos: só mostra o que estiver em site.ts. Sem planos, um convite neutro para consultar.
 // Faixa marinho no meio da página: é onde o botão amarelo aparece.
 import Botao from '../ui/Botao.astro';
-import Card from '../ui/Card.astro';
-import Icone from '../ui/Icone.astro';
+import CardPlano from '../ui/CardPlano.astro';
 import Ondas from '../ui/Ondas.astro';
 import Pendente from '../ui/Pendente.astro';
 import Secao from '../ui/Secao.astro';
-import Selo from '../ui/Selo.astro';
 import { site } from '../../data/site.ts';
-import { DEV, whatsapp, whatsappMensagem } from '../../lib/dados.ts';
+import { DEV, whatsapp } from '../../lib/dados.ts';
 
 const planos = site.planos.slice(0, 3);
 const temPlanos = planos.length > 0;
@@ -55,47 +53,18 @@ const temPlanos = planos.length > 0;
 
   {
     temPlanos && (
-      <ul class="mt-12 grid gap-5 lg:grid-cols-3 lg:items-stretch">
-        {planos.map((p, i) => {
-          const link = whatsappMensagem(`Tenho interesse no plano ${p.nome} (${p.velocidade}).`);
-          return (
+      <>
+        <ul class="mt-12 grid gap-5 lg:grid-cols-3 lg:items-stretch">
+          {planos.map((p, i) => (
             <li class="flex" data-revelar style={`--i:${i + 1}`}>
-              <Card as="article" interativo class:list={['w-full gap-6 p-7 md:p-8', p.selo && 'card--selo']}>
-                <header class="flex flex-col items-start gap-3">
-                  {p.selo && <Selo class="absolute -top-4 left-7 shadow-sm md:left-8">{p.selo}</Selo>}
-                  <h3 class="text-xl">{p.nome}</h3>
-                </header>
-                <p class="tabular text-3xl font-extrabold tracking-destaque text-sup-titulo">{p.velocidade}</p>
-                <p class="flex items-baseline gap-2">
-                  <span class="tabular text-2xl font-extrabold text-sup-titulo">{p.preco}</span>
-                  <span class="text-sup-suave">{p.periodo ?? 'por mês'}</span>
-                </p>
-                {p.beneficios.length > 0 && (
-                  <ul class="flex flex-col gap-3 border-t border-sup-linha pt-6">
-                    {p.beneficios.map((b) => (
-                      <li class="flex gap-3">
-                        <Icone nome="check" class="mt-1 size-5 shrink-0 text-sup-icone" />
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <div class="mt-auto pt-2">
-                  {link ? (
-                    <Botao href={link} externo indicador={false} icone="whatsapp" variante={p.selo ? 'destaque' : 'primario'} cheio>
-                      Quero este plano
-                    </Botao>
-                  ) : (
-                    <Botao href="#contato" variante={p.selo ? 'destaque' : 'primario'} seta cheio>
-                      Quero este plano
-                    </Botao>
-                  )}
-                </div>
-              </Card>
+              <CardPlano plano={p} />
             </li>
-          );
-        })}
-      </ul>
+          ))}
+        </ul>
+        <p class="mt-8 max-w-texto text-lg font-semibold text-sup-titulo" data-revelar>
+          {site.avisoPlanos}
+        </p>
+      </>
     )
   }
 
@@ -104,7 +73,7 @@ const temPlanos = planos.length > 0;
       <ul class="mt-12 grid gap-5 lg:grid-cols-3">
         {[1, 2, 3].map((n) => (
           <li>
-            <Pendente texto={`plano ${n}: nome, velocidade, preço e benefícios`} campo="planos" class="min-h-64" />
+            <Pendente texto={`plano ${n}: nome, download, upload e preço`} campo="planos" class="min-h-64" />
           </li>
         ))}
       </ul>
@@ -125,13 +94,6 @@ const temPlanos = planos.length > 0;
         --sy: 110%;
         --tamanho: 1100px;
       }
-    }
-
-    /* Plano em destaque: contorno amarelo */
-    :global(.card--selo) {
-      box-shadow:
-        inset 0 0 0 2px var(--color-amarelo),
-        var(--shadow-md);
     }
   }
 </style>
