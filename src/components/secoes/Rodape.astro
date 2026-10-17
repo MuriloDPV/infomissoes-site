@@ -4,9 +4,10 @@ import Logo from '../ui/Logo.astro';
 import Pendente from '../ui/Pendente.astro';
 import { site } from '../../data/site.ts';
 import { DEV, portal, telefone, whatsapp } from '../../lib/dados.ts';
-import { secoes } from '../../lib/navegacao.ts';
+import { atual, paginas } from '../../lib/navegacao.ts';
 
 const ano = new Date().getFullYear();
+const caminho = Astro.url.pathname;
 ---
 
 <footer class="rodape sup-noite">
@@ -19,13 +20,13 @@ const ano = new Date().getFullYear();
     </div>
 
     <nav aria-label="Rodapé" class="lg:col-span-3">
-      <h2 class="rodape__titulo">Seções</h2>
+      <h2 class="rodape__titulo">Páginas</h2>
       <ul class="mt-3 flex flex-col">
         {
-          secoes.map((s) => (
+          paginas.map((p) => (
             <li>
-              <a class="rodape__link" href={s.href}>
-                {s.rotulo}
+              <a class="rodape__link" href={p.href} aria-current={atual(p.href, caminho)}>
+                {p.rotulo}
               </a>
             </li>
           ))
@@ -107,6 +108,11 @@ const ano = new Date().getFullYear();
       color: var(--sup-texto);
       text-decoration: underline;
       text-decoration-color: transparent;
+    }
+
+    .rodape__link[aria-current='page'] {
+      color: var(--color-branco);
+      text-decoration-color: var(--color-amarelo);
     }
 
     @media (hover: hover) {

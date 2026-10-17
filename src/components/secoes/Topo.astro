@@ -3,24 +3,27 @@ import Botao from '../ui/Botao.astro';
 import Icone from '../ui/Icone.astro';
 import Logo from '../ui/Logo.astro';
 import { portal, whatsapp } from '../../lib/dados.ts';
-import { secoes } from '../../lib/navegacao.ts';
+import { atual, paginas } from '../../lib/navegacao.ts';
+
+// Página aberta: o link dela fica marcado (aria-current="page" + estilo próprio no desktop e no menu).
+const caminho = Astro.url.pathname;
 ---
 
 <header data-topo class="topo">
   <div class="topo__barra">
     <div class="topo__interno mx-auto flex w-full max-w-pagina items-center justify-between gap-4 px-calha">
-      <a href="#inicio" class="topo__marca" data-logo-topo>
+      <a href="/" class="topo__marca" data-logo-topo>
         <Logo animada class="topo__logo" />
-        <span class="sr-only">, voltar ao início</span>
+        <span class="sr-only">, página inicial</span>
       </a>
 
-      <nav aria-label="Seções" class="hidden lg:block">
+      <nav aria-label="Principal" class="hidden lg:block">
         <ul class="flex items-center gap-1">
           {
-            secoes.map((s) => (
+            paginas.map((p) => (
               <li>
-                <a class="topo__link" href={s.href}>
-                  {s.rotulo}
+                <a class="topo__link" href={p.href} aria-current={atual(p.href, caminho)}>
+                  {p.rotulo}
                 </a>
               </li>
             ))
@@ -40,17 +43,26 @@ import { secoes } from '../../lib/navegacao.ts';
             <span>Menu</span>
           </summary>
           <div class="menu__painel sup-clara">
-            <nav aria-label="Seções (menu)">
+            <nav aria-label="Principal (menu)">
               <ul>
                 {
-                  secoes.map((s) => (
-                    <li>
-                      <a class="menu__link" href={s.href}>
-                        <span>{s.rotulo}</span>
-                        <Icone nome="seta" class="menu__seta" />
-                      </a>
-                    </li>
-                  ))
+                  paginas.map((p) => {
+                    const marcada = atual(p.href, caminho);
+                    return (
+                      <li>
+                        <a class="menu__link" href={p.href} aria-current={marcada}>
+                          <span>{p.rotulo}</span>
+                          {marcada ? (
+                            <span class="menu__aqui" aria-hidden="true">
+                              Você está aqui
+                            </span>
+                          ) : (
+                            <Icone nome="seta" class="menu__seta" />
+                          )}
+                        </a>
+                      </li>
+                    );
+                  })
                 }
               </ul>
             </nav>
@@ -235,6 +247,14 @@ import { secoes } from '../../lib/navegacao.ts';
       }
     }
 
+    /* Página aberta: sublinhado fixo em marinho, mais grosso que o do hover (o peso do texto
+       não muda, para os links não andarem ao trocar de página) */
+    .topo__link[aria-current='page']::after {
+      height: 3px;
+      background-color: var(--color-marinho);
+      transform: scaleX(1);
+    }
+
     /* Faixa do portal (celular): sempre visível junto do cabeçalho */
     .topo__faixa {
       position: relative;
@@ -375,6 +395,28 @@ import { secoes } from '../../lib/navegacao.ts';
       width: 1.25rem;
       height: 1.25rem;
       color: var(--color-azul);
+    }
+
+    /* Página aberta no menu do celular: traço amarelo à esquerda e "Você está aqui" no lugar da seta */
+    .menu__link[aria-current='page'] {
+      position: relative;
+      padding-left: 1rem;
+      font-weight: var(--font-weight-extrabold);
+    }
+    .menu__link[aria-current='page']::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 1rem;
+      bottom: 1rem;
+      width: 4px;
+      border-radius: var(--radius-full);
+      background-color: var(--color-amarelo);
+    }
+    .menu__aqui {
+      color: var(--color-marinho-600);
+      font-size: var(--text-sm);
+      font-weight: var(--font-weight-semibold);
     }
     .menu__acoes {
       display: flex;

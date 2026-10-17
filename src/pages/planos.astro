@@ -1,0 +1,26 @@
+---
+// /planos/: abertura, os 3 planos completos com o aviso das condições, a tabela comparativa
+// e o link para as cidades atendidas.
+import Base from '../layouts/Base.astro';
+import AberturaPagina from '../components/secoes/AberturaPagina.astro';
+import Planos from '../components/secoes/Planos.astro';
+import ComparativoPlanos from '../components/secoes/ComparativoPlanos.astro';
+import { site } from '../data/site.ts';
+import { porExtenso } from '../lib/contato.ts';
+import { whatsapp } from '../lib/dados.ts';
+
+const planos = site.planos.slice(0, 3);
+const titulo = 'Planos de internet | Info Missões';
+const lista = porExtenso(planos.map((p) => `${p.nome} (${p.preco} por mês)`));
+const descricao = planos.length
+  ? `Planos de internet de fibra óptica da Info Missões: ${lista}. ${
+      whatsapp ? 'Contrate pelo WhatsApp.' : 'Fale com a gente para contratar.'
+    }`
+  : 'Planos de internet de fibra óptica da Info Missões na região das Missões (RS). Consulte os planos no seu endereço.';
+---
+
+<Base titulo={titulo} descricao={descricao}>
+  <AberturaPagina titulo="Planos de internet" texto="Fibra óptica até a sua casa, com atendimento aqui na região." />
+  <Planos />
+  <ComparativoPlanos />
+</Base>

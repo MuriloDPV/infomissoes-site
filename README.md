@@ -22,6 +22,16 @@ npm run preview
 
 `npm run build` gera `dist/`. `npm run preview` mostra o build como ele vai para o ar: sem TODO, e com o que falta escondido ou trocado por um texto neutro.
 
+## Páginas
+
+- `/` Início: destaque, "Já é cliente?", resumo dos planos, diferenciais e chamada para o WhatsApp.
+- `/planos/`: os planos completos, o comparativo, o aviso das condições e o link para as cidades.
+- `/onde-atendemos/`: as cidades e o convite "A fibra chega na sua rua?".
+- `/contato/`: WhatsApp, Instagram, e telefone e loja quando preenchidos.
+- `404.html`, `sitemap.xml` e `robots.txt` também saem do build.
+
+As páginas viram pastas (`planos/index.html`) e os links usam barra final (`/planos/`), então qualquer nginx serve sem configuração especial. Para a 404 aparecer, aponte `error_page 404 /404.html;`. O menu, o rodapé e o `sitemap.xml` saem da lista de `src/lib/navegacao.ts`.
+
 ## Dados do negócio
 
 Ficam todos num arquivo só: `src/data/site.ts`. Ali estão o nome do portal, o WhatsApp, o telefone, o endereço, o CNPJ, as cidades, os planos, o logo, o favicon, as fotos e os textos dos diferenciais.

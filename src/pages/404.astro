@@ -1,0 +1,62 @@
+---
+// Página não encontrada (404.html): mesmo molde do site, sem indexar, com caminho de volta.
+import Base from '../layouts/Base.astro';
+import Botao from '../components/ui/Botao.astro';
+import Ondas from '../components/ui/Ondas.astro';
+import { whatsapp } from '../lib/dados.ts';
+---
+
+<Base titulo="Página não encontrada | Info Missões" descricao="Esta página não existe no site da Info Missões." indexar={false}>
+  <section class="nao-encontrada sup-suave" aria-labelledby="nao-encontrada-titulo">
+    <Ondas class="nao-encontrada__ondas" />
+    <div class="relative mx-auto flex w-full max-w-pagina flex-col items-start gap-6 px-calha py-secao">
+      <p class="nao-encontrada__codigo tabular" aria-hidden="true">404</p>
+      <h1 id="nao-encontrada-titulo" class="max-w-largo text-destaque tracking-destaque">Página não encontrada</h1>
+      <p class="max-w-texto text-lg text-sup-suave">
+        O endereço pode ter mudado ou estar escrito errado. Volte para o início ou fale com a gente.
+      </p>
+      <div class="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:flex-wrap">
+        <Botao href="/" tamanho="lg" seta>Ir para o início</Botao>
+        {
+          whatsapp ? (
+            <Botao href={whatsapp} externo indicador={false} icone="whatsapp" variante="secundario" tamanho="lg" data-cta-whatsapp>
+              Chamar no WhatsApp
+            </Botao>
+          ) : (
+            <Botao href="/contato/" variante="secundario" tamanho="lg" seta>
+              Ver formas de contato
+            </Botao>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  @layer components {
+    .nao-encontrada {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+    }
+    .nao-encontrada__ondas {
+      --sx: 100%;
+      --sy: 90%;
+      --tamanho: 900px;
+    }
+    @media (width >= 64rem) {
+      .nao-encontrada__ondas {
+        --sx: 84%;
+        --sy: 50%;
+        --tamanho: 1300px;
+      }
+    }
+    .nao-encontrada__codigo {
+      color: var(--color-marinho-600);
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: 0.08em;
+    }
+  }
+</style>

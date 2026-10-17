@@ -1,14 +1,11 @@
 ---
+// Início: destaque, "Já é cliente?", resumo dos planos, diferenciais e a chamada final para o WhatsApp.
 import Base from '../layouts/Base.astro';
-import Topo from '../components/secoes/Topo.astro';
 import Destaque from '../components/secoes/Destaque.astro';
 import JaECliente from '../components/secoes/JaECliente.astro';
 import Planos from '../components/secoes/Planos.astro';
-import OndeAtendemos from '../components/secoes/OndeAtendemos.astro';
 import Diferenciais from '../components/secoes/Diferenciais.astro';
-import Contato from '../components/secoes/Contato.astro';
-import Rodape from '../components/secoes/Rodape.astro';
-import WhatsAppFlutuante from '../components/ui/WhatsAppFlutuante.astro';
+import ChamadaFinal from '../components/secoes/ChamadaFinal.astro';
 import { portal, whatsapp } from '../lib/dados.ts';
 
 const titulo = 'Info Missões | Internet de fibra óptica nas Missões';
@@ -18,15 +15,9 @@ const descricao = `Internet de fibra óptica na região das Missões (RS). Conhe
 ---
 
 <Base titulo={titulo} descricao={descricao}>
-  <Topo />
-  <main id="conteudo">
-    <Destaque />
-    <JaECliente />
-    <Planos />
-    <OndeAtendemos />
-    <Diferenciais />
-    <Contato />
-  </main>
-  <Rodape />
-  <WhatsAppFlutuante />
+  <Destaque />
+  <JaECliente />
+  <Planos resumo />
+  <Diferenciais />
+  <ChamadaFinal />
 </Base>

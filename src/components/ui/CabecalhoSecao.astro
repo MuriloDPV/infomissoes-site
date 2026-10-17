@@ -1,21 +1,24 @@
 ---
-// Cabeçalho de seção: título (h2) + texto de apoio opcional.
+// Cabeçalho de seção: título + texto de apoio opcional.
+// nivel 2 (padrão): h2 de uma seção. nivel 1: h1, o título da página (um por página).
 interface Props {
   titulo: string;
+  nivel?: 1 | 2;
   id?: string;
   texto?: string;
   alinhar?: 'inicio' | 'centro';
   class?: string;
 }
 
-const { titulo, id, texto, alinhar = 'inicio', class: classe } = Astro.props;
+const { titulo, nivel = 2, id, texto, alinhar = 'inicio', class: classe } = Astro.props;
+const Titulo = nivel === 1 ? 'h1' : 'h2';
 ---
 
 <header
   data-revelar
   class:list={['flex flex-col gap-4 md:gap-5', alinhar === 'centro' && 'mx-auto items-center text-center', classe]}
 >
-  <h2 id={id} class="max-w-texto text-3xl">{titulo}</h2>
+  <Titulo id={id} class="max-w-texto text-3xl">{titulo}</Titulo>
   {texto && <p class="max-w-texto text-lg text-sup-suave">{texto}</p>}
   <slot />
 </header>

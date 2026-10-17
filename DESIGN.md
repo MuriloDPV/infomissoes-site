@@ -38,7 +38,11 @@ Cada seção escolhe uma superfície, e os componentes ajustam as cores sozinhos
 
 Cores semânticas para usar dentro delas: `text-sup-titulo`, `text-sup-suave`, `text-sup-icone`, `border-sup-linha`, `bg-sup`.
 
-Ritmo da página: suave (destaque) → clara (já é cliente) → marinho (planos, onde aparece o botão amarelo) → suave (onde atendemos) → clara (diferenciais) → suave (contato) → noite (rodapé).
+Ritmo das páginas (o cabeçalho e o rodapé noite são os mesmos em todas):
+- Início: suave (destaque) → clara (já é cliente) → marinho (resumo dos planos) → clara (diferenciais) → suave (chamada final).
+- Planos: abertura → suave (cartões e aviso) → clara (comparativo).
+- Onde atendemos e Contato: abertura suave (h1 e frase curta) → a seção continua no mesmo fundo (`secao--apos-abertura`).
+- 404: suave, com o código, o título e os caminhos de volta.
 
 ## Tipografia
 
@@ -71,9 +75,15 @@ Ritmo da página: suave (destaque) → clara (já é cliente) → marinho (plano
 - Não coloque `data-revelar` num elemento que tem transform de hover. Coloque no elemento em volta.
 - `prefers-reduced-motion`: sem deslocamentos, só fades curtos. Ondas, pulso e entrada da logo não acontecem.
 
+### Troca de página
+
+- View Transitions nativas entre documentos (`@view-transition { navigation: auto; }` em `global.css`), sem JavaScript e sem o ClientRouter do Astro.
+- O cabeçalho (`view-transition-name: topo`) e o WhatsApp flutuante ficam parados: a imagem antiga some e a nova aparece na hora. O resto da página sai com fade e sobe 6px (160ms) e a nova entra com fade, subindo 12px (320ms).
+- Navegador sem suporte: navegação normal. `prefers-reduced-motion`: a regra nem é ligada.
+
 ### Entrada da logo
 
-- Só na primeira visita da sessão (`sessionStorage`, dentro de try/catch; se falhar, não anima), com JS e sem movimento reduzido.
+- Só na primeira página aberta na sessão, seja qual for (`sessionStorage`, dentro de try/catch; se falhar, não anima), com JS e sem movimento reduzido.
 - Ondas de sinal, como nos Reels: um ponto vira a antena, três ondas azuis saem dela. A 1ª revela as ruínas (círculo de recorte que cresce junto com a onda) e faz a torre crescer; a 2ª faz o "info" subir e o "Missões" dar um pulinho; a 3ª acende os arcos e sobe o "PROVEDOR DE INTERNET".
 - Depois a cópia da logo voa até o lugar dela no cabeçalho (FLIP) enquanto a cobertura clara some. Total: 1,9s.
 - Toque, clique, tecla ou rolagem pulam direto para o fim. A página carrega por baixo. No fim não sobra nenhum elemento por cima da logo.
@@ -91,10 +101,10 @@ Ritmo da página: suave (destaque) → clara (já é cliente) → marinho (plano
 - `Botao`: variantes `primario` (marinho; branco em fundo escuro), `destaque` (amarelo com texto marinho), `secundario` (contorno) e `link` (texto com seta). Tamanhos `md` (52px) e `lg` (60px). Hover: sobe 2px, a sombra aparece e a seta desliza. Pressionado: encolhe um pouco. Foco: anel de 2,5px com folga de 3px (marinho no claro, amarelo no escuro). `externo` abre em nova aba com `rel="noopener"` e aviso para leitor de tela.
 - `Card`: superfície elevada, `claro` ou `marinho`. `interativo` sobe 4px no hover.
 - `Secao`: superfície, ritmo vertical e largura máxima.
-- `CabecalhoSecao`: h2 com texto de apoio opcional. Não tem sobretítulo.
+- `CabecalhoSecao`: h2 (ou h1, com `nivel={1}`) com texto de apoio opcional. Não tem sobretítulo.
 - `Ondas`: ver acima.
 - `Selo`: rótulo curto, `amarelo`, `marinho` ou `suave`.
-- `WhatsAppFlutuante`: verde do WhatsApp (ver Exceção). Some sem número. Entra quando o botão de WhatsApp do destaque sai da tela.
+- `WhatsAppFlutuante`: verde do WhatsApp (ver Exceção). Some sem número. Fica escondido enquanto algum botão grande de WhatsApp da página (`data-cta-whatsapp`) está na tela.
 - `Icone`: ícones de traço 2px (estilo Lucide) mais a marca do WhatsApp. Ícone só onde ajuda a entender.
 - `Foto`: proporção reservada. Sem arquivo, não gera nada no build.
 - `Logo`: SVG em camadas direto no HTML (`animada` só no cabeçalho). Sem arquivo, mostra o nome em texto.

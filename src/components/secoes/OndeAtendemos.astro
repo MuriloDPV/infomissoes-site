@@ -1,7 +1,6 @@
 ---
-// Onde atendemos: cidades de site.ts, cada uma com o marcador de sinal.
-// Sem cidades, texto geral e verdadeiro sobre a região.
-import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
+// Onde atendemos (/onde-atendemos/): cidades de site.ts, cada uma com o marcador de sinal, e o convite.
+// O h1 e o texto ficam na abertura da página. Sem cidades, só o convite.
 import Icone from '../ui/Icone.astro';
 import Pendente from '../ui/Pendente.astro';
 import Secao from '../ui/Secao.astro';
@@ -13,15 +12,8 @@ const cidades = site.cidades;
 const temCidades = cidades.length > 0;
 ---
 
-<Secao id="onde-atendemos" tom="suave">
+<Secao id="onde-atendemos" tom="suave" class="secao--apos-abertura">
   <div class="grid gap-10 md:gap-12">
-    <CabecalhoSecao
-      titulo="Onde atendemos"
-      texto={temCidades
-        ? 'A Info Missões atende estas cidades da região das Missões, no Rio Grande do Sul.'
-        : 'Atendemos a região das Missões, no Rio Grande do Sul.'}
-    />
-
     {
       temCidades ? (
         <ul class="cidades" aria-label="Cidades atendidas">

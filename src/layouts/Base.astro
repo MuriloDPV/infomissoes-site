@@ -2,16 +2,22 @@
 import '../styles/global.css';
 // Montserrat empacotada no site (só o subconjunto latino, que cobre o português).
 import fonteMontserrat from '@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2?url';
+import Topo from '../components/secoes/Topo.astro';
+import Rodape from '../components/secoes/Rodape.astro';
+import WhatsAppFlutuante from '../components/ui/WhatsAppFlutuante.astro';
 import { site } from '../data/site.ts';
 import { favicon, icones, imagemCompartilhar } from '../lib/dados.ts';
 
+// Molde de todas as páginas: <head>, cabeçalho, <main> com o conteúdo da página, rodapé e WhatsApp flutuante.
 interface Props {
   titulo: string;
   descricao: string;
+  /** false na 404: noindex, sem canonical e sem og:url. */
+  indexar?: boolean;
 }
 
-const { titulo, descricao } = Astro.props;
-const canonica = new URL(Astro.url.pathname, site.url).href;
+const { titulo, descricao, indexar = true } = Astro.props;
+const canonica = indexar ? new URL(Astro.url.pathname, site.url).href : null;
 
 // Imagem de compartilhamento (1200x630, com a logo), gerada por scripts/marca/gerar-icones.mjs.
 const imagemOg = imagemCompartilhar ? new URL(imagemCompartilhar, site.url).href : null;
@@ -29,7 +35,7 @@ const fontes = `
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{titulo}</title>
     <meta name="description" content={descricao} />
-    <link rel="canonical" href={canonica} />
+    {canonica ? <link rel="canonical" href={canonica} /> : <meta name="robots" content="noindex" />}
     <meta name="theme-color" content="#ffffff" />
     <meta name="format-detection" content="telephone=no" />
 
@@ -38,7 +44,7 @@ const fontes = `
     <meta property="og:site_name" content={site.nome} />
     <meta property="og:title" content={titulo} />
     <meta property="og:description" content={descricao} />
-    <meta property="og:url" content={canonica} />
+    {canonica && <meta property="og:url" content={canonica} />}
     {imagemOg && <meta property="og:image" content={imagemOg} />}
     {imagemOg && <meta property="og:image:alt" content={`Logo da ${site.nome}`} />}
     {imagemOg && <meta property="og:image:width" content="1200" />}
@@ -55,6 +61,7 @@ const fontes = `
 
     <script is:inline>
       // Script mínimo: entrada da logo, entrada ao rolar, sombra do cabeçalho, botão flutuante e menu.
+      // A troca de página não usa JS (View Transitions nativas, em global.css).
       // Sem IntersectionObserver ou com erro, nada fica escondido.
       (function () {
         var raiz = document.documentElement;
@@ -114,12 +121,21 @@ const fontes = `
               });
             });
 
+            // Botão flutuante: some enquanto algum botão grande de WhatsApp da página está na tela.
             var flutuante = document.querySelector('[data-whatsapp-flutuante]');
-            var cta = document.querySelector('[data-cta-whatsapp]');
+            var ctas = document.querySelectorAll('[data-cta-whatsapp]');
             if (flutuante) {
-              if (cta) {
-                observar(cta, function (visivel) {
-                  flutuante.classList.toggle('is-visivel', !visivel);
+              if (ctas.length) {
+                var naTela = new Set();
+                var observarCtas = new IntersectionObserver(function (entradas) {
+                  entradas.forEach(function (e) {
+                    if (e.isIntersecting) naTela.add(e.target);
+                    else naTela.delete(e.target);
+                  });
+                  flutuante.classList.toggle('is-visivel', naTela.size === 0);
+                });
+                ctas.forEach(function (c) {
+                  observarCtas.observe(c);
                 });
               } else {
                 flutuante.classList.add('is-visivel');
@@ -140,6 +156,10 @@ const fontes = `
               document.addEventListener('click', function (e) {
                 if (menu.open && !menu.contains(e.target)) menu.open = false;
               });
+              // Voltar para uma página guardada pelo navegador (botão Voltar): menu fechado.
+              window.addEventListener('pageshow', function (e) {
+                if (e.persisted) menu.open = false;
+              });
             }
           } catch (erro) {
             raiz.classList.remove('js');
@@ -158,6 +178,11 @@ const fontes = `
       class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-amarelo focus:px-4 focus:py-3 focus:font-bold focus:text-marinho"
       >Pular para o conteúdo</a
     >
-    <slot />
+    <Topo />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Rodape />
+    <WhatsAppFlutuante />
   </body>
 </html>

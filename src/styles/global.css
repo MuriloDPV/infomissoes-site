@@ -291,6 +291,63 @@
 }
 
 /* =====================================================================
+   PÁGINAS
+   ===================================================================== */
+/* Primeira seção depois da abertura da página: continua o mesmo fundo, com menos espaço em cima.
+   Fora de camada para vencer o py-secao da Secao. */
+.secao--apos-abertura {
+  padding-top: clamp(2.5rem, 1.75rem + 2.5vw, 3.5rem);
+}
+
+/* =====================================================================
+   TROCA DE PÁGINA (View Transitions entre documentos, sem JavaScript)
+   O cabeçalho e o botão flutuante ficam parados; o resto da página (raiz) troca com um fade
+   e um leve deslocamento. Navegador sem suporte: navegação normal. Movimento reduzido: sem animação.
+   ===================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+[data-topo] {
+  view-transition-name: topo;
+}
+[data-whatsapp-flutuante] {
+  view-transition-name: whatsapp-flutuante;
+}
+
+/* Parados: some a imagem antiga, a nova aparece na hora (o link da página atual troca sem fade) */
+::view-transition-old(topo),
+::view-transition-old(whatsapp-flutuante) {
+  display: none;
+}
+::view-transition-new(topo),
+::view-transition-new(whatsapp-flutuante) {
+  animation: none;
+}
+
+::view-transition-old(root) {
+  animation: troca-sai 160ms var(--ease-entrada) both;
+}
+::view-transition-new(root) {
+  animation: troca-entra 320ms var(--ease-saida) both;
+}
+
+@keyframes troca-sai {
+  to {
+    opacity: 0;
+    transform: translate3d(0, -0.375rem, 0);
+  }
+}
+@keyframes troca-entra {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.75rem, 0);
+  }
+}
+
+/* =====================================================================
    ENTRADA AO ROLAR
    O estado escondido só existe com html.js (adicionada pelo script).
    Sem JS, tudo aparece normalmente.

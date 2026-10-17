@@ -1,0 +1,23 @@
+---
+// /onde-atendemos/: as cidades atendidas e o convite "A fibra chega na sua rua?".
+import Base from '../layouts/Base.astro';
+import AberturaPagina from '../components/secoes/AberturaPagina.astro';
+import OndeAtendemos from '../components/secoes/OndeAtendemos.astro';
+import { site } from '../data/site.ts';
+import { porExtenso } from '../lib/contato.ts';
+
+const titulo = 'Onde atendemos | Info Missões';
+const descricao = site.cidades.length
+  ? `A Info Missões leva internet de fibra óptica a ${site.cidades.length} cidades das Missões (RS): ${porExtenso(site.cidades)}.`
+  : 'A Info Missões leva internet de fibra óptica à região das Missões, no Rio Grande do Sul.';
+---
+
+<Base titulo={titulo} descricao={descricao}>
+  <AberturaPagina
+    titulo="Onde atendemos"
+    texto={site.cidades.length
+      ? 'A Info Missões atende estas cidades da região das Missões, no Rio Grande do Sul.'
+      : 'Atendemos a região das Missões, no Rio Grande do Sul.'}
+  />
+  <OndeAtendemos />
+</Base>

@@ -1,0 +1,20 @@
+---
+// /contato/: WhatsApp em destaque, Instagram, e telefone e loja quando preenchidos em site.ts.
+import Base from '../layouts/Base.astro';
+import AberturaPagina from '../components/secoes/AberturaPagina.astro';
+import Contato from '../components/secoes/Contato.astro';
+import { site } from '../data/site.ts';
+import { porExtenso } from '../lib/contato.ts';
+import { telefone, whatsapp } from '../lib/dados.ts';
+
+const titulo = 'Contato | Info Missões';
+const canais = [whatsapp && `WhatsApp ${site.whatsapp}`, telefone && `telefone ${site.telefone}`, 'Instagram'];
+const descricao = `Fale com a Info Missões: ${porExtenso(canais.filter((c) => !!c), 'ou')}.${
+  site.endereco ? ` Loja: ${site.endereco}.` : ''
+}`;
+---
+
+<Base titulo={titulo} descricao={descricao}>
+  <AberturaPagina titulo="Fale com a gente" texto="Escolha o jeito mais fácil para você." />
+  <Contato />
+</Base>

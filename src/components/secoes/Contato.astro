@@ -1,7 +1,6 @@
 ---
-// Contato: WhatsApp em destaque (com o número), Instagram, e telefone e loja só quando
-// preenchidos em site.ts.
-import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
+// Contato (/contato/): WhatsApp em destaque (com o número), Instagram, e telefone e loja só quando
+// preenchidos em site.ts. O h1 e o texto ficam na abertura da página.
 import Foto from '../ui/Foto.astro';
 import Icone from '../ui/Icone.astro';
 import Pendente from '../ui/Pendente.astro';
@@ -21,10 +20,8 @@ const ultimo = site.endereco ? 'loja' : telefone ? 'telefone' : 'instagram';
 const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--largo' : undefined);
 ---
 
-<Secao id="contato" tom="suave">
+<Secao id="contato" tom="suave" class="secao--apos-abertura">
   <div class="grid gap-10 md:gap-12">
-    <CabecalhoSecao titulo="Fale com a gente" texto="Escolha o jeito mais fácil para você." />
-
     <div class="contatos">
       {
         whatsapp ? (

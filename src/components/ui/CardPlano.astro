@@ -1,7 +1,8 @@
 ---
 // Cartão de um plano (dados de site.ts). Download e upload em linhas separadas, com seta e palavra,
 // para não confundir. Preço em destaque, com "R$" menor. Botão: WhatsApp com a mensagem padrão
-// + "Tenho interesse no plano X." (sem WhatsApp, leva ao contato).
+// + "Tenho interesse no plano X." (sem WhatsApp, leva à página de contato).
+// `compacto` (resumo da Início): menor e sem botão; o link "Ver os planos" fica fora dos cartões.
 import Botao from './Botao.astro';
 import Card from './Card.astro';
 import Icone from './Icone.astro';
@@ -12,18 +13,26 @@ import { whatsappMensagem } from '../../lib/dados.ts';
 
 interface Props {
   plano: Plano;
+  compacto?: boolean;
+  /** Nível do título: h2 quando o h1 da página é "Planos", h3 dentro de uma seção. */
+  nivel?: 2 | 3;
   class?: string;
 }
 
-const { plano: p, class: classe } = Astro.props;
+const { plano: p, compacto = false, nivel = 3, class: classe } = Astro.props;
+const Titulo = nivel === 2 ? 'h2' : 'h3';
 const valor = valorPreco(p.preco);
 const link = whatsappMensagem(`Tenho interesse no plano ${p.nome}.`);
 const variante = p.selo ? 'destaque' : 'primario';
 ---
 
-<Card as="article" interativo class:list={['plano w-full', { 'plano--selo': p.selo }, classe]}>
+<Card
+  as="article"
+  interativo={!compacto}
+  class:list={['plano w-full', { 'plano--compacto': compacto, 'plano--selo': p.selo }, classe]}
+>
   {p.selo && <Selo class="plano__selo">{p.selo}</Selo>}
-  <h3 class="plano__nome tabular">{p.nome}</h3>
+  <Titulo class="plano__nome tabular">{p.nome}</Titulo>
 
   <dl class="plano__velocidades">
     <div class="plano__velocidade">
@@ -51,7 +60,7 @@ const variante = p.selo ? 'destaque' : 'primario';
   </p>
 
   {
-    p.beneficios && p.beneficios.length > 0 && (
+    !compacto && p.beneficios && p.beneficios.length > 0 && (
       <ul class="flex flex-col gap-3">
         {p.beneficios.map((b) => (
           <li class="flex gap-3">
@@ -63,19 +72,30 @@ const variante = p.selo ? 'destaque' : 'primario';
     )
   }
 
-  <div class="mt-auto">
-    {
-      link ? (
-        <Botao href={link} externo indicador={false} icone="whatsapp" variante={variante} tamanho="lg" cheio>
-          Quero este plano
-        </Botao>
-      ) : (
-        <Botao href="#contato" variante={variante} tamanho="lg" seta cheio>
-          Quero este plano
-        </Botao>
-      )
-    }
-  </div>
+  {
+    !compacto && (
+      <div class="mt-auto">
+        {link ? (
+          <Botao
+            href={link}
+            externo
+            indicador={false}
+            icone="whatsapp"
+            variante={variante}
+            tamanho="lg"
+            cheio
+            data-cta-whatsapp
+          >
+            Quero este plano
+          </Botao>
+        ) : (
+          <Botao href="/contato/" variante={variante} tamanho="lg" seta cheio>
+            Quero este plano
+          </Botao>
+        )}
+      </div>
+    )
+  }
 </Card>
 
 <style>
@@ -175,6 +195,30 @@ const variante = p.selo ? 'destaque' : 'primario';
       color: var(--sup-suave);
       font-size: var(--text-sm);
       font-weight: var(--font-weight-semibold);
+    }
+
+    /* Compacto (resumo da Início): mesma leitura, em tamanho menor */
+    .plano--compacto {
+      gap: 1.25rem;
+      padding: 1.5rem;
+    }
+    .plano--compacto .plano__nome {
+      font-size: var(--text-2xl);
+    }
+    .plano--compacto .plano__velocidade {
+      min-height: 3rem;
+    }
+    .plano--compacto .plano__velocidade dd {
+      font-size: var(--text-lg);
+    }
+    .plano--compacto .plano__preco {
+      padding: 0.875rem 1.125rem;
+    }
+    .plano--compacto .plano__moeda {
+      font-size: var(--text-lg);
+    }
+    .plano--compacto .plano__valor {
+      font-size: var(--text-2xl);
     }
   }
 </style>

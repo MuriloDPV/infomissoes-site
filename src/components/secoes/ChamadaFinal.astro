@@ -1,0 +1,61 @@
+---
+// Chamada final da Início: convite para falar pelo WhatsApp (sem WhatsApp, leva à página de contato)
+// e um link para as cidades atendidas.
+import Botao from '../ui/Botao.astro';
+import Secao from '../ui/Secao.astro';
+import { whatsapp } from '../../lib/dados.ts';
+---
+
+<Secao id="fale-com-a-gente" tom="suave">
+  <div class="chamada" data-revelar>
+    <h2 class="chamada__titulo text-3xl">Quer fibra óptica na sua casa?</h2>
+    <p class="max-w-texto text-lg text-sup-suave">
+      Conte a sua rua e a sua cidade. A gente confirma se a fibra chega até você e ajuda a escolher o plano.
+    </p>
+    <div class="chamada__acoes">
+      {
+        whatsapp ? (
+          <Botao href={whatsapp} externo indicador={false} icone="whatsapp" tamanho="lg" data-cta-whatsapp>
+            Chamar no WhatsApp
+          </Botao>
+        ) : (
+          <Botao href="/contato/" tamanho="lg" seta>
+            Falar com a gente
+          </Botao>
+        )
+      }
+      <Botao href="/onde-atendemos/" variante="link" seta>Ver as cidades onde atendemos</Botao>
+    </div>
+  </div>
+</Secao>
+
+<style>
+  @layer components {
+    .chamada {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.25rem;
+    }
+    .chamada__titulo {
+      max-width: var(--container-largo);
+    }
+    .chamada__acoes {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+      width: 100%;
+      padding-top: 0.75rem;
+    }
+    @media (width >= 40rem) {
+      .chamada__acoes {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem 2rem;
+        width: auto;
+      }
+    }
+  }
+</style>
