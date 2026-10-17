@@ -51,8 +51,9 @@ const fontes = `
     {imagemOg && <meta property="og:image:height" content="630" />}
     {imagemOg && <meta name="twitter:card" content="summary_large_image" />}
 
+    {/* O .ico vem antes e com sizes="32x32" para o navegador que entende SVG escolher o SVG. */}
+    {icones.ico && <link rel="icon" href={icones.ico} sizes="32x32" />}
     {favicon ? <link rel="icon" href={favicon} type={favicon.endsWith('.svg') ? 'image/svg+xml' : undefined} /> : <link rel="icon" href="data:," />}
-    {icones.png && <link rel="icon" href={icones.png} type="image/png" sizes="32x32" />}
     {icones.celular && <link rel="apple-touch-icon" href={icones.celular} />}
     {icones.manifesto && <link rel="manifest" href={icones.manifesto} />}
 

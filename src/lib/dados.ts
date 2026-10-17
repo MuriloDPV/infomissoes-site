@@ -88,7 +88,7 @@ export const favicon = faviconExiste ? `/${site.favicon}` : null;
 // Ícones gerados junto com o favicon (scripts/marca/gerar-icones.mjs). Só entram no HTML se existirem.
 const publico = (nome: string) => (existe(nome) ? `/${nome}` : null);
 export const icones = {
-  png: publico('favicon-32.png'),
+  ico: publico('favicon.ico'),
   celular: publico('apple-touch-icon.png'),
   manifesto: publico('site.webmanifest'),
 };

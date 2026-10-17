@@ -87,7 +87,7 @@ export const site: Site = {
   // Versão para fundo escuro (ruínas em branco), usada no rodapé.
   logoFundoEscuro: 'logo-infomissoes-fundo-escuro.svg',
 
-  // Favicon em public/ (torre com o sinal, feita a partir da logo).
+  // Favicon em public/ ("M" de Missões e a torre com o sinal, recortados da logo).
   favicon: 'favicon.svg',
 
   // WhatsApp com DDD, como aparece na página. Aceita fixo (DDD + 8 dígitos) ou celular (DDD + 9 dígitos).
@@ -97,8 +97,8 @@ export const site: Site = {
   // Mensagem que já vem escrita quando a pessoa abre o WhatsApp por qualquer botão do site.
   mensagemWhatsapp: 'Olá! Vim pelo site da Info Missões.',
 
-  // TODO: telefone com DDD, no mesmo formato do WhatsApp.
-  telefone: null,
+  // Telefone com DDD, no mesmo formato do WhatsApp. É o mesmo número (fixo, atende ligação).
+  telefone: '(55) 3365-1025',
 
   // TODO: endereço da loja: rua, número, bairro e cidade/UF.
   endereco: null,

@@ -96,6 +96,8 @@ Ritmo das páginas (o cabeçalho e o rodapé noite são os mesmos em todas):
 - Nunca redesenhar, distorcer ou recolorir as letras. Só recortar em camadas e animar. A camada `ruins` também é o traço de fundo das artes.
 - Cabeçalho: versão clara, 46px de altura no celular e 60px no desktop. Rodapé: versão para fundo escuro.
 - Favicon, ícone do celular, ícones do manifesto e imagem de compartilhamento (1200×630) saem das camadas: `node scripts/marca/gerar-icones.mjs` (gera em `public/`).
+- Favicon: recorte da logo clara com o "M" amarelo de "Missões" e a torre com os arcos (a torre faz o "i"), nas cores e na ordem das camadas, sem redesenhar nem recolorir. Fundo: quadrado branco de cantos arredondados, para aparecer em aba clara e escura. O recorte ocupa 87% da largura e fica deslocado menos de 1/3 de pixel para cair na grade de 16px. Conferido no Chrome claro e escuro em 16 e 32px: o "M" e a torre dão para reconhecer.
+- Arquivos: `favicon.svg` (o que o navegador usa), `favicon.ico` (16, 32 e 48, para o que não lê SVG), `apple-touch-icon.png` (180, quadrado branco cheio: o iPhone arredonda) e `icone-192.png`/`icone-512.png` do manifesto (quadrado cheio, recorte dentro do círculo de 80%, para servir como ícone recortável).
 
 ## Mapa (/onde-atendemos)
 
