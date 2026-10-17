@@ -1,0 +1,74 @@
+---
+// Onde atendemos: lista de cidades de site.ts. Sem cidades, texto geral e verdadeiro sobre a região.
+import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
+import Icone from '../ui/Icone.astro';
+import Pendente from '../ui/Pendente.astro';
+import Secao from '../ui/Secao.astro';
+import Convite from './OndeAtendemosConvite.astro';
+import { site } from '../../data/site.ts';
+import { DEV } from '../../lib/dados.ts';
+
+const cidades = site.cidades;
+const temCidades = cidades.length > 0;
+const comLista = temCidades || DEV;
+---
+
+<Secao id="onde-atendemos" tom="clara">
+  <div class="grid gap-10 lg:grid-cols-12 lg:gap-16">
+    <CabecalhoSecao
+      class={comLista ? 'lg:col-span-5' : 'lg:col-span-7'}
+      titulo="Onde atendemos"
+      texto={temCidades
+        ? 'A Info Missões atende estas cidades da região das Missões, no Rio Grande do Sul.'
+        : 'Atendemos a região das Missões, no Rio Grande do Sul.'}
+    >
+      {comLista && <Convite />}
+    </CabecalhoSecao>
+
+    {
+      temCidades ? (
+        <ul class="grid content-start sm:grid-cols-2 sm:gap-x-10 lg:col-span-7">
+          {cidades.map((c, i) => (
+            <li class="cidades__item" data-revelar="lado" style={`--i:${i + 1}`}>
+              <Icone nome="local" class="size-6 shrink-0 text-sup-icone" />
+              <span>{c}</span>
+            </li>
+          ))}
+        </ul>
+      ) : DEV ? (
+        <Pendente texto="cidades atendidas" campo="cidades" class="min-h-64 lg:col-span-7" />
+      ) : (
+        <div class="flex flex-col gap-5 lg:col-span-5 lg:self-end" data-revelar>
+          <Convite />
+        </div>
+      )
+    }
+  </div>
+</Secao>
+
+<style>
+  @layer components {
+    .cidades__item {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      min-height: 4.5rem;
+      border-bottom: 1px solid var(--color-azul-100);
+      color: var(--color-azul);
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--tracking-titulo);
+      line-height: var(--leading-titulo);
+    }
+
+    @media (width >= 40rem) {
+      .cidades__item:nth-child(-n + 2) {
+        border-top: 1px solid var(--color-azul-100);
+      }
+    }
+
+    .cidades__item:first-child {
+      border-top: 1px solid var(--color-azul-100);
+    }
+  }
+</style>

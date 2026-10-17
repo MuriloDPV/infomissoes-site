@@ -1,0 +1,21 @@
+---
+// Cabeçalho de seção: título (h2) + texto de apoio opcional.
+interface Props {
+  titulo: string;
+  id?: string;
+  texto?: string;
+  alinhar?: 'inicio' | 'centro';
+  class?: string;
+}
+
+const { titulo, id, texto, alinhar = 'inicio', class: classe } = Astro.props;
+---
+
+<header
+  data-revelar
+  class:list={['flex flex-col gap-4', alinhar === 'centro' && 'mx-auto items-center text-center', classe]}
+>
+  <h2 id={id} class="max-w-texto text-3xl">{titulo}</h2>
+  {texto && <p class="max-w-texto text-lg text-sup-suave">{texto}</p>}
+  <slot />
+</header>

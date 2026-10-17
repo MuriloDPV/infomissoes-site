@@ -1,0 +1,272 @@
+---
+// Contato: só mostra os meios que existem em site.ts. Instagram é fixo.
+import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
+import Card from '../ui/Card.astro';
+import Foto from '../ui/Foto.astro';
+import Icone, { type IconeNome } from '../ui/Icone.astro';
+import Pendente from '../ui/Pendente.astro';
+import Secao from '../ui/Secao.astro';
+import { site } from '../../data/site.ts';
+import { DEV, imagemFoto, telefone, whatsapp } from '../../lib/dados.ts';
+
+type Meio = {
+  icone: IconeNome;
+  rotulo: string;
+  valor: string | null;
+  href: string | null;
+  acao?: string;
+  externo?: boolean;
+  extra?: string | null;
+  campo: string;
+  pendente: string;
+};
+
+const usuarioInstagram = '@' + site.instagram.replace(/\/+$/, '').split('/').pop();
+
+const meios: Meio[] = [
+  {
+    icone: 'whatsapp',
+    rotulo: 'WhatsApp',
+    valor: site.whatsapp,
+    href: whatsapp,
+    acao: 'Chamar',
+    externo: true,
+    campo: 'whatsapp',
+    pendente: 'número do WhatsApp',
+  },
+  {
+    icone: 'telefone',
+    rotulo: 'Telefone',
+    valor: site.telefone,
+    href: telefone,
+    acao: 'Ligar',
+    campo: 'telefone',
+    pendente: 'telefone',
+  },
+  {
+    icone: 'loja',
+    rotulo: 'Loja',
+    valor: site.endereco,
+    href: null,
+    extra: site.horario,
+    campo: 'endereco',
+    pendente: 'endereço da loja',
+  },
+  {
+    icone: 'instagram',
+    rotulo: 'Instagram',
+    valor: usuarioInstagram,
+    href: site.instagram,
+    acao: 'Abrir',
+    externo: true,
+    campo: 'instagram',
+    pendente: 'Instagram',
+  },
+];
+
+const visiveis = meios.filter((m) => m.valor);
+const pendentes = meios.filter((m) => !m.valor);
+
+const temFoto = !!imagemFoto(site.fotos.loja, 'fotos.loja');
+const mostrarFoto = temFoto || DEV;
+---
+
+<Secao id="contato" tom="clara">
+  <div class:list={['grid gap-12', mostrarFoto && 'lg:grid-cols-12 lg:gap-16']}>
+    <div class:list={['flex flex-col gap-10', mostrarFoto ? 'lg:col-span-6' : 'max-w-texto']}>
+      <CabecalhoSecao titulo="Fale com a gente" texto="Escolha o jeito mais fácil para você." />
+
+      <Card as="ul" class="overflow-hidden">
+        {
+          visiveis.map((m, i) => {
+            const conteudo = (
+              <>
+                <Icone nome={m.icone} class="contato__icone" />
+                <span class="contato__textos">
+                  <span class="contato__rotulo">{m.rotulo}</span>
+                  <span class="contato__valor">{m.valor}</span>
+                  {m.extra && (
+                    <span class="contato__extra">
+                      <Icone nome="relogio" class="size-4 shrink-0" />
+                      {m.extra}
+                    </span>
+                  )}
+                </span>
+                {m.href && (
+                  <span class="contato__acao">
+                    <span class="contato__acao-texto">{m.acao}</span>
+                    <Icone nome={m.externo ? 'externo' : 'seta'} class="contato__seta" />
+                  </span>
+                )}
+              </>
+            );
+            return (
+              <li class="contato__item" data-revelar style={`--i:${i + 1}`}>
+                {m.href ? (
+                  <a
+                    class="contato"
+                    href={m.href}
+                    target={m.externo ? '_blank' : undefined}
+                    rel={m.externo ? 'noopener' : undefined}
+                  >
+                    {conteudo}
+                    {m.externo && <span class="sr-only"> (abre em nova aba)</span>}
+                  </a>
+                ) : (
+                  <div class="contato">{conteudo}</div>
+                )}
+              </li>
+            );
+          })
+        }
+        {
+          DEV &&
+            pendentes.map((m) => (
+              <li class="contato__item p-4">
+                <Pendente texto={m.pendente} campo={m.campo} />
+              </li>
+            ))
+        }
+        {
+          DEV && !site.horario && (
+            <li class="contato__item p-4">
+              <Pendente texto="horário da loja (opcional)" campo="horario" />
+            </li>
+          )
+        }
+      </Card>
+    </div>
+
+    {
+      mostrarFoto && (
+        <div class="lg:col-span-6 lg:pt-4">
+          <Foto
+            foto={site.fotos.loja}
+            campo="fotos.loja"
+            descricao="foto da fachada da loja"
+            proporcao="paisagem"
+            sizes="(min-width: 76rem) 36rem, (min-width: 64rem) 48vw, 100vw"
+          />
+        </div>
+      )
+    }
+  </div>
+</Secao>
+
+<style>
+  @layer components {
+    .contato__item + .contato__item {
+      border-top: 1px solid var(--color-azul-100);
+    }
+
+    .contato {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      min-height: 5.5rem;
+      padding: 1.25rem 1.5rem;
+      color: var(--color-escuro);
+      text-decoration: none;
+    }
+
+    a.contato:focus-visible {
+      outline-offset: -4px;
+      border-radius: var(--radius-lg);
+    }
+
+    a.contato::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background-color: var(--color-azul-50);
+      opacity: 0;
+      transition: opacity var(--duracao-base) var(--ease-saida);
+    }
+
+    .contato__icone {
+      width: 1.75rem;
+      height: 1.75rem;
+      color: var(--color-azul);
+    }
+
+    .contato__textos {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      min-width: 0;
+    }
+
+    .contato__rotulo {
+      color: var(--color-azul-600);
+      font-size: var(--text-sm);
+    }
+
+    .contato__valor {
+      color: var(--color-azul);
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-extrabold);
+      letter-spacing: var(--tracking-titulo);
+      line-height: var(--leading-titulo);
+      overflow-wrap: anywhere;
+    }
+
+    .contato__extra {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.375rem;
+      color: var(--color-azul-600);
+      font-size: var(--text-sm);
+    }
+
+    .contato__acao {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      color: var(--color-azul);
+      font-weight: var(--font-weight-bold);
+    }
+
+    .contato__seta {
+      width: 1.25rem;
+      height: 1.25rem;
+      transition: transform var(--duracao-base) var(--ease-saida);
+    }
+
+    @media (hover: hover) {
+      a.contato:hover::before {
+        opacity: 1;
+      }
+      a.contato:hover .contato__seta {
+        transform: translate3d(3px, 0, 0);
+      }
+    }
+
+    a.contato:active::before {
+      opacity: 1;
+    }
+
+    @media (width < 30rem) {
+      .contato__acao-texto {
+        display: none;
+      }
+      .contato__seta {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .contato__seta {
+        transition: none;
+      }
+      a.contato:hover .contato__seta {
+        transform: none;
+      }
+    }
+  }
+</style>

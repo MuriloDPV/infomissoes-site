@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+import Topo from '../components/secoes/Topo.astro';
+import Destaque from '../components/secoes/Destaque.astro';
+import JaECliente from '../components/secoes/JaECliente.astro';
+import Planos from '../components/secoes/Planos.astro';
+import OndeAtendemos from '../components/secoes/OndeAtendemos.astro';
+import Diferenciais from '../components/secoes/Diferenciais.astro';
+import PortalCliente from '../components/secoes/PortalCliente.astro';
+import Contato from '../components/secoes/Contato.astro';
+import Rodape from '../components/secoes/Rodape.astro';
+import WhatsAppFlutuante from '../components/ui/WhatsAppFlutuante.astro';
+import { portal, whatsapp } from '../lib/dados.ts';
+
+const titulo = 'Info Missões | Internet de fibra óptica nas Missões';
+const descricao = `Internet de fibra óptica na região das Missões (RS). Conheça os planos, ${
+  whatsapp ? 'fale com a gente pelo WhatsApp' : 'fale com a gente'
+} ou acesse ${portal.a} para 2ª via, PIX e faturas.`;
+---
+
+<Base titulo={titulo} descricao={descricao}>
+  <Topo />
+  <main id="conteudo">
+    <Destaque />
+    <JaECliente />
+    <Planos />
+    <OndeAtendemos />
+    <Diferenciais />
+    <PortalCliente />
+    <Contato />
+  </main>
+  <Rodape />
+  <WhatsAppFlutuante />
+</Base>

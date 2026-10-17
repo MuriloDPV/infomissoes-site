@@ -1,0 +1,197 @@
+---
+// Destaque (hero). Fundo azul com fios de fibra: uma luz percorre cada fio de vez em quando.
+import Botao from '../ui/Botao.astro';
+import Foto from '../ui/Foto.astro';
+import Pendente from '../ui/Pendente.astro';
+import { site } from '../../data/site.ts';
+import { DEV, imagemFoto, portal, whatsapp } from '../../lib/dados.ts';
+
+const temFoto = !!imagemFoto(site.fotos.destaque, 'fotos.destaque');
+const mostrarFoto = temFoto || DEV;
+
+// Leque de fios saindo da esquerda: ângulo, duração do ciclo e atraso do sinal.
+const fios = [
+  { angulo: -9, ciclo: 9.5, atraso: 0.6 },
+  { angulo: -6, ciclo: 12, atraso: 4.2 },
+  { angulo: -3.5, ciclo: 8, atraso: 2.1 },
+  { angulo: -1.5, ciclo: 13, atraso: 7.4 },
+  { angulo: 0.5, ciclo: 10.5, atraso: 5.3 },
+  { angulo: 2.5, ciclo: 11, atraso: 1.2 },
+  { angulo: 5, ciclo: 14, atraso: 9 },
+];
+---
+
+<section id="inicio" data-destaque class="destaque sup-azul" aria-labelledby="destaque-titulo">
+  <div class="fibra" aria-hidden="true">
+    {
+      fios.map((f) => (
+        <span class="fibra__fio" style={`--angulo:${f.angulo}deg;--ciclo:${f.ciclo}s;--atraso:${f.atraso}s`}>
+          <span class="fibra__sinal" />
+        </span>
+      ))
+    }
+  </div>
+
+  <div
+    class:list={[
+      'relative mx-auto grid w-full max-w-pagina gap-12 px-calha pt-14 pb-24 md:pt-20 lg:items-center lg:pt-24 lg:pb-28',
+      mostrarFoto ? 'lg:grid-cols-12' : '',
+    ]}
+  >
+    <div class:list={['flex flex-col gap-6', mostrarFoto ? 'lg:col-span-7' : 'max-w-largo']}>
+      <h1 id="destaque-titulo" class="text-destaque tracking-destaque">Internet de fibra óptica nas Missões</h1>
+      <p class="max-w-texto text-lg text-sup-suave md:text-xl">
+        A Info Missões leva internet por fibra óptica até a sua casa, com atendimento aqui mesmo, na região.
+      </p>
+      <div class="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
+        {
+          whatsapp ? (
+            <Botao href={whatsapp} externo indicador={false} icone="whatsapp" tamanho="lg" data-cta-whatsapp>
+              Chamar no WhatsApp
+            </Botao>
+          ) : DEV ? (
+            <Pendente texto="botão do WhatsApp" campo="whatsapp" forma="linha" />
+          ) : (
+            <Botao href="#planos" tamanho="lg" seta>
+              Ver planos
+            </Botao>
+          )
+        }
+        <Botao href={portal.url} externo variante="secundario" icone="usuario" tamanho="lg">
+          {portal.nome}
+        </Botao>
+      </div>
+    </div>
+
+    {
+      mostrarFoto && (
+        <div class="lg:col-span-5">
+          <Foto
+            foto={site.fotos.destaque}
+            campo="fotos.destaque"
+            descricao="foto do destaque"
+            proporcao="retrato"
+            sizes="(min-width: 76rem) 30rem, (min-width: 64rem) 40vw, 100vw"
+            prioridade
+            paisagemNoCelular
+            class="mx-auto max-w-md lg:max-w-none"
+          />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .destaque {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      background-image: linear-gradient(180deg, var(--color-azul) 0%, var(--color-azul-800) 100%);
+    }
+
+    /* Fios: estáticos. Só o sinal se move (transform + opacity). */
+    .fibra {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      /* Fios somem atrás do texto e aparecem para a direita/baixo */
+      mask-image: linear-gradient(180deg, transparent 0%, transparent 62%, #000 92%);
+    }
+
+    @media (width >= 64rem) {
+      .fibra {
+        mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 0.25) 30%, #000 62%);
+      }
+    }
+
+    .fibra__fio {
+      position: absolute;
+      top: 94%;
+      left: -8%;
+      width: 125%;
+      height: 1px;
+      transform-origin: 0 50%;
+      transform: rotate(var(--angulo));
+      background-image: linear-gradient(
+        90deg,
+        rgb(255 255 255 / 0.05) 0%,
+        rgb(255 255 255 / 0.2) 45%,
+        rgb(255 255 255 / 0.12) 100%
+      );
+    }
+
+    @media (width >= 64rem) {
+      .fibra__fio {
+        top: 74%;
+      }
+    }
+
+    .fibra__sinal {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      width: 14%;
+      height: 3px;
+      border-radius: var(--radius-full);
+      background-image: linear-gradient(
+        90deg,
+        rgb(248 240 82 / 0) 0%,
+        rgb(248 240 82 / 0.5) 65%,
+        var(--color-amarelo-claro) 92%,
+        var(--color-branco) 100%
+      );
+      opacity: 0;
+      transform: translate3d(-100%, 0, 0);
+      animation: fibra-sinal var(--ciclo) var(--ease-suave) var(--atraso) infinite;
+      will-change: transform, opacity;
+    }
+
+    /* Brilho na ponta do sinal (pintado uma vez, só se move junto) */
+    .fibra__sinal::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -7px;
+      width: 14px;
+      height: 14px;
+      margin-top: -7px;
+      border-radius: 50%;
+      background-image: radial-gradient(circle, rgb(248 240 82 / 0.8) 0%, rgb(248 240 82 / 0.2) 45%, transparent 70%);
+    }
+
+    @keyframes fibra-sinal {
+      0% {
+        transform: translate3d(-100%, 0, 0);
+        opacity: 0;
+      }
+      2% {
+        opacity: 1;
+      }
+      20% {
+        opacity: 1;
+      }
+      24% {
+        transform: translate3d(720%, 0, 0);
+        opacity: 0;
+      }
+      100% {
+        transform: translate3d(720%, 0, 0);
+        opacity: 0;
+      }
+    }
+
+    /* Fora da tela, para de animar */
+    .destaque.is-pausado .fibra__sinal {
+      animation-play-state: paused;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fibra__sinal {
+        display: none;
+      }
+    }
+  }
+</style>

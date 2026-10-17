@@ -1,0 +1,26 @@
+---
+// Convite para perguntar se a fibra chega no endereço (usado em OndeAtendemos).
+import Botao from '../ui/Botao.astro';
+import { site } from '../../data/site.ts';
+import { whatsapp } from '../../lib/dados.ts';
+
+const temCidades = site.cidades.length > 0;
+---
+
+<p class="max-w-texto">
+  {temCidades ? 'Não encontrou a sua cidade ou quer saber se a fibra chega na sua rua?' : 'Quer saber se a fibra chega na sua rua?'}
+  Fale com a gente.
+</p>
+<div>
+  {
+    whatsapp ? (
+      <Botao href={whatsapp} externo indicador={false} variante="secundario" icone="whatsapp">
+        Perguntar no WhatsApp
+      </Botao>
+    ) : (
+      <Botao href="#contato" variante="secundario" seta>
+        Falar com a gente
+      </Botao>
+    )
+  }
+</div>

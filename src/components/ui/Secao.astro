@@ -1,0 +1,23 @@
+---
+// Seção da página: superfície + ritmo vertical + largura máxima com calha.
+interface Props {
+  id?: string;
+  tom?: 'clara' | 'tinta' | 'azul' | 'amarela' | 'escura';
+  /** 'normal' usa o espaço de seção; 'curta' é para blocos utilitários. */
+  ritmo?: 'normal' | 'curta';
+  rotulo?: string;
+  class?: string;
+}
+
+const { id, tom = 'clara', ritmo = 'normal', rotulo, class: classe } = Astro.props;
+---
+
+<section
+  id={id}
+  aria-label={rotulo}
+  class:list={[`sup-${tom}`, 'relative', ritmo === 'curta' ? 'py-secao-curta' : 'py-secao', classe]}
+>
+  <div class="relative mx-auto w-full max-w-pagina px-calha">
+    <slot />
+  </div>
+</section>

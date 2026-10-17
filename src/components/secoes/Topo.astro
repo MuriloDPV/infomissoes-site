@@ -1,0 +1,360 @@
+---
+import Botao from '../ui/Botao.astro';
+import Icone from '../ui/Icone.astro';
+import Logo from '../ui/Logo.astro';
+import { portal, whatsapp } from '../../lib/dados.ts';
+import { secoes } from '../../lib/navegacao.ts';
+---
+
+<header data-topo class="topo">
+  <div class="topo__barra">
+    <div class="topo__interno mx-auto flex w-full max-w-pagina items-center justify-between gap-4 px-calha">
+      <a href="#inicio" class="topo__marca">
+        <Logo />
+        <span class="sr-only">, voltar ao início</span>
+      </a>
+
+      <nav aria-label="Seções" class="hidden lg:block">
+        <ul class="flex items-center gap-1">
+          {
+            secoes.map((s) => (
+              <li>
+                <a class="topo__link" href={s.href}>
+                  {s.rotulo}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <Botao href={portal.url} externo variante="secundario" icone="usuario" class="hidden md:inline-flex">
+          {portal.nome}
+        </Botao>
+
+        <details data-menu class="menu lg:hidden">
+          <summary class="menu__botao">
+            <Icone nome="menu" class="menu__icone menu__icone--abrir" />
+            <Icone nome="fechar" class="menu__icone menu__icone--fechar" />
+            <span>Menu</span>
+          </summary>
+          <div class="menu__painel sup-clara">
+            <nav aria-label="Seções (menu)">
+              <ul>
+                {
+                  secoes.map((s) => (
+                    <li>
+                      <a class="menu__link" href={s.href}>
+                        <span>{s.rotulo}</span>
+                        <Icone nome="seta" class="menu__seta" />
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </nav>
+            <div class="menu__acoes">
+              <Botao href={portal.url} externo variante="secundario" icone="usuario" cheio>
+                {portal.nome}
+              </Botao>
+              {
+                whatsapp && (
+                  <Botao href={whatsapp} externo indicador={false} variante="primario" icone="whatsapp" cheio>
+                    Chamar no WhatsApp
+                  </Botao>
+                )
+              }
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <a href={portal.url} target="_blank" rel="noopener" class="topo__faixa md:hidden">
+    <span class="topo__faixa-interno mx-auto flex w-full max-w-pagina items-center gap-3 px-calha">
+      <Icone nome="usuario" class="topo__faixa-icone" />
+      <strong class="topo__faixa-rotulo">{portal.nome}</strong>
+      <span class="topo__faixa-apoio">2ª via, PIX e faturas</span>
+      <Icone nome="externo" class="topo__faixa-seta" />
+      <span class="sr-only"> (abre em nova aba)</span>
+    </span>
+  </a>
+</header>
+
+<style>
+  /* Estilos do componente ficam na camada components: utilitários do Tailwind vencem. */
+  @layer components {
+    .topo {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      isolation: isolate;
+      transition: transform var(--duracao-base) var(--ease-saida);
+    }
+
+    /* Sombra do estado compacto: só a opacidade anima */
+    .topo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      box-shadow: var(--shadow-topo);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--duracao-base) var(--ease-saida);
+    }
+
+    /* z-index: o painel do menu (dentro da barra) fica por cima da faixa amarela */
+    .topo__barra {
+      position: relative;
+      z-index: 1;
+      background-color: var(--color-branco);
+      box-shadow: inset 0 -1px 0 var(--color-azul-100);
+    }
+
+    .topo__interno {
+      position: relative;
+      height: 4rem;
+      transition: transform var(--duracao-base) var(--ease-saida);
+    }
+
+    .topo__marca {
+      display: inline-flex;
+      align-items: center;
+      min-height: 3rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transform-origin: 0 50%;
+      transition: transform var(--duracao-base) var(--ease-saida);
+    }
+
+    /* Compacto: a barra sobe um pouco (transform), o conteúdo desce metade, o logo reduz. */
+    .topo.is-compacto {
+      transform: translate3d(0, -0.5rem, 0);
+    }
+    .topo.is-compacto .topo__interno {
+      transform: translate3d(0, 0.25rem, 0);
+    }
+    .topo.is-compacto .topo__marca {
+      transform: scale(0.92);
+    }
+    .topo.is-compacto::after {
+      opacity: 1;
+    }
+
+    @media (width >= 48rem) {
+      .topo__interno {
+        height: 5rem;
+      }
+      .topo.is-compacto {
+        transform: translate3d(0, -1rem, 0);
+      }
+      .topo.is-compacto .topo__interno {
+        transform: translate3d(0, 0.5rem, 0);
+      }
+    }
+
+    /* Links do menu no desktop */
+    .topo__link {
+      position: relative;
+      isolation: isolate;
+      display: inline-flex;
+      align-items: center;
+      min-height: 3rem;
+      padding: 0 1rem;
+      border-radius: var(--radius-md);
+      color: var(--color-escuro);
+      font-weight: var(--font-weight-semibold);
+      text-decoration: none;
+    }
+    .topo__link::before {
+      content: '';
+      position: absolute;
+      inset: 0.25rem 0;
+      z-index: -1;
+      border-radius: inherit;
+      background-color: var(--color-azul-50);
+      opacity: 0;
+      transform: scale(0.94);
+      transition:
+        opacity var(--duracao-base) var(--ease-saida),
+        transform var(--duracao-base) var(--ease-saida);
+    }
+    @media (hover: hover) {
+      .topo__link:hover {
+        color: var(--color-azul);
+      }
+      .topo__link:hover::before {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* Faixa do portal (celular): sempre visível junto do cabeçalho */
+    .topo__faixa {
+      position: relative;
+      isolation: isolate;
+      display: block;
+      background-color: var(--color-amarelo);
+      color: var(--color-azul);
+      text-decoration: none;
+      --sup-foco: var(--color-azul);
+      container-type: inline-size;
+    }
+    .topo__faixa::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background-color: var(--color-amarelo-claro);
+      opacity: 0;
+      transition: opacity var(--duracao-base) var(--ease-saida);
+    }
+    .topo__faixa:active::before {
+      opacity: 1;
+    }
+    .topo__faixa:focus-visible {
+      outline-offset: -4px;
+    }
+    .topo__faixa-interno {
+      min-height: 3rem;
+    }
+    .topo__faixa-icone {
+      width: 1.375rem;
+      height: 1.375rem;
+      flex: none;
+    }
+    .topo__faixa-rotulo {
+      font-weight: var(--font-weight-bold);
+      white-space: nowrap;
+    }
+    .topo__faixa-apoio {
+      display: none;
+      color: var(--color-azul);
+      font-size: var(--text-sm);
+      white-space: nowrap;
+    }
+    .topo__faixa-seta {
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-left: auto;
+      flex: none;
+    }
+    @container (width >= 25rem) {
+      .topo__faixa-apoio {
+        display: inline;
+      }
+      .topo__faixa-apoio::before {
+        content: '·';
+        margin-right: 0.75rem;
+      }
+    }
+
+    /* Menu (details/summary funciona sem JS) */
+    .menu__botao {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-height: 3rem;
+      padding: 0 1rem 0 0.875rem;
+      border-radius: var(--radius-md);
+      color: var(--color-azul);
+      font-weight: var(--font-weight-bold);
+      list-style: none;
+      cursor: pointer;
+      box-shadow: inset 0 0 0 2px var(--color-azul-100);
+      user-select: none;
+      transition: transform var(--duracao-rapida) var(--ease-saida);
+    }
+    .menu__botao::-webkit-details-marker {
+      display: none;
+    }
+    .menu__botao:active {
+      transform: scale(0.97);
+    }
+    .menu__icone {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    .menu__icone--fechar,
+    .menu[open] .menu__icone--abrir {
+      display: none;
+    }
+    .menu[open] .menu__icone--fechar {
+      display: block;
+    }
+    .menu[open] .menu__botao {
+      background-color: var(--color-azul-50);
+    }
+
+    .menu__painel {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      padding: 0.5rem var(--spacing-calha) 1.5rem;
+      border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+    }
+    .menu[open] .menu__painel {
+      animation: menu-entra var(--duracao-base) var(--ease-saida);
+    }
+    @media (width >= 48rem) {
+      .menu__painel {
+        left: auto;
+        right: var(--spacing-calha);
+        width: 22rem;
+        margin-top: 0.5rem;
+        border-radius: var(--radius-xl);
+      }
+    }
+
+    .menu__link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: var(--spacing-toque);
+      border-bottom: 1px solid var(--color-azul-100);
+      color: var(--color-azul);
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-bold);
+      text-decoration: none;
+    }
+    .menu__seta {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--color-azul-600);
+    }
+    .menu__acoes {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    @keyframes menu-entra {
+      from {
+        opacity: 0;
+        transform: translate3d(0, -0.5rem, 0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .topo,
+      .topo__interno,
+      .topo__marca {
+        transition: none;
+      }
+      .menu[open] .menu__painel {
+        animation-name: menu-aparece;
+      }
+      @keyframes menu-aparece {
+        from {
+          opacity: 0;
+        }
+      }
+    }
+  }
+</style>

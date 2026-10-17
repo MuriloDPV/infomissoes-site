@@ -1,0 +1,65 @@
+---
+// Espaço reservado para dado pendente. Só existe em `npm run dev`;
+// no build não gera nada.
+interface Props {
+  /** O que falta, ex.: 'foto da fachada da loja'. */
+  texto: string;
+  /** Campo em src/data/site.ts, ex.: 'fotos.loja'. */
+  campo: string;
+  /** 'bloco' ocupa a largura; 'linha' fica no fluxo do texto. */
+  forma?: 'bloco' | 'linha';
+  class?: string;
+}
+
+const { texto, campo, forma = 'bloco', class: classe } = Astro.props;
+const DEV = import.meta.env.DEV;
+---
+
+{
+  DEV && (
+    <div class:list={['pendente', `pendente--${forma}`, classe]} role="note">
+      <span class="pendente__rotulo">TODO: {texto}</span>
+      <code class="pendente__campo">site.ts → {campo}</code>
+      <slot />
+    </div>
+  )
+}
+
+<style>
+  /* Estilos do componente ficam na camada components: utilitários do Tailwind vencem. */
+  @layer components {
+    .pendente {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.25rem;
+      padding: 1rem 1.25rem;
+      border: 2px dashed currentColor;
+      border-radius: var(--radius-lg);
+      color: var(--sup-titulo);
+      background-image: repeating-linear-gradient(
+        135deg,
+        transparent 0 12px,
+        color-mix(in srgb, currentColor 6%, transparent) 12px 24px
+      );
+      font-size: var(--text-sm);
+      line-height: 1.4;
+    }
+
+    .pendente--linha {
+      display: inline-flex;
+      padding: 0.5rem 0.875rem;
+      border-radius: var(--radius-md);
+    }
+
+    .pendente__rotulo {
+      font-weight: var(--font-weight-bold);
+    }
+
+    .pendente__campo {
+      opacity: 0.8;
+      font-family: ui-monospace, monospace;
+      font-size: 0.875rem;
+    }
+  }
+</style>

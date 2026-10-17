@@ -1,0 +1,182 @@
+---
+// Botão (link com cara de botão). As cores se ajustam sozinhas à superfície (.sup-*).
+import Icone, { type IconeNome } from './Icone.astro';
+
+interface Props {
+  href: string;
+  variante?: 'primario' | 'secundario' | 'fantasma';
+  tamanho?: 'md' | 'lg';
+  /** Ícone antes do texto. */
+  icone?: IconeNome;
+  /** Seta depois do texto (links internos). */
+  seta?: boolean;
+  /** Abre em nova aba com rel="noopener" e avisa leitores de tela. */
+  externo?: boolean;
+  /** Mostra a setinha de "nova aba" (padrão: sim, quando externo). */
+  indicador?: boolean;
+  cheio?: boolean;
+  class?: string;
+  [atributo: `data-${string}`]: string | boolean | undefined;
+  'aria-label'?: string;
+}
+
+const {
+  href,
+  variante = 'primario',
+  tamanho = 'md',
+  icone,
+  seta = false,
+  externo = false,
+  indicador = true,
+  cheio = false,
+  class: classe,
+  ...resto
+} = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['botao', `botao--${variante}`, `botao--${tamanho}`, { 'botao--cheio': cheio }, classe]}
+  target={externo ? '_blank' : undefined}
+  rel={externo ? 'noopener' : undefined}
+  {...resto}
+>
+  {icone && <Icone nome={icone} class="botao__icone" />}
+  <span class="botao__rotulo"><slot /></span>
+  {externo && indicador && <Icone nome="externo" class="botao__seta botao__seta--externo" />}
+  {!externo && seta && <Icone nome="seta" class="botao__seta" />}
+  {externo && <span class="sr-only"> (abre em nova aba)</span>}
+</a>
+
+<style>
+  /* Estilos do componente ficam na camada components: utilitários do Tailwind vencem. */
+  @layer components {
+    .botao {
+      position: relative;
+      isolation: isolate;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.625rem;
+      min-height: var(--spacing-toque);
+      padding: 0.875rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-bold);
+      line-height: 1.2;
+      text-align: center;
+      text-decoration: none;
+      letter-spacing: 0.005em;
+      transition: transform var(--duracao-base) var(--ease-saida);
+      touch-action: manipulation;
+    }
+
+    .botao--lg {
+      min-height: 4rem;
+      padding-inline: 1.625rem;
+      font-size: var(--text-lg);
+    }
+
+    .botao--cheio {
+      width: 100%;
+    }
+
+    /* Camada de realce: só opacidade anima */
+    .botao::before,
+    .botao::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: inherit;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--duracao-base) var(--ease-saida);
+    }
+
+    /* Sombra que aparece no hover */
+    .botao::after {
+      z-index: -2;
+      box-shadow: var(--shadow-md);
+    }
+
+    .botao__icone {
+      width: 1.375rem;
+      height: 1.375rem;
+      flex: none;
+    }
+
+    .botao__seta {
+      width: 1.25rem;
+      height: 1.25rem;
+      flex: none;
+      transition: transform var(--duracao-base) var(--ease-saida);
+    }
+
+    @media (hover: hover) {
+      .botao:hover {
+        transform: translate3d(0, -2px, 0);
+      }
+      .botao:hover::before,
+      .botao:hover::after {
+        opacity: 1;
+      }
+      .botao:hover .botao__seta {
+        transform: translate3d(3px, 0, 0);
+      }
+      .botao:hover .botao__seta--externo {
+        transform: translate3d(2px, -2px, 0);
+      }
+    }
+
+    .botao:active {
+      transform: translate3d(0, 0, 0) scale(0.98);
+      transition-duration: var(--duracao-rapida);
+    }
+
+    /* Primário: amarelo com texto azul (em qualquer superfície) */
+    .botao--primario {
+      background-color: var(--color-amarelo);
+      color: var(--color-azul);
+      box-shadow: inset 0 -2px 0 rgb(15 23 42 / 0.12);
+    }
+    .botao--primario::before {
+      background-color: var(--color-amarelo-claro);
+    }
+
+    /* Secundário: azul cheio em fundo claro; contorno branco em fundo azul/escuro */
+    .botao--secundario {
+      background-color: var(--sup-b2-fundo);
+      color: var(--sup-b2-texto);
+      box-shadow: inset 0 0 0 2px var(--sup-b2-borda);
+    }
+    .botao--secundario::before {
+      background-color: var(--sup-b2-realce);
+    }
+
+    /* Fantasma: só texto, realce suave por trás */
+    .botao--fantasma {
+      color: var(--sup-b3-texto);
+      padding-inline: 1rem;
+      text-decoration: underline;
+      text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    }
+    .botao--fantasma::before {
+      background-color: var(--sup-b3-realce);
+    }
+    .botao--fantasma::after {
+      display: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .botao,
+      .botao__seta {
+        transition: none;
+      }
+      .botao:hover,
+      .botao:hover .botao__seta {
+        transform: none;
+      }
+    }
+  }
+</style>

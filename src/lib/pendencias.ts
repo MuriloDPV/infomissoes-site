@@ -1,0 +1,55 @@
+// Lista o que falta em src/data/site.ts. Usado pelo `npm run todos`.
+import type { Site } from '../data/site.ts';
+import { cnpjValido, numeroBR } from './contato.ts';
+
+export type Pendencia = { campo: string; descricao: string };
+
+export type Relatorio = {
+  faltando: Pendencia[];
+  invalidos: Pendencia[];
+  aConfirmar: Pendencia[];
+};
+
+export function pendencias(site: Site): Relatorio {
+  const faltando: Pendencia[] = [];
+  const invalidos: Pendencia[] = [];
+  const aConfirmar: Pendencia[] = [];
+
+  const falta = (campo: string, descricao: string) => faltando.push({ campo, descricao });
+
+  if (!site.logo) falta('logo', 'arquivo do logo em src/assets/marca/ (sem ele aparece o nome em texto)');
+  if (!site.favicon) falta('favicon', 'arquivo do favicon em public/');
+
+  if (!site.whatsapp) falta('whatsapp', 'número do WhatsApp com DDD (sem ele os botões de WhatsApp somem)');
+  else if (!numeroBR(site.whatsapp))
+    invalidos.push({ campo: 'whatsapp', descricao: `"${site.whatsapp}" não parece um número com DDD` });
+
+  if (!site.telefone) falta('telefone', 'telefone com DDD');
+  else if (!numeroBR(site.telefone))
+    invalidos.push({ campo: 'telefone', descricao: `"${site.telefone}" não parece um número com DDD` });
+
+  if (!site.endereco) falta('endereco', 'endereço da loja');
+  if (!site.horario) falta('horario', 'horário de atendimento da loja (opcional)');
+
+  if (!site.cnpj) falta('cnpj', 'CNPJ (aparece no rodapé)');
+  else if (!cnpjValido(site.cnpj))
+    invalidos.push({ campo: 'cnpj', descricao: `"${site.cnpj}" não tem 14 dígitos` });
+
+  if (site.cidades.length === 0) falta('cidades', 'cidades atendidas (sem elas aparece um texto geral sobre a região)');
+
+  if (site.planos.length === 0) falta('planos', 'planos: nome, velocidade, preço e benefícios (sem eles aparece "Consulte os planos")');
+  site.planos.forEach((p, i) => {
+    const vazio = (['nome', 'velocidade', 'preco'] as const).filter((k) => !p[k]?.trim());
+    if (vazio.length) invalidos.push({ campo: `planos[${i}]`, descricao: `faltam: ${vazio.join(', ')}` });
+  });
+  if (site.planos.length > 3)
+    invalidos.push({ campo: 'planos', descricao: `${site.planos.length} planos; o layout foi feito para até 3` });
+
+  if (!site.fotos.destaque.arquivo) falta('fotos.destaque', 'foto do destaque, em pé (4:5)');
+  if (!site.fotos.loja.arquivo) falta('fotos.loja', 'foto da fachada da loja, deitada (4:3)');
+
+  aConfirmar.push({ campo: 'rotuloPortal', descricao: `nome do portal: "${site.rotuloPortal}"` });
+  aConfirmar.push({ campo: 'diferenciais', descricao: 'textos dos diferenciais (rascunho)' });
+
+  return { faltando, invalidos, aConfirmar };
+}

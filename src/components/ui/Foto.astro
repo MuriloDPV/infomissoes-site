@@ -1,0 +1,42 @@
+---
+// Foto real com proporção reservada. Sem arquivo: em dev mostra o espaço reservado,
+// no build não gera nada (o layout em volta deve funcionar sem a foto).
+import { Image } from 'astro:assets';
+import Pendente from './Pendente.astro';
+import { imagemFoto } from '../../lib/dados.ts';
+import type { Foto } from '../../data/site.ts';
+
+interface Props {
+  foto: Foto;
+  campo: string;
+  descricao: string;
+  proporcao: 'retrato' | 'paisagem';
+  sizes: string;
+  prioridade?: boolean;
+  /** No celular usa 4:3 (mais baixa) e só a partir do desktop a proporção pedida. */
+  paisagemNoCelular?: boolean;
+  class?: string;
+}
+
+const { foto, campo, descricao, proporcao, sizes, prioridade = false, paisagemNoCelular = false, class: classe } = Astro.props;
+const imagem = imagemFoto(foto, campo);
+const aspecto =
+  proporcao === 'paisagem' ? 'aspect-paisagem' : paisagemNoCelular ? 'aspect-paisagem lg:aspect-retrato' : 'aspect-retrato';
+const rotuloProporcao = proporcao === 'retrato' ? '4:5, em pé' : '4:3, deitada';
+---
+
+{
+  imagem ? (
+    <Image
+      src={imagem}
+      alt={foto.alt}
+      widths={[480, 800, 1200, 1600]}
+      sizes={sizes}
+      loading={prioridade ? 'eager' : 'lazy'}
+      fetchpriority={prioridade ? 'high' : undefined}
+      class:list={['w-full rounded-xl object-cover shadow-lg', aspecto, classe]}
+    />
+  ) : (
+    <Pendente texto={`${descricao} (${rotuloProporcao})`} campo={campo} class:list={[aspecto, classe]} />
+  )
+}

@@ -1,0 +1,45 @@
+---
+// Diferenciais: poucos, curtos e verdadeiros (textos em site.ts).
+import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
+import Icone from '../ui/Icone.astro';
+import Secao from '../ui/Secao.astro';
+import { site } from '../../data/site.ts';
+---
+
+<Secao id="diferenciais" tom="azul" class="diferenciais overflow-hidden">
+  <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+    <CabecalhoSecao class="lg:col-span-4" titulo="Por que escolher a Info Missões" />
+
+    <ul class="grid gap-x-12 sm:grid-cols-2 lg:col-span-8">
+      {
+        site.diferenciais.map((d, i) => (
+          <li class="diferencial" data-revelar style={`--i:${i + 1}`}>
+            <Icone nome={d.icone} class="size-8 shrink-0 text-sup-icone" />
+            <div class="flex flex-col gap-2">
+              <h3 class="text-2xl">{d.titulo}</h3>
+              <p class="text-sup-suave">{d.texto}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Secao>
+
+<style>
+  @layer components {
+    .diferencial {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      padding-block: 2rem;
+      border-top: 1px solid var(--sup-linha);
+    }
+
+    @media (width >= 40rem) {
+      .diferencial {
+        padding-block: 2.25rem 2.5rem;
+      }
+    }
+  }
+</style>

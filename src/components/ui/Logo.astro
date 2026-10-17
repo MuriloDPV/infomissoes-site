@@ -1,0 +1,70 @@
+---
+// Logo da Info Missões. Sem arquivo em site.ts, mostra o nome em texto
+// (e, em dev, a marcação de pendente em volta).
+import { Image } from 'astro:assets';
+import { site } from '../../data/site.ts';
+import { logo } from '../../lib/dados.ts';
+
+interface Props {
+  tom?: 'claro' | 'escuro';
+  class?: string;
+}
+
+const { tom = 'claro', class: classe } = Astro.props;
+const DEV = import.meta.env.DEV;
+---
+
+{
+  logo ? (
+    <Image src={logo} alt={site.nome} height={44} class:list={['logo__imagem', classe]} loading="eager" />
+  ) : (
+    <span class:list={['logo', `logo--${tom}`, { 'logo--pendente': DEV }, classe]}>
+      <span class="logo__nome">{site.nome}</span>
+      {DEV && <span class="logo__aviso">TODO: logo</span>}
+    </span>
+  )
+}
+
+<style>
+  /* Estilos do componente ficam na camada components: utilitários do Tailwind vencem. */
+  @layer components {
+    .logo__imagem {
+      height: 2.75rem;
+      width: auto;
+    }
+
+    .logo {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-extrabold);
+      letter-spacing: var(--tracking-titulo);
+      line-height: 1;
+      white-space: nowrap;
+      color: var(--color-azul);
+    }
+
+    .logo--escuro {
+      color: var(--color-branco);
+    }
+
+    .logo--pendente {
+      padding: 0.375rem 0.625rem;
+      border: 2px dashed currentColor;
+      border-radius: var(--radius-sm);
+    }
+
+    .logo__aviso {
+      position: absolute;
+      top: -0.75rem;
+      left: 0.375rem;
+      padding: 0 0.25rem;
+      background: var(--color-amarelo);
+      color: var(--color-azul);
+      font-size: 0.6875rem;
+      letter-spacing: 0;
+      line-height: 1.4;
+    }
+  }
+</style>

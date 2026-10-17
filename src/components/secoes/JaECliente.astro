@@ -1,0 +1,169 @@
+---
+// "Já é cliente?": atalhos grandes para o portal (nova aba). É o caminho mais curto no celular.
+import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
+import Card from '../ui/Card.astro';
+import Icone, { type IconeNome } from '../ui/Icone.astro';
+import Secao from '../ui/Secao.astro';
+import { portal } from '../../lib/dados.ts';
+
+const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
+  { icone: 'fatura', titulo: '2ª via da fatura', texto: 'Emita de novo, se perdeu ou não recebeu.' },
+  { icone: 'pix', titulo: 'Pagar com PIX', texto: 'Copie o código e pague no app do banco.' },
+  { icone: 'faturas', titulo: 'Ver faturas', texto: 'Consulte as suas faturas.' },
+];
+---
+
+<Secao id="ja-e-cliente" tom="clara" ritmo="curta">
+  <div class="grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-12">
+    <CabecalhoSecao
+      class="lg:col-span-4"
+      titulo="Já é cliente?"
+      texto={`Resolva ${portal.na}. Os atalhos abrem em uma nova aba.`}
+    />
+
+    <Card as="ul" class="grid overflow-hidden md:grid-cols-3 lg:col-span-8">
+      {
+        atalhos.map((a, i) => (
+          <li class="atalhos__item" data-revelar style={`--i:${i + 1}`}>
+            <a class="atalho" href={portal.url} target="_blank" rel="noopener">
+              <Icone nome={a.icone} class="atalho__icone" />
+              <span class="atalho__textos">
+                <span class="atalho__titulo">{a.titulo}</span>
+                <span class="atalho__texto">{a.texto}</span>
+              </span>
+              <Icone nome="externo" class="atalho__seta" />
+              <span class="sr-only"> (abre em nova aba)</span>
+            </a>
+          </li>
+        ))
+      }
+    </Card>
+  </div>
+</Secao>
+
+<style>
+  @layer components {
+    .atalhos__item + .atalhos__item {
+      border-top: 1px solid var(--color-azul-100);
+    }
+
+    .atalho {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      min-height: 5.5rem;
+      padding: 1.25rem 1.25rem 1.25rem 1.5rem;
+      color: var(--color-escuro);
+      text-decoration: none;
+      --sup-foco: var(--color-azul);
+    }
+
+    .atalho:focus-visible {
+      outline-offset: -4px;
+      border-radius: var(--radius-lg);
+    }
+
+    /* Realce de fundo: só opacidade */
+    .atalho::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background-color: var(--color-azul-50);
+      opacity: 0;
+      transition: opacity var(--duracao-base) var(--ease-saida);
+    }
+
+    .atalho__icone {
+      width: 2rem;
+      height: 2rem;
+      color: var(--color-azul);
+      transition: transform var(--duracao-lenta) var(--ease-saida);
+    }
+
+    .atalho__textos {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+    }
+
+    .atalho__titulo {
+      color: var(--color-azul);
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-extrabold);
+      letter-spacing: var(--tracking-titulo);
+      line-height: var(--leading-titulo);
+    }
+
+    .atalho__texto {
+      color: var(--color-azul-600);
+      font-size: var(--text-sm);
+      line-height: 1.45;
+    }
+
+    .atalho__seta {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--color-azul);
+      transition: transform var(--duracao-base) var(--ease-saida);
+    }
+
+    @media (hover: hover) {
+      .atalho:hover::before {
+        opacity: 1;
+      }
+      .atalho:hover .atalho__seta {
+        transform: translate3d(3px, -3px, 0);
+      }
+      .atalho:hover .atalho__icone {
+        transform: translate3d(0, -2px, 0) scale(1.06);
+      }
+    }
+
+    .atalho:active::before {
+      opacity: 1;
+    }
+
+    /* Tablet e desktop: três colunas lado a lado */
+    @media (width >= 48rem) {
+      .atalhos__item + .atalhos__item {
+        border-top: 0;
+        border-left: 1px solid var(--color-azul-100);
+      }
+      .atalho {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto 1fr;
+        align-items: start;
+        row-gap: 1.5rem;
+        height: 100%;
+        padding: 1.75rem 1.75rem 2rem;
+      }
+      .atalho__icone {
+        width: 2.25rem;
+        height: 2.25rem;
+      }
+      .atalho__textos {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+      .atalho__seta {
+        grid-column: 2;
+        grid-row: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .atalho__icone,
+      .atalho__seta {
+        transition: none;
+      }
+      .atalho:hover .atalho__seta,
+      .atalho:hover .atalho__icone {
+        transform: none;
+      }
+    }
+  }
+</style>

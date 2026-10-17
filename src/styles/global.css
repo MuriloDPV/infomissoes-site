@@ -1,0 +1,319 @@
+@import "tailwindcss";
+
+/* =====================================================================
+   TOKENS — Info Missões
+   Único lugar com valores de cor, tipo, espaço, raio, sombra e movimento.
+   Os padrões do Tailwind são limpos: só existem os tokens abaixo.
+   ===================================================================== */
+@theme static {
+  --color-*: initial;
+  --font-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --ease-*: initial;
+  --tracking-*: initial;
+  --leading-*: initial;
+  --container-*: initial;
+  --animate-*: initial;
+  --aspect-*: initial;
+
+  /* Cores da marca */
+  --color-azul: #1a2d6d;
+  --color-amarelo: #f1d214;
+  --color-amarelo-claro: #f8f052;
+  --color-branco: #ffffff;
+  --color-escuro: #0f172a;
+
+  /* Tons derivados: azul/escuro misturados com branco ou entre si. Nenhuma cor nova. */
+  --color-azul-50: #f4f5f8;
+  --color-azul-100: #e6e8ef;
+  --color-azul-200: #cdd1df;
+  --color-azul-300: #a3abc5;
+  --color-azul-600: #435387;
+  --color-azul-800: #182960;
+  --color-azul-900: #162452;
+  --color-escuro-300: #b7b9bf;
+  --color-escuro-700: #353c4c;
+  --color-escuro-800: #272e3f;
+
+  /* Tipografia — Montserrat empacotada no site */
+  --font-sans: "Montserrat Variable", "Montserrat Reserva", ui-sans-serif, system-ui, sans-serif;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Escala: nada abaixo de 16px */
+  --text-sm: 1rem;
+  --text-sm--line-height: 1.5;
+  --text-base: 1.125rem;
+  --text-base--line-height: 1.65;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.55;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.3;
+  --text-2xl: clamp(1.75rem, 1.45rem + 1.2vw, 2.25rem);
+  --text-2xl--line-height: 1.2;
+  --text-3xl: clamp(2rem, 1.55rem + 1.9vw, 3rem);
+  --text-3xl--line-height: 1.12;
+  --text-destaque: clamp(2.25rem, 1.45rem + 3.6vw, 4.5rem);
+  --text-destaque--line-height: 1.04;
+
+  --tracking-normal: 0em;
+  --tracking-titulo: -0.022em;
+  --tracking-destaque: -0.034em;
+
+  --leading-justo: 1.1;
+  --leading-titulo: 1.2;
+  --leading-texto: 1.65;
+
+  /* Espaços (a escala numérica do Tailwind usa --spacing = 4px) */
+  --spacing: 0.25rem;
+  --spacing-calha: clamp(1rem, 0.4rem + 2.6vw, 2.5rem);
+  --spacing-secao: clamp(4.5rem, 3rem + 5vw, 8rem);
+  --spacing-secao-curta: clamp(3rem, 2.25rem + 3vw, 5rem);
+  --spacing-toque: 3.5rem;
+
+  --container-pagina: 76rem;
+  --container-largo: 52rem;
+  --container-texto: 40rem;
+  --container-estreito: 30rem;
+
+  /* Raios */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Sombras: deslocadas, suaves, com tom do azul */
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.06), 0 1px 3px 0 rgb(26 45 109 / 0.06);
+  --shadow-md: 0 8px 18px -6px rgb(26 45 109 / 0.16), 0 2px 4px -1px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 24px 48px -18px rgb(26 45 109 / 0.32), 0 8px 16px -8px rgb(15 23 42 / 0.12);
+  --shadow-topo: 0 10px 24px -14px rgb(15 23 42 / 0.32);
+
+  /* Proporções reservadas para fotos */
+  --aspect-retrato: 4 / 5;
+  --aspect-paisagem: 4 / 3;
+
+  /* Movimento */
+  --ease-saida: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-entrada: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-suave: cubic-bezier(0.65, 0, 0.35, 1);
+  --duracao-rapida: 150ms;
+  --duracao-base: 250ms;
+  --duracao-lenta: 450ms;
+  --duracao-revelar: 600ms;
+  --atraso-sequencia: 90ms;
+
+  /* Altura visível do cabeçalho (âncoras param abaixo dele) */
+  --altura-topo: 6.5rem;
+}
+
+/* Cores semânticas: cada superfície (.sup-*) define os valores. */
+@theme inline {
+  --color-sup: var(--sup-fundo);
+  --color-sup-texto: var(--sup-texto);
+  --color-sup-titulo: var(--sup-titulo);
+  --color-sup-suave: var(--sup-suave);
+  --color-sup-linha: var(--sup-linha);
+  --color-sup-icone: var(--sup-icone);
+}
+
+/* =====================================================================
+   SUPERFÍCIES — fundo + papéis de cor de tudo que fica em cima
+   ===================================================================== */
+@layer base {
+  :root,
+  .sup-clara,
+  .sup-tinta {
+    --sup-fundo: var(--color-branco);
+    --sup-texto: var(--color-escuro);
+    --sup-titulo: var(--color-azul);
+    --sup-suave: var(--color-azul-600);
+    --sup-linha: var(--color-azul-100);
+    --sup-icone: var(--color-azul);
+    --sup-foco: var(--color-azul);
+    /* botão secundário */
+    --sup-b2-fundo: var(--color-azul);
+    --sup-b2-texto: var(--color-branco);
+    --sup-b2-borda: var(--color-azul);
+    --sup-b2-realce: var(--color-azul-800);
+    /* botão fantasma */
+    --sup-b3-texto: var(--color-azul);
+    --sup-b3-realce: var(--color-azul-50);
+  }
+
+  .sup-tinta {
+    --sup-fundo: var(--color-azul-50);
+    --sup-linha: var(--color-azul-200);
+    --sup-b3-realce: var(--color-azul-100);
+  }
+
+  .sup-azul {
+    --sup-fundo: var(--color-azul);
+    --sup-texto: var(--color-branco);
+    --sup-titulo: var(--color-branco);
+    --sup-suave: var(--color-azul-200);
+    --sup-linha: rgb(255 255 255 / 0.16);
+    --sup-icone: var(--color-amarelo);
+    --sup-foco: var(--color-amarelo);
+    --sup-b2-fundo: transparent;
+    --sup-b2-texto: var(--color-branco);
+    --sup-b2-borda: rgb(255 255 255 / 0.7);
+    --sup-b2-realce: rgb(255 255 255 / 0.12);
+    --sup-b3-texto: var(--color-branco);
+    --sup-b3-realce: rgb(255 255 255 / 0.1);
+  }
+
+  .sup-amarela {
+    --sup-fundo: var(--color-amarelo);
+    --sup-texto: var(--color-escuro);
+    --sup-titulo: var(--color-azul);
+    --sup-suave: var(--color-azul);
+    --sup-linha: rgb(26 45 109 / 0.2);
+    --sup-icone: var(--color-azul);
+    --sup-foco: var(--color-azul);
+    --sup-b2-fundo: var(--color-azul);
+    --sup-b2-texto: var(--color-branco);
+    --sup-b2-borda: var(--color-azul);
+    --sup-b2-realce: var(--color-azul-800);
+    --sup-b3-texto: var(--color-azul);
+    --sup-b3-realce: var(--color-amarelo-claro);
+  }
+
+  .sup-escura {
+    --sup-fundo: var(--color-escuro);
+    --sup-texto: var(--color-azul-100);
+    --sup-titulo: var(--color-branco);
+    --sup-suave: var(--color-escuro-300);
+    --sup-linha: var(--color-escuro-800);
+    --sup-icone: var(--color-amarelo);
+    --sup-foco: var(--color-amarelo);
+    --sup-b2-fundo: transparent;
+    --sup-b2-texto: var(--color-branco);
+    --sup-b2-borda: rgb(255 255 255 / 0.6);
+    --sup-b2-realce: rgb(255 255 255 / 0.1);
+    --sup-b3-texto: var(--color-branco);
+    --sup-b3-realce: rgb(255 255 255 / 0.08);
+  }
+
+  .sup-clara,
+  .sup-tinta,
+  .sup-azul,
+  .sup-amarela,
+  .sup-escura {
+    background-color: var(--sup-fundo);
+    color: var(--sup-texto);
+  }
+
+  /* ---------------- Base ---------------- */
+  html {
+    color-scheme: light;
+    scroll-padding-top: var(--altura-topo);
+    -webkit-text-size-adjust: 100%;
+    scrollbar-color: var(--color-azul-300) var(--color-azul-50);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (width >= 48rem) {
+    html {
+      --altura-topo: 4.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background-color: var(--color-branco);
+    color: var(--color-escuro);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    font-weight: var(--font-weight-medium);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+    caret-color: var(--color-azul);
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: var(--sup-titulo);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-titulo);
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  a {
+    text-underline-offset: 0.22em;
+    text-decoration-thickness: 0.09em;
+  }
+
+  ::selection {
+    background-color: var(--color-amarelo-claro);
+    color: var(--color-escuro);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--sup-foco);
+    outline-offset: 3px;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+}
+
+/* =====================================================================
+   ENTRADA AO ROLAR
+   O estado escondido só existe com html.js (adicionada pelo script).
+   Sem JS, tudo aparece normalmente.
+   ===================================================================== */
+@layer components {
+  html.js [data-revelar] {
+    opacity: 0;
+    transform: translate3d(0, 1.5rem, 0);
+    transition:
+      opacity var(--duracao-revelar) var(--ease-saida),
+      transform var(--duracao-revelar) var(--ease-saida);
+    transition-delay: calc(min(var(--i, 0), 6) * var(--atraso-sequencia));
+  }
+
+  html.js [data-revelar="lado"] {
+    transform: translate3d(-1.25rem, 0, 0);
+  }
+
+  html.js [data-revelar].is-visivel {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.js [data-revelar],
+    html.js [data-revelar="lado"] {
+      transform: none;
+      transition: opacity var(--duracao-base) linear;
+      transition-delay: 0s;
+    }
+  }
+
+  @media print {
+    html.js [data-revelar] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

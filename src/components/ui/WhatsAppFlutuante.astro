@@ -1,0 +1,99 @@
+---
+// Botão flutuante do WhatsApp. Sem número em site.ts, não aparece no build.
+// Com JS, entra quando o botão de WhatsApp do destaque sai da tela.
+import Icone from './Icone.astro';
+import Pendente from './Pendente.astro';
+import { whatsapp } from '../../lib/dados.ts';
+
+const DEV = import.meta.env.DEV;
+---
+
+{
+  whatsapp ? (
+    <a
+      href={whatsapp}
+      target="_blank"
+      rel="noopener"
+      class="flutuante"
+      data-whatsapp-flutuante
+      aria-label="Falar com a Info Missões pelo WhatsApp (abre em nova aba)"
+    >
+      <Icone nome="whatsapp" class="flutuante__icone" />
+      <span class="flutuante__rotulo">WhatsApp</span>
+    </a>
+  ) : (
+    DEV && (
+      <div class="flutuante flutuante--pendente">
+        <Pendente texto="WhatsApp (botão flutuante)" campo="whatsapp" forma="linha" />
+      </div>
+    )
+  )
+}
+
+<style>
+  /* Estilos do componente ficam na camada components: utilitários do Tailwind vencem. */
+  @layer components {
+    .flutuante {
+      position: fixed;
+      z-index: 40;
+      right: max(1rem, env(safe-area-inset-right));
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      display: inline-flex;
+      align-items: center;
+      gap: 0.625rem;
+      min-height: var(--spacing-toque);
+      padding: 0.75rem 1.25rem 0.75rem 1rem;
+      border-radius: var(--radius-full);
+      background-color: var(--color-amarelo);
+      color: var(--color-azul);
+      font-weight: var(--font-weight-bold);
+      text-decoration: none;
+      box-shadow:
+        inset 0 0 0 1px rgb(15 23 42 / 0.08),
+        var(--shadow-lg);
+      transition:
+        opacity var(--duracao-lenta) var(--ease-saida),
+        transform var(--duracao-lenta) var(--ease-saida),
+        visibility 0s linear 0s;
+    }
+
+    .flutuante--pendente {
+      padding: 0;
+      background: var(--color-branco);
+    }
+
+    .flutuante__icone {
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+
+    @media (hover: hover) {
+      .flutuante:hover {
+        transform: translate3d(0, -3px, 0);
+      }
+    }
+
+    .flutuante:active {
+      transform: scale(0.97);
+    }
+
+    /* Com JS: começa escondido e entra quando o CTA do destaque sai da tela */
+    :global(html.js) .flutuante[data-whatsapp-flutuante]:not(.is-visivel) {
+      opacity: 0;
+      transform: translate3d(0, 1.5rem, 0) scale(0.92);
+      visibility: hidden;
+      pointer-events: none;
+      transition:
+        opacity var(--duracao-base) var(--ease-entrada),
+        transform var(--duracao-base) var(--ease-entrada),
+        visibility 0s linear var(--duracao-base);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .flutuante,
+      :global(html.js) .flutuante[data-whatsapp-flutuante]:not(.is-visivel) {
+        transform: none;
+      }
+    }
+  }
+</style>

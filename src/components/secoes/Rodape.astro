@@ -1,0 +1,101 @@
+---
+import Icone from '../ui/Icone.astro';
+import Pendente from '../ui/Pendente.astro';
+import { site } from '../../data/site.ts';
+import { DEV, portal, telefone, whatsapp } from '../../lib/dados.ts';
+import { secoes } from '../../lib/navegacao.ts';
+
+const ano = new Date().getFullYear();
+---
+
+<footer class="sup-escura">
+  <div class="mx-auto grid w-full max-w-pagina gap-12 px-calha py-16 md:grid-cols-2 lg:grid-cols-12 lg:py-20">
+    <div class="flex flex-col gap-4 lg:col-span-5">
+      {/* Nome em texto: funciona em fundo escuro sem depender da versão do logo */}
+      <p class="text-2xl font-extrabold tracking-titulo text-sup-titulo">{site.nome}</p>
+      <p class="max-w-estreito text-sup-suave">Internet de fibra óptica na região das Missões, Rio Grande do Sul.</p>
+      {site.cnpj && <p class="tabular text-sm text-sup-suave">CNPJ {site.cnpj}</p>}
+      {DEV && !site.cnpj && <Pendente texto="CNPJ" campo="cnpj" forma="linha" />}
+    </div>
+
+    <nav aria-label="Rodapé" class="lg:col-span-3">
+      <h2 class="text-lg tracking-normal">Seções</h2>
+      <ul class="mt-4 flex flex-col">
+        {
+          secoes.map((s) => (
+            <li>
+              <a class="rodape__link" href={s.href}>
+                {s.rotulo}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="lg:col-span-4">
+      <h2 class="text-lg tracking-normal">Atendimento</h2>
+      <ul class="mt-4 flex flex-col">
+        <li>
+          <a class="rodape__link" href={portal.url} target="_blank" rel="noopener">
+            {portal.nome}
+            <Icone nome="externo" class="size-4" />
+            <span class="sr-only"> (abre em nova aba)</span>
+          </a>
+        </li>
+        {
+          whatsapp && (
+            <li>
+              <a class="rodape__link" href={whatsapp} target="_blank" rel="noopener">
+                WhatsApp {site.whatsapp}
+                <span class="sr-only"> (abre em nova aba)</span>
+              </a>
+            </li>
+          )
+        }
+        {
+          telefone && (
+            <li>
+              <a class="rodape__link" href={telefone}>
+                Telefone {site.telefone}
+              </a>
+            </li>
+          )
+        }
+        <li>
+          <a class="rodape__link" href={site.instagram} target="_blank" rel="noopener">
+            Instagram
+            <Icone nome="externo" class="size-4" />
+            <span class="sr-only"> (abre em nova aba)</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-sup-linha">
+    <p class:list={['mx-auto w-full max-w-pagina px-calha pt-6 text-sm text-sup-suave', whatsapp ? 'pb-28 md:pb-6' : 'pb-6']}>
+      © {ano} {site.nome}
+    </p>
+  </div>
+</footer>
+
+<style>
+  @layer components {
+    .rodape__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-height: 3rem;
+      color: var(--sup-texto);
+      text-decoration: none;
+    }
+
+    @media (hover: hover) {
+      .rodape__link:hover {
+        color: var(--color-amarelo);
+        text-decoration: underline;
+      }
+    }
+  }
+</style>
