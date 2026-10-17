@@ -18,6 +18,8 @@ export function pendencias(site: Site): Relatorio {
   const falta = (campo: string, descricao: string) => faltando.push({ campo, descricao });
 
   if (!site.logo) falta('logo', 'arquivo do logo em src/assets/marca/ (sem ele aparece o nome em texto)');
+  if (!site.logoFundoEscuro)
+    falta('logoFundoEscuro', 'logo para fundo escuro em src/assets/marca/ (sem ele o rodapé mostra o nome em texto)');
   if (!site.favicon) falta('favicon', 'arquivo do favicon em public/');
 
   if (!site.whatsapp) falta('whatsapp', 'número do WhatsApp com DDD (sem ele os botões de WhatsApp somem)');

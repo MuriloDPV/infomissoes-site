@@ -1,0 +1,107 @@
+---
+// Ondas de sinal (detalhe de fundo): círculos finos em azul saindo de um ponto, como na antena
+// da logo. Decorativo. O pai precisa de position + overflow hidden + isolation.
+// Posição e tamanho por variáveis CSS: --sx, --sy (centro) e --tamanho.
+// `pulso`: de vez em quando uma onda sai do centro (pausa com .is-pausado num ancestral).
+interface Props {
+  pulso?: boolean;
+  /** Mostra o ponto da antena no centro. */
+  ponto?: boolean;
+  class?: string;
+  [atributo: string]: unknown;
+}
+
+// `resto` repassa o atributo de escopo do pai (data-astro-cid-*), para os estilos do pai valerem aqui.
+const { pulso = false, ponto = true, class: classe, ...resto } = Astro.props;
+
+// Raio e opacidade de cada onda (mais fracas para fora)
+const ondas = [
+  { r: 70, o: 0.42 },
+  { r: 150, o: 0.3 },
+  { r: 245, o: 0.22 },
+  { r: 355, o: 0.16 },
+  { r: 480, o: 0.11 },
+  { r: 620, o: 0.07 },
+];
+---
+
+<div {...resto} class:list={['ondas', classe]} aria-hidden="true">
+  <svg class="ondas__svg" viewBox="-700 -700 1400 1400" width="1400" height="1400" focusable="false">
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      {ondas.map((o) => <circle r={o.r} opacity={o.o} />)}
+      {
+        pulso && (
+          <>
+            <circle class="ondas__pulso" r="620" vector-effect="non-scaling-stroke" />
+            <circle class="ondas__pulso ondas__pulso--2" r="620" vector-effect="non-scaling-stroke" />
+          </>
+        )
+      }
+    </g>
+    {
+      ponto && (
+        <>
+          <circle r="9" fill="currentColor" />
+          <circle r="22" fill="none" stroke="currentColor" stroke-width="2" opacity="0.5" />
+        </>
+      )
+    }
+  </svg>
+</div>
+
+<style>
+  @layer components {
+    .ondas {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      color: var(--color-azul);
+    }
+
+    .ondas__svg {
+      position: absolute;
+      left: calc(var(--sx, 100%) - var(--tamanho, 900px) / 2);
+      top: calc(var(--sy, 100%) - var(--tamanho, 900px) / 2);
+      width: var(--tamanho, 900px);
+      height: var(--tamanho, 900px);
+      overflow: visible;
+    }
+
+    /* Pulso: uma onda sai do centro de vez em quando. Só transform + opacity. */
+    .ondas__pulso {
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: ondas-pulso 9s var(--ease-saida) infinite;
+    }
+    .ondas__pulso--2 {
+      animation-delay: 4.5s;
+    }
+
+    @keyframes ondas-pulso {
+      0% {
+        opacity: 0;
+        transform: scale(0.04);
+      }
+      4% {
+        opacity: 0.55;
+      }
+      55%,
+      100% {
+        opacity: 0;
+        transform: scale(1);
+      }
+    }
+
+    :global(.is-pausado) .ondas__pulso {
+      animation-play-state: paused;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ondas__pulso {
+        display: none;
+      }
+    }
+  }
+</style>

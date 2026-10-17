@@ -1,9 +1,10 @@
 ---
 // Planos: só mostra o que estiver em site.ts. Sem planos, um convite neutro para consultar.
+// Faixa marinho no meio da página: é onde o botão amarelo aparece.
 import Botao from '../ui/Botao.astro';
-import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
 import Card from '../ui/Card.astro';
 import Icone from '../ui/Icone.astro';
+import Ondas from '../ui/Ondas.astro';
 import Pendente from '../ui/Pendente.astro';
 import Secao from '../ui/Secao.astro';
 import Selo from '../ui/Selo.astro';
@@ -14,20 +15,52 @@ const planos = site.planos.slice(0, 3);
 const temPlanos = planos.length > 0;
 ---
 
-<Secao id="planos" tom="tinta">
-  <CabecalhoSecao
-    titulo="Planos de internet"
-    texto={temPlanos ? 'Escolha o plano e fale com a gente para contratar.' : undefined}
-  />
+<Secao id="planos" tom="marinho" class="overflow-hidden">
+  <Ondas ponto={false} class="planos__ondas" />
+
+  <div class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-12">
+    <header class="flex flex-col gap-5 lg:col-span-7" data-revelar>
+      <h2 class="text-3xl">Planos de internet</h2>
+      {
+        temPlanos ? (
+          <p class="max-w-texto text-lg text-sup-suave">Escolha o plano e fale com a gente para contratar.</p>
+        ) : (
+          <>
+            <p class="max-w-texto text-xl font-bold text-sup-titulo">Consulte os planos disponíveis no seu endereço.</p>
+            <p class="max-w-texto text-lg text-sup-suave">
+              Fale com a gente e informe a sua rua e a sua cidade. Assim indicamos os planos que você pode contratar.
+            </p>
+          </>
+        )
+      }
+    </header>
+
+    {
+      !temPlanos && (
+        <div class="lg:col-span-5 lg:justify-self-end" data-revelar style="--i:2">
+          {DEV && <p class="mb-3 text-sm text-sup-suave">Sem planos em site.ts, o site publicado mostra este botão:</p>}
+          {whatsapp ? (
+            <Botao href={whatsapp} externo indicador={false} icone="whatsapp" variante="destaque" tamanho="lg">
+              Consultar no WhatsApp
+            </Botao>
+          ) : (
+            <Botao href="#contato" variante="destaque" tamanho="lg" seta>
+              Ver formas de contato
+            </Botao>
+          )}
+        </div>
+      )
+    }
+  </div>
 
   {
     temPlanos && (
-      <ul class="mt-12 grid gap-6 lg:grid-cols-3 lg:items-stretch">
+      <ul class="mt-12 grid gap-5 lg:grid-cols-3 lg:items-stretch">
         {planos.map((p, i) => {
           const link = whatsappMensagem(`Tenho interesse no plano ${p.nome} (${p.velocidade}).`);
           return (
             <li class="flex" data-revelar style={`--i:${i + 1}`}>
-              <Card as="article" variante={p.selo ? 'azul' : 'claro'} interativo class="w-full gap-6 p-7 md:p-8">
+              <Card as="article" interativo class:list={['w-full gap-6 p-7 md:p-8', p.selo && 'card--selo']}>
                 <header class="flex flex-col items-start gap-3">
                   {p.selo && <Selo class="absolute -top-4 left-7 shadow-sm md:left-8">{p.selo}</Selo>}
                   <h3 class="text-xl">{p.nome}</h3>
@@ -49,11 +82,11 @@ const temPlanos = planos.length > 0;
                 )}
                 <div class="mt-auto pt-2">
                   {link ? (
-                    <Botao href={link} externo indicador={false} icone="whatsapp" variante={p.selo ? 'primario' : 'secundario'} cheio>
+                    <Botao href={link} externo indicador={false} icone="whatsapp" variante={p.selo ? 'destaque' : 'primario'} cheio>
                       Quero este plano
                     </Botao>
                   ) : (
-                    <Botao href="#contato" variante={p.selo ? 'primario' : 'secundario'} seta cheio>
+                    <Botao href="#contato" variante={p.selo ? 'destaque' : 'primario'} seta cheio>
                       Quero este plano
                     </Botao>
                   )}
@@ -68,40 +101,37 @@ const temPlanos = planos.length > 0;
 
   {
     !temPlanos && DEV && (
-      <ul class="mt-12 grid gap-6 lg:grid-cols-3">
+      <ul class="mt-12 grid gap-5 lg:grid-cols-3">
         {[1, 2, 3].map((n) => (
           <li>
-            <Pendente texto={`plano ${n}: nome, velocidade, preço e benefícios`} campo="planos" class="min-h-80" />
+            <Pendente texto={`plano ${n}: nome, velocidade, preço e benefícios`} campo="planos" class="min-h-64" />
           </li>
         ))}
       </ul>
     )
   }
-
-  {
-    !temPlanos && (
-      <div class="mt-12" data-revelar>
-        {DEV && (
-          <p class="mb-3 text-sm text-sup-suave">Sem planos em site.ts, o site publicado mostra este bloco no lugar:</p>
-        )}
-        <Card class="gap-8 p-7 md:flex-row md:items-center md:justify-between md:p-10">
-          <div class="flex max-w-texto flex-col gap-3">
-            <h3 class="text-2xl">Consulte os planos disponíveis no seu endereço</h3>
-            <p class="text-sup-suave">
-              Fale com a gente e informe a sua rua e a sua cidade. Assim indicamos os planos que você pode contratar.
-            </p>
-          </div>
-          {whatsapp ? (
-            <Botao href={whatsapp} externo indicador={false} icone="whatsapp" tamanho="lg" class="shrink-0">
-              Consultar no WhatsApp
-            </Botao>
-          ) : (
-            <Botao href="#contato" variante="secundario" tamanho="lg" seta class="shrink-0">
-              Ver formas de contato
-            </Botao>
-          )}
-        </Card>
-      </div>
-    )
-  }
 </Secao>
+
+<style>
+  @layer components {
+    .planos__ondas {
+      --sx: 100%;
+      --sy: 100%;
+      --tamanho: 760px;
+    }
+    @media (width >= 64rem) {
+      .planos__ondas {
+        --sx: 96%;
+        --sy: 110%;
+        --tamanho: 1100px;
+      }
+    }
+
+    /* Plano em destaque: contorno amarelo */
+    :global(.card--selo) {
+      box-shadow:
+        inset 0 0 0 2px var(--color-amarelo),
+        var(--shadow-md);
+    }
+  }
+</style>

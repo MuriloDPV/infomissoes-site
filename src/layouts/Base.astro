@@ -2,9 +2,8 @@
 import '../styles/global.css';
 // Montserrat empacotada no site (só o subconjunto latino, que cobre o português).
 import fonteMontserrat from '@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2?url';
-import { getImage } from 'astro:assets';
 import { site } from '../data/site.ts';
-import { favicon, imagemFoto } from '../lib/dados.ts';
+import { favicon, icones, imagemCompartilhar } from '../lib/dados.ts';
 
 interface Props {
   titulo: string;
@@ -14,11 +13,8 @@ interface Props {
 const { titulo, descricao } = Astro.props;
 const canonica = new URL(Astro.url.pathname, site.url).href;
 
-// Imagem de compartilhamento: usa a foto do destaque quando existir.
-const fotoDestaque = imagemFoto(site.fotos.destaque, 'fotos.destaque');
-const imagemOg = fotoDestaque
-  ? new URL((await getImage({ src: fotoDestaque, width: 1200, height: 630, format: 'jpg' })).src, site.url).href
-  : null;
+// Imagem de compartilhamento (1200x630, com a logo), gerada por scripts/marca/gerar-icones.mjs.
+const imagemOg = imagemCompartilhar ? new URL(imagemCompartilhar, site.url).href : null;
 
 const fontes = `
 @font-face{font-family:"Montserrat Variable";font-style:normal;font-display:swap;font-weight:100 900;src:url(${fonteMontserrat}) format("woff2-variations"),url(${fonteMontserrat}) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
@@ -34,7 +30,7 @@ const fontes = `
     <title>{titulo}</title>
     <meta name="description" content={descricao} />
     <link rel="canonical" href={canonica} />
-    <meta name="theme-color" content="#1a2d6d" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="format-detection" content="telephone=no" />
 
     <meta property="og:type" content="website" />
@@ -44,20 +40,42 @@ const fontes = `
     <meta property="og:description" content={descricao} />
     <meta property="og:url" content={canonica} />
     {imagemOg && <meta property="og:image" content={imagemOg} />}
+    {imagemOg && <meta property="og:image:alt" content={`Logo da ${site.nome}`} />}
     {imagemOg && <meta property="og:image:width" content="1200" />}
     {imagemOg && <meta property="og:image:height" content="630" />}
     {imagemOg && <meta name="twitter:card" content="summary_large_image" />}
 
-    {favicon ? <link rel="icon" href={favicon} /> : <link rel="icon" href="data:," />}
+    {favicon ? <link rel="icon" href={favicon} type={favicon.endsWith('.svg') ? 'image/svg+xml' : undefined} /> : <link rel="icon" href="data:," />}
+    {icones.png && <link rel="icon" href={icones.png} type="image/png" sizes="32x32" />}
+    {icones.celular && <link rel="apple-touch-icon" href={icones.celular} />}
+    {icones.manifesto && <link rel="manifest" href={icones.manifesto} />}
 
     <link rel="preload" href={fonteMontserrat} as="font" type="font/woff2" crossorigin />
     <style is:inline set:html={fontes} />
 
     <script is:inline>
-      // Script mínimo: entrada ao rolar, cabeçalho compacto, botão flutuante e menu.
+      // Script mínimo: entrada da logo, entrada ao rolar, sombra do cabeçalho, botão flutuante e menu.
       // Sem IntersectionObserver ou com erro, nada fica escondido.
       (function () {
         var raiz = document.documentElement;
+
+        // Entrada da logo: só na primeira visita da sessão, com sessionStorage funcionando
+        // e sem movimento reduzido. Quem anima é o script logo depois do cabeçalho.
+        try {
+          if (
+            window.matchMedia('(prefers-reduced-motion: no-preference)').matches &&
+            !window.sessionStorage.getItem('infomissoes-intro')
+          ) {
+            window.sessionStorage.setItem('infomissoes-intro', '1');
+            raiz.classList.add('intro');
+            setTimeout(function () {
+              raiz.classList.remove('intro', 'intro-saindo');
+            }, 2600);
+          }
+        } catch (erro) {
+          raiz.classList.remove('intro');
+        }
+
         if (!('IntersectionObserver' in window)) return;
         raiz.classList.add('js');
 
@@ -89,9 +107,11 @@ const fontes = `
               if (topo) topo.classList.toggle('is-compacto', !visivel);
             });
 
-            var destaque = document.querySelector('[data-destaque]');
-            observar(destaque, function (visivel) {
-              destaque.classList.toggle('is-pausado', !visivel);
+            // Animações de fundo param fora da tela
+            document.querySelectorAll('[data-destaque], [data-pausavel], .logo--animada').forEach(function (el) {
+              observar(el, function (visivel) {
+                el.classList.toggle('is-pausado', !visivel);
+              });
             });
 
             var flutuante = document.querySelector('[data-whatsapp-flutuante]');
@@ -135,7 +155,7 @@ const fontes = `
     <div data-sentinela aria-hidden="true" class="pointer-events-none absolute top-0 left-0 h-6 w-px"></div>
     <a
       href="#conteudo"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-amarelo focus:px-4 focus:py-3 focus:font-bold focus:text-azul"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-amarelo focus:px-4 focus:py-3 focus:font-bold focus:text-marinho"
       >Pular para o conteúdo</a
     >
     <slot />

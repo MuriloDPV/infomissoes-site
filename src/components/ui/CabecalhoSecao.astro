@@ -13,7 +13,7 @@ const { titulo, id, texto, alinhar = 'inicio', class: classe } = Astro.props;
 
 <header
   data-revelar
-  class:list={['flex flex-col gap-4', alinhar === 'centro' && 'mx-auto items-center text-center', classe]}
+  class:list={['flex flex-col gap-4 md:gap-5', alinhar === 'centro' && 'mx-auto items-center text-center', classe]}
 >
   <h2 id={id} class="max-w-texto text-3xl">{titulo}</h2>
   {texto && <p class="max-w-texto text-lg text-sup-suave">{texto}</p>}

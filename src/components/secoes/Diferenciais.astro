@@ -9,23 +9,21 @@ import { site } from '../../data/site.ts';
 import { DEV } from '../../lib/dados.ts';
 
 const diferenciais = site.diferenciais.filter((d) => !d.soComEndereco || site.endereco || DEV);
-
-// Três itens: título em cima e três colunas no desktop. Outros números: título ao lado, duas colunas.
-const trio = diferenciais.length === 3;
+const colunas = diferenciais.length >= 3 ? 'md:grid-cols-3' : 'md:grid-cols-2';
 ---
 
-<Secao id="diferenciais" tom="azul" class="diferenciais overflow-hidden">
-  <div class:list={['grid gap-12', trio ? 'lg:gap-10' : 'lg:grid-cols-12 lg:gap-16']}>
-    <CabecalhoSecao class={trio ? undefined : 'lg:col-span-4'} titulo="Por que escolher a Info Missões" />
+<Secao id="diferenciais" tom="clara">
+  <div class="grid gap-12 md:gap-16">
+    <CabecalhoSecao titulo="Por que escolher a Info Missões" />
 
-    <ul class:list={['grid gap-x-12', trio ? 'lg:grid-cols-3' : 'sm:grid-cols-2 lg:col-span-8']}>
+    <ul class:list={['grid gap-x-10 gap-y-2 md:gap-y-10', colunas]}>
       {
         diferenciais.map((d, i) => (
           <li class="diferencial" data-revelar style={`--i:${i + 1}`}>
-            <Icone nome={d.icone} class="size-8 shrink-0 text-sup-icone" />
-            <div class="flex flex-col gap-2">
+            <Icone nome={d.icone} class="diferencial__icone" />
+            <div class="flex flex-col gap-3">
               <h3 class="text-2xl">{d.titulo}</h3>
-              <p class="text-sup-suave">{d.texto}</p>
+              <p class="max-w-texto text-sup-suave">{d.texto}</p>
               {d.soComEndereco && !site.endereco && (
                 <Pendente texto="endereço da loja (sem ele, este item some)" campo="endereco" forma="linha" />
               )}
@@ -39,18 +37,36 @@ const trio = diferenciais.length === 3;
 
 <style>
   @layer components {
+    /* Linha fina em cima, com um trecho azul no começo (como um fio de fibra) */
     .diferencial {
+      position: relative;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-      padding-block: 2rem;
-      border-top: 1px solid var(--sup-linha);
+      gap: 1.5rem;
+      padding-block: 2rem 1.5rem;
+      border-top: 1px solid var(--color-marinho-100);
+    }
+    .diferencial::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 0;
+      width: 3rem;
+      height: 2px;
+      border-radius: var(--radius-full);
+      background-color: var(--color-azul);
     }
 
-    @media (width >= 40rem) {
+    @media (width >= 48rem) {
       .diferencial {
-        padding-block: 2.25rem 2.5rem;
+        padding-block: 2.5rem 0;
       }
+    }
+
+    .diferencial__icone {
+      width: 2.25rem;
+      height: 2.25rem;
+      color: var(--color-azul);
     }
   }
 </style>

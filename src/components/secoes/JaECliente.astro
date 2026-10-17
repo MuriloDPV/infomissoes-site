@@ -1,7 +1,6 @@
 ---
 // "Já é cliente?": atalhos grandes para o portal (nova aba). É o caminho mais curto no celular.
 import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
-import Card from '../ui/Card.astro';
 import Icone, { type IconeNome } from '../ui/Icone.astro';
 import Secao from '../ui/Secao.astro';
 import { portal } from '../../lib/dados.ts';
@@ -14,17 +13,16 @@ const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
 ---
 
 <Secao id="ja-e-cliente" tom="clara" ritmo="curta">
-  <div class="grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-12">
+  <div class="grid gap-8 md:gap-10">
     <CabecalhoSecao
-      class="lg:col-span-4"
       titulo="Já é cliente?"
       texto={`Resolva ${portal.na}. Os atalhos abrem em uma nova aba.`}
     />
 
-    <Card as="ul" class="grid overflow-hidden md:grid-cols-3 lg:col-span-8">
+    <ul class="grid gap-3 md:gap-4 lg:grid-cols-3 lg:gap-5">
       {
         atalhos.map((a, i) => (
-          <li class="atalhos__item" data-revelar style={`--i:${i + 1}`}>
+          <li class="flex" data-revelar style={`--i:${i + 1}`}>
             <a class="atalho" href={portal.url} target="_blank" rel="noopener">
               <Icone nome={a.icone} class="atalho__icone" />
               <span class="atalho__textos">
@@ -37,16 +35,13 @@ const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
           </li>
         ))
       }
-    </Card>
+    </ul>
   </div>
 </Secao>
 
 <style>
   @layer components {
-    .atalhos__item + .atalhos__item {
-      border-top: 1px solid var(--color-azul-100);
-    }
-
+    /* Atalho com cara de botão grande: fundo claro, contorno fino, sobe um pouco no hover */
     .atalho {
       position: relative;
       isolation: isolate;
@@ -54,34 +49,43 @@ const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
       grid-template-columns: auto 1fr auto;
       align-items: center;
       gap: 1rem;
+      width: 100%;
       min-height: 5.5rem;
-      padding: 1.25rem 1.25rem 1.25rem 1.5rem;
-      color: var(--color-escuro);
+      padding: 1.125rem 1.125rem 1.125rem 1.25rem;
+      border-radius: var(--radius-xl);
+      background-color: var(--color-fundo);
+      box-shadow: inset 0 0 0 1px var(--color-marinho-100);
+      color: var(--color-cinza);
       text-decoration: none;
-      --sup-foco: var(--color-azul);
+      transition: transform var(--duracao-lenta) var(--ease-saida);
+      touch-action: manipulation;
     }
 
-    .atalho:focus-visible {
-      outline-offset: -4px;
-      border-radius: var(--radius-lg);
-    }
-
-    /* Realce de fundo: só opacidade */
-    .atalho::before {
+    /* Realce (branco com contorno mais forte) e sombra: só opacidade */
+    .atalho::before,
+    .atalho::after {
       content: '';
       position: absolute;
       inset: 0;
-      z-index: -1;
-      background-color: var(--color-azul-50);
+      border-radius: inherit;
       opacity: 0;
-      transition: opacity var(--duracao-base) var(--ease-saida);
+      pointer-events: none;
+      transition: opacity var(--duracao-lenta) var(--ease-saida);
+    }
+    .atalho::before {
+      z-index: -1;
+      background-color: var(--color-branco);
+      box-shadow: inset 0 0 0 1px var(--color-marinho-200);
+    }
+    .atalho::after {
+      z-index: -2;
+      box-shadow: var(--shadow-md);
     }
 
     .atalho__icone {
-      width: 2rem;
-      height: 2rem;
+      width: 1.875rem;
+      height: 1.875rem;
       color: var(--color-azul);
-      transition: transform var(--duracao-lenta) var(--ease-saida);
     }
 
     .atalho__textos {
@@ -91,63 +95,73 @@ const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
     }
 
     .atalho__titulo {
-      color: var(--color-azul);
-      font-size: var(--text-xl);
-      font-weight: var(--font-weight-extrabold);
-      letter-spacing: var(--tracking-titulo);
+      color: var(--color-marinho);
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: -0.01em;
       line-height: var(--leading-titulo);
     }
 
     .atalho__texto {
-      color: var(--color-azul-600);
+      color: var(--color-marinho-600);
       font-size: var(--text-sm);
       line-height: 1.45;
     }
 
     .atalho__seta {
-      width: 1.5rem;
-      height: 1.5rem;
-      color: var(--color-azul);
-      transition: transform var(--duracao-base) var(--ease-saida);
+      width: 1.375rem;
+      height: 1.375rem;
+      color: var(--color-marinho);
+      transition: transform var(--duracao-lenta) var(--ease-saida);
     }
 
     @media (hover: hover) {
-      .atalho:hover::before {
+      .atalho:hover {
+        transform: translate3d(0, -3px, 0);
+      }
+      .atalho:hover::before,
+      .atalho:hover::after {
         opacity: 1;
       }
       .atalho:hover .atalho__seta {
         transform: translate3d(3px, -3px, 0);
       }
-      .atalho:hover .atalho__icone {
-        transform: translate3d(0, -2px, 0) scale(1.06);
-      }
     }
 
+    .atalho:active {
+      transform: scale(0.985);
+      transition-duration: var(--duracao-rapida);
+    }
     .atalho:active::before {
       opacity: 1;
     }
 
-    /* Tablet e desktop: três colunas lado a lado */
-    @media (width >= 48rem) {
-      .atalhos__item + .atalhos__item {
-        border-top: 0;
-        border-left: 1px solid var(--color-azul-100);
-      }
+    .atalho:focus-visible {
+      outline-offset: 3px;
+    }
+
+    /* Desktop: três cartões lado a lado */
+    @media (width >= 64rem) {
       .atalho {
         grid-template-columns: 1fr auto;
         grid-template-rows: auto 1fr;
         align-items: start;
-        row-gap: 1.5rem;
+        row-gap: 1.75rem;
         height: 100%;
-        padding: 1.75rem 1.75rem 2rem;
+        padding: 1.5rem 1.5rem 1.625rem;
       }
       .atalho__icone {
-        width: 2.25rem;
-        height: 2.25rem;
+        width: 2.125rem;
+        height: 2.125rem;
       }
       .atalho__textos {
         grid-column: 1 / -1;
         grid-row: 2;
+        align-self: end;
+        gap: 0.375rem;
+      }
+      .atalho__titulo {
+        font-size: var(--text-xl);
       }
       .atalho__seta {
         grid-column: 2;
@@ -156,12 +170,13 @@ const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .atalho__icone,
+      .atalho,
       .atalho__seta {
         transition: none;
       }
-      .atalho:hover .atalho__seta,
-      .atalho:hover .atalho__icone {
+      .atalho:hover,
+      .atalho:active,
+      .atalho:hover .atalho__seta {
         transform: none;
       }
     }

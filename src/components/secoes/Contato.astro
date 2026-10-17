@@ -1,294 +1,333 @@
 ---
-// Contato: só mostra os meios que existem em site.ts. Instagram é fixo.
+// Contato: WhatsApp em destaque (com o número), Instagram, e telefone e loja só quando
+// preenchidos em site.ts.
 import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
-import Card from '../ui/Card.astro';
 import Foto from '../ui/Foto.astro';
-import Icone, { type IconeNome } from '../ui/Icone.astro';
+import Icone from '../ui/Icone.astro';
 import Pendente from '../ui/Pendente.astro';
 import Secao from '../ui/Secao.astro';
 import { site } from '../../data/site.ts';
 import { DEV, imagemFoto, telefone, whatsapp } from '../../lib/dados.ts';
 
-type Meio = {
-  icone: IconeNome;
-  rotulo: string;
-  valor: string | null;
-  href: string | null;
-  acao?: string;
-  externo?: boolean;
-  extra?: string | null;
-  /** Número ou @: fica numa linha só, nunca quebra no meio. */
-  inteiro?: boolean;
-  campo: string;
-  pendente: string;
-};
-
 const usuarioInstagram = '@' + site.instagram.replace(/\/+$/, '').split('/').pop();
-
-const meios: Meio[] = [
-  {
-    icone: 'whatsapp',
-    rotulo: 'WhatsApp',
-    valor: site.whatsapp,
-    href: whatsapp,
-    acao: 'Chamar',
-    externo: true,
-    inteiro: true,
-    campo: 'whatsapp',
-    pendente: 'número do WhatsApp',
-  },
-  {
-    icone: 'telefone',
-    rotulo: 'Telefone',
-    valor: site.telefone,
-    href: telefone,
-    acao: 'Ligar',
-    inteiro: true,
-    campo: 'telefone',
-    pendente: 'telefone',
-  },
-  {
-    icone: 'loja',
-    rotulo: 'Loja',
-    valor: site.endereco,
-    href: null,
-    extra: site.horario,
-    campo: 'endereco',
-    pendente: 'endereço da loja',
-  },
-  {
-    icone: 'instagram',
-    rotulo: 'Instagram',
-    valor: usuarioInstagram,
-    href: site.instagram,
-    acao: 'Abrir',
-    externo: true,
-    inteiro: true,
-    campo: 'instagram',
-    pendente: 'Instagram',
-  },
-];
-
-const visiveis = meios.filter((m) => m.valor);
-const pendentes = meios.filter((m) => !m.valor);
 
 const temFoto = !!imagemFoto(site.fotos.loja, 'fotos.loja');
 const mostrarFoto = temFoto || DEV;
+
+// Cartões que aparecem. Com número ímpar, o último ocupa a linha toda.
+const total = (whatsapp ? 1 : 0) + 1 + (telefone ? 1 : 0) + (site.endereco ? 1 : 0);
+const largoNoFim = total % 2 === 1 && total > 1;
+const ultimo = site.endereco ? 'loja' : telefone ? 'telefone' : 'instagram';
+const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--largo' : undefined);
 ---
 
-<Secao id="contato" tom="clara">
-  <div class:list={['grid gap-12', mostrarFoto && 'lg:grid-cols-12 lg:gap-16']}>
-    <div class:list={['flex flex-col gap-10', mostrarFoto ? 'lg:col-span-6' : 'max-w-texto']}>
-      <CabecalhoSecao titulo="Fale com a gente" texto="Escolha o jeito mais fácil para você." />
+<Secao id="contato" tom="suave">
+  <div class="grid gap-10 md:gap-12">
+    <CabecalhoSecao titulo="Fale com a gente" texto="Escolha o jeito mais fácil para você." />
 
-      <Card as="ul" class="overflow-hidden">
-        {
-          visiveis.map((m, i) => {
-            const conteudo = (
-              <>
-                <Icone nome={m.icone} class="contato__icone" />
-                <span class="contato__textos">
-                  <span class="contato__rotulo">{m.rotulo}</span>
-                  <span class:list={['contato__valor', m.inteiro && 'contato__valor--inteiro']}>{m.valor}</span>
-                  {m.extra && (
-                    <span class="contato__extra">
-                      <Icone nome="relogio" class="size-4 shrink-0" />
-                      {m.extra}
-                    </span>
-                  )}
+    <div class="contatos">
+      {
+        whatsapp ? (
+          <div class="flex" data-revelar style="--i:1">
+            <a class="cartao cartao--whatsapp sup-marinho" href={whatsapp} target="_blank" rel="noopener">
+              <span class="cartao__rotulo">
+                <Icone nome="whatsapp" class="cartao__icone" />
+                WhatsApp
+              </span>
+              <span class="cartao__numero tabular">{site.whatsapp}</span>
+              <span class="cartao__botao">
+                Chamar no WhatsApp
+                <Icone nome="seta" class="cartao__seta" />
+              </span>
+              <span class="sr-only"> (abre em nova aba)</span>
+            </a>
+          </div>
+        ) : (
+          DEV && <Pendente texto="número do WhatsApp" campo="whatsapp" />
+        )
+      }
+
+      <div class:list={['flex', largura('instagram')]} data-revelar style="--i:2">
+        <a class="cartao sup-clara" href={site.instagram} target="_blank" rel="noopener">
+          <span class="cartao__rotulo">
+            <Icone nome="instagram" class="cartao__icone" />
+            Instagram
+          </span>
+          <span class="cartao__valor">{usuarioInstagram}</span>
+          <span class="cartao__link">
+            Abrir o Instagram
+            <Icone nome="externo" class="cartao__seta cartao__seta--externo" />
+          </span>
+          <span class="sr-only"> (abre em nova aba)</span>
+        </a>
+      </div>
+
+      {
+        telefone ? (
+          <div class:list={['flex', largura('telefone')]} data-revelar style="--i:3">
+            <a class="cartao sup-clara" href={telefone}>
+              <span class="cartao__rotulo">
+                <Icone nome="telefone" class="cartao__icone" />
+                Telefone
+              </span>
+              <span class="cartao__valor tabular">{site.telefone}</span>
+              <span class="cartao__link">
+                Ligar
+                <Icone nome="seta" class="cartao__seta" />
+              </span>
+            </a>
+          </div>
+        ) : (
+          DEV && <Pendente texto="telefone" campo="telefone" />
+        )
+      }
+
+      {
+        site.endereco ? (
+          <div class:list={['flex', largura('loja')]} data-revelar style="--i:4">
+            <div class="cartao cartao--loja sup-clara">
+              <span class="cartao__rotulo">
+                <Icone nome="loja" class="cartao__icone" />
+                Loja
+              </span>
+              <span class="cartao__endereco">{site.endereco}</span>
+              {site.horario && (
+                <span class="cartao__extra">
+                  <Icone nome="relogio" class="size-5 shrink-0" />
+                  {site.horario}
                 </span>
-                {m.href && (
-                  <span class="contato__acao">
-                    <span class="contato__acao-texto">{m.acao}</span>
-                    <Icone nome={m.externo ? 'externo' : 'seta'} class="contato__seta" />
-                  </span>
-                )}
-              </>
-            );
-            return (
-              <li class="contato__item" data-revelar style={`--i:${i + 1}`}>
-                {m.href ? (
-                  <a
-                    class="contato"
-                    href={m.href}
-                    target={m.externo ? '_blank' : undefined}
-                    rel={m.externo ? 'noopener' : undefined}
-                  >
-                    {conteudo}
-                    {m.externo && <span class="sr-only"> (abre em nova aba)</span>}
-                  </a>
-                ) : (
-                  <div class="contato">{conteudo}</div>
-                )}
-              </li>
-            );
-          })
-        }
-        {
-          DEV &&
-            pendentes.map((m) => (
-              <li class="contato__item p-4">
-                <Pendente texto={m.pendente} campo={m.campo} />
-              </li>
-            ))
-        }
-        {
-          DEV && !site.horario && (
-            <li class="contato__item p-4">
-              <Pendente texto="horário da loja (opcional)" campo="horario" />
-            </li>
-          )
-        }
-      </Card>
-    </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          DEV && <Pendente texto="endereço da loja" campo="endereco" />
+        )
+      }
 
-    {
-      mostrarFoto && (
-        <div class="lg:col-span-6 lg:pt-4">
-          <Foto
-            foto={site.fotos.loja}
-            campo="fotos.loja"
-            descricao="foto da fachada da loja"
-            proporcao="paisagem"
-            sizes="(min-width: 76rem) 36rem, (min-width: 64rem) 48vw, 100vw"
-          />
-        </div>
-      )
-    }
+      {DEV && !site.horario && <Pendente texto="horário da loja (opcional)" campo="horario" />}
+
+      {
+        mostrarFoto && (
+          <div class="cartao--largo">
+            <Foto
+              foto={site.fotos.loja}
+              campo="fotos.loja"
+              descricao="foto da fachada da loja"
+              proporcao="paisagem"
+              sizes="(min-width: 76rem) 46rem, (min-width: 64rem) 62vw, 100vw"
+            />
+          </div>
+        )
+      }
+    </div>
   </div>
 </Secao>
 
 <style>
   @layer components {
-    .contato__item + .contato__item {
-      border-top: 1px solid var(--color-azul-100);
+    .contatos {
+      display: grid;
+      gap: 1rem;
     }
 
-    .contato {
+    @media (width >= 48rem) {
+      .contatos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem;
+      }
+      .cartao--largo {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .cartao {
       position: relative;
       isolation: isolate;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      gap: 1rem;
-      min-height: 5.5rem;
-      padding: 1.25rem 1.5rem;
-      color: var(--color-escuro);
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      border-radius: var(--radius-2xl);
+      box-shadow: inset 0 0 0 1px var(--sup-linha);
       text-decoration: none;
+      transition: transform var(--duracao-lenta) var(--ease-saida);
     }
 
-    a.contato:focus-visible {
-      outline-offset: -4px;
-      border-radius: var(--radius-lg);
+    @media (width >= 40rem) {
+      .cartao {
+        padding: 2rem;
+      }
     }
 
-    a.contato::before {
+    @media (width >= 48rem) {
+      .cartao {
+        min-height: 13rem;
+      }
+    }
+
+    /* Sombra que aparece no hover (só opacidade) */
+    a.cartao::after {
       content: '';
       position: absolute;
       inset: 0;
       z-index: -1;
-      background-color: var(--color-azul-50);
+      border-radius: inherit;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--duracao-lenta) var(--ease-saida);
+    }
+
+    .cartao--whatsapp {
+      box-shadow: var(--shadow-md);
+    }
+
+    .cartao__rotulo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.625rem;
+      color: var(--sup-suave);
+      font-size: var(--text-sm);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .cartao__icone {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--sup-icone);
+    }
+
+    .cartao--whatsapp .cartao__icone {
+      color: var(--color-branco);
+    }
+
+    .cartao__numero {
+      color: var(--sup-titulo);
+      font-size: clamp(1.75rem, 1.35rem + 1.6vw, 2.5rem);
+      font-weight: var(--font-weight-extrabold);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      white-space: nowrap;
+      margin-bottom: 0.75rem;
+    }
+
+    /* @ e números ficam numa linha só */
+    .cartao__valor {
+      color: var(--sup-titulo);
+      font-size: clamp(1.375rem, 1.1rem + 1.4vw, 2rem);
+      font-weight: var(--font-weight-titulo);
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      white-space: nowrap;
+    }
+
+    .cartao__endereco {
+      color: var(--sup-titulo);
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: -0.015em;
+      line-height: 1.3;
+    }
+
+    .cartao__extra {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--sup-suave);
+      font-size: var(--text-sm);
+    }
+
+    /* Ação no pé do cartão */
+    .cartao__botao,
+    .cartao__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: auto;
+      padding-top: 0.5rem;
+      font-weight: var(--font-weight-bold);
+    }
+
+    .cartao__botao {
+      align-self: flex-start;
+      position: relative;
+      isolation: isolate;
+      min-height: var(--spacing-toque);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      background-color: var(--color-amarelo);
+      color: var(--color-marinho);
+      box-shadow: inset 0 -2px 0 rgb(8 16 41 / 0.12);
+    }
+    .cartao__botao::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: inherit;
+      background-color: rgb(255 255 255 / 0.26);
       opacity: 0;
       transition: opacity var(--duracao-base) var(--ease-saida);
     }
 
-    .contato__icone {
-      width: 1.75rem;
-      height: 1.75rem;
-      color: var(--color-azul);
+    .cartao__link {
+      min-height: 3rem;
+      color: var(--sup-link);
+      text-decoration: underline;
+      text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
     }
 
-    .contato__textos {
-      display: flex;
-      flex-direction: column;
-      gap: 0.125rem;
-      min-width: 0;
-    }
-
-    .contato__rotulo {
-      color: var(--color-azul-600);
-      font-size: var(--text-sm);
-    }
-
-    .contato__valor {
-      color: var(--color-azul);
-      font-size: var(--text-xl);
-      font-weight: var(--font-weight-extrabold);
-      letter-spacing: var(--tracking-titulo);
-      line-height: var(--leading-titulo);
-      overflow-wrap: anywhere;
-    }
-
-    .contato__valor--inteiro {
-      white-space: nowrap;
-      overflow-wrap: normal;
-    }
-
-    .contato__extra {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 0.375rem;
-      color: var(--color-azul-600);
-      font-size: var(--text-sm);
-    }
-
-    .contato__acao {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      color: var(--color-azul);
-      font-weight: var(--font-weight-bold);
-    }
-
-    .contato__seta {
+    .cartao__seta {
       width: 1.25rem;
       height: 1.25rem;
-      transition: transform var(--duracao-base) var(--ease-saida);
+      flex: none;
+      transition: transform var(--duracao-lenta) var(--ease-saida);
     }
 
     @media (hover: hover) {
-      a.contato:hover::before {
+      a.cartao:hover {
+        transform: translate3d(0, -3px, 0);
+      }
+      a.cartao:hover::after,
+      a.cartao:hover .cartao__botao::before {
         opacity: 1;
       }
-      a.contato:hover .contato__seta {
-        transform: translate3d(3px, 0, 0);
+      a.cartao:hover .cartao__link {
+        text-decoration-color: currentColor;
+      }
+      a.cartao:hover .cartao__seta {
+        transform: translate3d(4px, 0, 0);
+      }
+      a.cartao:hover .cartao__seta--externo {
+        transform: translate3d(3px, -3px, 0);
       }
     }
 
-    a.contato:active::before {
-      opacity: 1;
+    a.cartao:active {
+      transform: scale(0.99);
+      transition-duration: var(--duracao-rapida);
     }
 
-    /* Celular: card mais justo e valor menor, para o @ e os números caberem numa linha */
-    @media (width < 30rem) {
-      .contato {
-        gap: 0.75rem;
-        padding-inline: 1.25rem;
-      }
-      .contato__valor {
-        font-size: var(--text-lg);
-      }
-      .contato__acao-texto {
-        display: none;
-      }
-      .contato__seta {
-        width: 1.5rem;
-        height: 1.5rem;
-      }
+    a.cartao:focus-visible {
+      outline-offset: 4px;
     }
 
+    /* Celular estreito: número um pouco menor para caber numa linha */
     @media (width < 22.5rem) {
-      .contato__valor {
-        font-size: var(--text-base);
+      .cartao__numero {
+        font-size: 1.625rem;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .contato__seta {
+      .cartao,
+      .cartao__seta {
         transition: none;
       }
-      a.contato:hover .contato__seta {
+      a.cartao:hover,
+      a.cartao:active,
+      a.cartao:hover .cartao__seta {
         transform: none;
       }
     }

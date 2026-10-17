@@ -11,6 +11,7 @@ const { faltando, invalidos, aConfirmar } = pendencias(site);
 // Arquivos informados mas que não existem
 const arquivos: [string | null, string, string][] = [
   [site.logo, join('src', 'assets', 'marca'), 'logo'],
+  [site.logoFundoEscuro, join('src', 'assets', 'marca'), 'logoFundoEscuro'],
   [site.favicon, 'public', 'favicon'],
   [site.fotos.destaque.arquivo, join('src', 'assets', 'fotos'), 'fotos.destaque'],
   [site.fotos.loja.arquivo, join('src', 'assets', 'fotos'), 'fotos.loja'],

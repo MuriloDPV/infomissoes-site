@@ -1,5 +1,6 @@
 ---
 import Icone from '../ui/Icone.astro';
+import Logo from '../ui/Logo.astro';
 import Pendente from '../ui/Pendente.astro';
 import { site } from '../../data/site.ts';
 import { DEV, portal, telefone, whatsapp } from '../../lib/dados.ts';
@@ -8,19 +9,18 @@ import { secoes } from '../../lib/navegacao.ts';
 const ano = new Date().getFullYear();
 ---
 
-<footer class="sup-escura">
-  <div class="mx-auto grid w-full max-w-pagina gap-12 px-calha py-16 md:grid-cols-2 lg:grid-cols-12 lg:py-20">
-    <div class="flex flex-col gap-4 lg:col-span-5">
-      {/* Nome em texto: funciona em fundo escuro sem depender da versão do logo */}
-      <p class="text-2xl font-extrabold tracking-titulo text-sup-titulo">{site.nome}</p>
+<footer class="rodape sup-noite">
+  <div class="mx-auto grid w-full max-w-pagina gap-12 px-calha py-16 md:grid-cols-2 lg:grid-cols-12 lg:py-24">
+    <div class="flex flex-col items-start gap-6 md:col-span-2 lg:col-span-5">
+      <Logo tom="escuro" class="rodape__logo" />
       <p class="max-w-estreito text-sup-suave">Internet de fibra óptica na região das Missões, Rio Grande do Sul.</p>
       {site.cnpj && <p class="tabular text-sm text-sup-suave">CNPJ {site.cnpj}</p>}
       {DEV && !site.cnpj && <Pendente texto="CNPJ" campo="cnpj" forma="linha" />}
     </div>
 
     <nav aria-label="Rodapé" class="lg:col-span-3">
-      <h2 class="text-lg tracking-normal">Seções</h2>
-      <ul class="mt-4 flex flex-col">
+      <h2 class="rodape__titulo">Seções</h2>
+      <ul class="mt-3 flex flex-col">
         {
           secoes.map((s) => (
             <li>
@@ -34,8 +34,8 @@ const ano = new Date().getFullYear();
     </nav>
 
     <div class="lg:col-span-4">
-      <h2 class="text-lg tracking-normal">Atendimento</h2>
-      <ul class="mt-4 flex flex-col">
+      <h2 class="rodape__titulo">Atendimento</h2>
+      <ul class="mt-3 flex flex-col">
         <li>
           <a class="rodape__link" href={portal.url} target="_blank" rel="noopener">
             {portal.nome}
@@ -47,7 +47,7 @@ const ano = new Date().getFullYear();
           whatsapp && (
             <li>
               <a class="rodape__link" href={whatsapp} target="_blank" rel="noopener">
-                WhatsApp {site.whatsapp}
+                WhatsApp <span class="tabular">{site.whatsapp}</span>
                 <span class="sr-only"> (abre em nova aba)</span>
               </a>
             </li>
@@ -57,7 +57,7 @@ const ano = new Date().getFullYear();
           telefone && (
             <li>
               <a class="rodape__link" href={telefone}>
-                Telefone {site.telefone}
+                Telefone <span class="tabular">{site.telefone}</span>
               </a>
             </li>
           )
@@ -82,19 +82,37 @@ const ano = new Date().getFullYear();
 
 <style>
   @layer components {
+    .rodape__logo {
+      --logo-altura: 4.25rem;
+    }
+
+    @media (width >= 48rem) {
+      .rodape__logo {
+        --logo-altura: 5rem;
+      }
+    }
+
+    .rodape__titulo {
+      color: var(--color-branco);
+      font-size: var(--text-sm);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--tracking-rotulo);
+    }
+
     .rodape__link {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       min-height: 3rem;
       color: var(--sup-texto);
-      text-decoration: none;
+      text-decoration: underline;
+      text-decoration-color: transparent;
     }
 
     @media (hover: hover) {
       .rodape__link:hover {
-        color: var(--color-amarelo);
-        text-decoration: underline;
+        color: var(--color-branco);
+        text-decoration-color: var(--color-amarelo);
       }
     }
   }

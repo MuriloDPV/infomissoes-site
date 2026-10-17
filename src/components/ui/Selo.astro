@@ -1,9 +1,9 @@
 ---
-// Selo/Badge: rótulo curto. Amarelo sempre com texto azul.
+// Selo/Badge: rótulo curto. Amarelo sempre com texto marinho.
 import Icone, { type IconeNome } from './Icone.astro';
 
 interface Props {
-  variante?: 'amarelo' | 'azul' | 'suave';
+  variante?: 'amarelo' | 'marinho' | 'suave';
   icone?: IconeNome;
   class?: string;
 }
@@ -39,18 +39,18 @@ const { variante = 'amarelo', icone, class: classe } = Astro.props;
 
     .selo--amarelo {
       background-color: var(--color-amarelo);
-      color: var(--color-azul);
+      color: var(--color-marinho);
     }
 
-    .selo--azul {
-      background-color: var(--color-azul);
+    .selo--marinho {
+      background-color: var(--color-marinho);
       color: var(--color-branco);
     }
 
     .selo--suave {
-      background-color: var(--color-azul-50);
-      color: var(--color-azul);
-      box-shadow: inset 0 0 0 1px var(--color-azul-100);
+      background-color: var(--color-fundo);
+      color: var(--color-marinho);
+      box-shadow: inset 0 0 0 1px var(--color-marinho-100);
     }
   }
 </style>

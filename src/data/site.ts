@@ -8,7 +8,8 @@
  * - `npm run todos` lista no terminal o que ainda falta.
  *
  * Arquivos de imagem:
- * - Logo: coloque em src/assets/marca/ e informe só o nome do arquivo.
+ * - Logo: coloque em src/assets/marca/ e informe só o nome do arquivo. Em SVG com camadas
+ *   (grupos ruins, tower, arcs, info, missoes, prov), a logo do cabeçalho ganha a animação de entrada.
  * - Fotos: coloque em src/assets/fotos/ e informe só o nome do arquivo.
  * - Favicon: coloque em public/ e informe só o nome do arquivo.
  */
@@ -51,6 +52,7 @@ export type Site = {
   urlPortal: string;
   instagram: string;
   logo: string | null;
+  logoFundoEscuro: string | null;
   favicon: string | null;
   whatsapp: string | null;
   mensagemWhatsapp: string;
@@ -77,11 +79,13 @@ export const site: Site = {
 
   instagram: 'https://instagram.com/infomissoesnet',
 
-  // TODO: arquivo do logo em src/assets/marca/, ex.: 'logo.svg'. Sem logo, aparece o nome em texto.
-  logo: null,
+  // Logo oficial em camadas (src/assets/marca/). Sem logo, aparece o nome em texto.
+  logo: 'logo-infomissoes.svg',
+  // Versão para fundo escuro (ruínas em branco), usada no rodapé.
+  logoFundoEscuro: 'logo-infomissoes-fundo-escuro.svg',
 
-  // TODO: arquivo do favicon em public/, ex.: 'favicon.svg' ou 'favicon.png'.
-  favicon: null,
+  // Favicon em public/ (torre com o sinal, feita a partir da logo).
+  favicon: 'favicon.svg',
 
   // WhatsApp com DDD, como aparece na página. Aceita fixo (DDD + 8 dígitos) ou celular (DDD + 9 dígitos).
   // Sem número, os botões de WhatsApp somem.

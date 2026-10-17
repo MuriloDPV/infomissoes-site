@@ -38,9 +38,11 @@ export const portal = {
 const fotos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/fotos/*.{jpg,jpeg,png,webp,avif}', {
   eager: true,
 });
-const marcas = import.meta.glob<{ default: ImageMetadata }>('/src/assets/marca/*.{svg,png,webp,avif,jpg,jpeg}', {
+const marcas = import.meta.glob<{ default: ImageMetadata }>('/src/assets/marca/*.{png,webp,avif,jpg,jpeg}', {
   eager: true,
 });
+// SVG da marca entra como texto, para ir direto no HTML (a logo do cabeçalho anima por camadas).
+const marcasSvg = import.meta.glob<string>('/src/assets/marca/*.svg', { query: '?raw', import: 'default', eager: true });
 
 function arquivo(lista: typeof fotos, pasta: string, nome: string | null, campo: string) {
   if (!nome) return null;
@@ -49,9 +51,30 @@ function arquivo(lista: typeof fotos, pasta: string, nome: string | null, campo:
   return img;
 }
 
-export const imagemFoto = (foto: Foto, campo: string) => arquivo(fotos, 'fotos', foto.arquivo, campo);
-export const logo = arquivo(marcas, 'marca', site.logo, 'logo');
+export type Marca = { svg: string } | { imagem: ImageMetadata };
 
-const faviconExiste = !!site.favicon && existsSync(join(process.cwd(), 'public', site.favicon));
+function marca(nome: string | null, campo: string): Marca | null {
+  if (!nome) return null;
+  const svg = marcasSvg[`/src/assets/marca/${nome}`];
+  if (svg) return { svg };
+  const imagem = arquivo(marcas, 'marca', nome, campo);
+  return imagem ? { imagem } : null;
+}
+
+export const imagemFoto = (foto: Foto, campo: string) => arquivo(fotos, 'fotos', foto.arquivo, campo);
+export const logo = marca(site.logo, 'logo');
+export const logoFundoEscuro = marca(site.logoFundoEscuro, 'logoFundoEscuro');
+
+const existe = (nome: string) => existsSync(join(process.cwd(), 'public', nome));
+const faviconExiste = !!site.favicon && existe(site.favicon);
 validar(!site.favicon || faviconExiste, `favicon: arquivo não encontrado em public/${site.favicon}`);
 export const favicon = faviconExiste ? `/${site.favicon}` : null;
+
+// Ícones gerados junto com o favicon (scripts/marca/gerar-icones.mjs). Só entram no HTML se existirem.
+const publico = (nome: string) => (existe(nome) ? `/${nome}` : null);
+export const icones = {
+  png: publico('favicon-32.png'),
+  celular: publico('apple-touch-icon.png'),
+  manifesto: publico('site.webmanifest'),
+};
+export const imagemCompartilhar = publico('og-infomissoes.png');

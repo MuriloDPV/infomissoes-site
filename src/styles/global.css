@@ -18,24 +18,21 @@
   --animate-*: initial;
   --aspect-*: initial;
 
-  /* Cores da marca */
-  --color-azul: #1a2d6d;
-  --color-amarelo: #f1d214;
-  --color-amarelo-claro: #f8f052;
+  /* Cores oficiais da marca (logo e posts aprovados) */
+  --color-marinho: #1a2d6d;
+  --color-noite: #081029;
+  --color-azul: #0199da;
+  --color-amarelo: #f7c12d;
+  --color-cinza: #363435;
+  --color-fundo: #f4f8fc;
   --color-branco: #ffffff;
-  --color-escuro: #0f172a;
 
-  /* Tons derivados: azul/escuro misturados com branco ou entre si. Nenhuma cor nova. */
-  --color-azul-50: #f4f5f8;
-  --color-azul-100: #e6e8ef;
-  --color-azul-200: #cdd1df;
-  --color-azul-300: #a3abc5;
-  --color-azul-600: #435387;
-  --color-azul-800: #182960;
-  --color-azul-900: #162452;
-  --color-escuro-300: #b7b9bf;
-  --color-escuro-700: #353c4c;
-  --color-escuro-800: #272e3f;
+  /* Tons derivados: marinho misturado com branco ou com noite. Nenhuma cor nova. */
+  --color-marinho-100: #e4e6ed;
+  --color-marinho-200: #cdd1df;
+  --color-marinho-300: #a3abc5;
+  --color-marinho-600: #536292;
+  --color-marinho-800: #12204e;
 
   /* Exceção: verde oficial do WhatsApp. Só no botão flutuante do WhatsApp. */
   --color-whatsapp: #25d366;
@@ -45,6 +42,7 @@
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+  --font-weight-titulo: 760;
   --font-weight-extrabold: 800;
 
   /* Escala: nada abaixo de 16px */
@@ -56,16 +54,17 @@
   --text-lg--line-height: 1.55;
   --text-xl: 1.5rem;
   --text-xl--line-height: 1.3;
-  --text-2xl: clamp(1.75rem, 1.45rem + 1.2vw, 2.25rem);
-  --text-2xl--line-height: 1.2;
-  --text-3xl: clamp(2rem, 1.55rem + 1.9vw, 3rem);
-  --text-3xl--line-height: 1.12;
-  --text-destaque: clamp(2.25rem, 1.45rem + 3.6vw, 4.5rem);
-  --text-destaque--line-height: 1.04;
+  --text-2xl: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
+  --text-2xl--line-height: 1.18;
+  --text-3xl: clamp(2rem, 1.45rem + 2.4vw, 3.375rem);
+  --text-3xl--line-height: 1.08;
+  --text-destaque: clamp(2.5rem, 1.55rem + 4.3vw, 5.25rem);
+  --text-destaque--line-height: 1.02;
 
   --tracking-normal: 0em;
-  --tracking-titulo: -0.022em;
-  --tracking-destaque: -0.034em;
+  --tracking-rotulo: 0.01em;
+  --tracking-titulo: -0.026em;
+  --tracking-destaque: -0.038em;
 
   --leading-justo: 1.1;
   --leading-titulo: 1.2;
@@ -74,9 +73,10 @@
   /* Espaços (a escala numérica do Tailwind usa --spacing = 4px) */
   --spacing: 0.25rem;
   --spacing-calha: clamp(1rem, 0.4rem + 2.6vw, 2.5rem);
-  --spacing-secao: clamp(4.5rem, 3rem + 5vw, 8rem);
-  --spacing-secao-curta: clamp(3rem, 2.25rem + 3vw, 5rem);
-  --spacing-toque: 3.5rem;
+  --spacing-secao: clamp(4.5rem, 2.75rem + 6vw, 9rem);
+  --spacing-secao-curta: clamp(3rem, 2rem + 3.5vw, 5.5rem);
+  --spacing-toque: 3.25rem;
+  --spacing-toque-lg: 3.75rem;
 
   --container-pagina: 76rem;
   --container-largo: 52rem;
@@ -84,17 +84,19 @@
   --container-estreito: 30rem;
 
   /* Raios */
-  --radius-sm: 0.375rem;
+  --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
   --radius-full: 9999px;
 
-  /* Sombras: deslocadas, suaves, com tom do azul */
-  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.06), 0 1px 3px 0 rgb(26 45 109 / 0.06);
-  --shadow-md: 0 8px 18px -6px rgb(26 45 109 / 0.16), 0 2px 4px -1px rgb(15 23 42 / 0.06);
-  --shadow-lg: 0 24px 48px -18px rgb(26 45 109 / 0.32), 0 8px 16px -8px rgb(15 23 42 / 0.12);
-  --shadow-topo: 0 10px 24px -14px rgb(15 23 42 / 0.32);
+  /* Sombras: suaves, deslocadas para baixo, com tom do marinho */
+  --shadow-sm: 0 1px 2px 0 rgb(8 16 41 / 0.05), 0 1px 1px 0 rgb(26 45 109 / 0.04);
+  --shadow-md: 0 12px 24px -14px rgb(26 45 109 / 0.26), 0 2px 6px -2px rgb(8 16 41 / 0.08);
+  --shadow-lg: 0 30px 60px -28px rgb(26 45 109 / 0.36), 0 10px 20px -12px rgb(8 16 41 / 0.12);
+  --shadow-topo: 0 12px 28px -20px rgb(8 16 41 / 0.32);
+  --shadow-botao: 0 14px 24px -12px rgb(26 45 109 / 0.5), 0 3px 6px -2px rgb(8 16 41 / 0.12);
 
   /* Proporções reservadas para fotos */
   --aspect-retrato: 4 / 5;
@@ -104,14 +106,15 @@
   --ease-saida: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-entrada: cubic-bezier(0.7, 0, 0.84, 0);
   --ease-suave: cubic-bezier(0.65, 0, 0.35, 1);
-  --duracao-rapida: 150ms;
-  --duracao-base: 250ms;
-  --duracao-lenta: 450ms;
-  --duracao-revelar: 600ms;
-  --atraso-sequencia: 90ms;
+  --ease-mola: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --duracao-rapida: 140ms;
+  --duracao-base: 220ms;
+  --duracao-lenta: 420ms;
+  --duracao-revelar: 700ms;
+  --atraso-sequencia: 70ms;
 
   /* Altura visível do cabeçalho (âncoras param abaixo dele) */
-  --altura-topo: 6.5rem;
+  --altura-topo: 7rem;
 }
 
 /* Cores semânticas: cada superfície (.sup-*) define os valores. */
@@ -130,83 +133,59 @@
 @layer base {
   :root,
   .sup-clara,
-  .sup-tinta {
+  .sup-suave {
     --sup-fundo: var(--color-branco);
-    --sup-texto: var(--color-escuro);
-    --sup-titulo: var(--color-azul);
-    --sup-suave: var(--color-azul-600);
-    --sup-linha: var(--color-azul-100);
+    --sup-texto: var(--color-cinza);
+    --sup-titulo: var(--color-marinho);
+    --sup-suave: var(--color-marinho-600);
+    --sup-linha: var(--color-marinho-100);
     --sup-icone: var(--color-azul);
-    --sup-foco: var(--color-azul);
-    /* botão secundário */
-    --sup-b2-fundo: var(--color-azul);
-    --sup-b2-texto: var(--color-branco);
-    --sup-b2-borda: var(--color-azul);
-    --sup-b2-realce: var(--color-azul-800);
-    /* botão fantasma */
-    --sup-b3-texto: var(--color-azul);
-    --sup-b3-realce: var(--color-azul-50);
+    --sup-foco: var(--color-marinho);
+    /* botão primário */
+    --sup-b1-fundo: var(--color-marinho);
+    --sup-b1-texto: var(--color-branco);
+    --sup-b1-realce: var(--color-marinho-800);
+    /* botão secundário (contorno) */
+    --sup-b2-texto: var(--color-marinho);
+    --sup-b2-borda: var(--color-marinho);
+    --sup-b2-realce: rgb(26 45 109 / 0.07);
+    /* link com seta */
+    --sup-link: var(--color-marinho);
   }
 
-  .sup-tinta {
-    --sup-fundo: var(--color-azul-50);
-    --sup-linha: var(--color-azul-200);
-    --sup-b3-realce: var(--color-azul-100);
+  .sup-suave {
+    --sup-fundo: var(--color-fundo);
   }
 
-  .sup-azul {
-    --sup-fundo: var(--color-azul);
+  .sup-marinho,
+  .sup-noite {
+    --sup-fundo: var(--color-marinho);
     --sup-texto: var(--color-branco);
     --sup-titulo: var(--color-branco);
-    --sup-suave: var(--color-azul-200);
-    --sup-linha: rgb(255 255 255 / 0.16);
-    --sup-icone: var(--color-amarelo);
-    --sup-foco: var(--color-amarelo);
-    --sup-b2-fundo: transparent;
-    --sup-b2-texto: var(--color-branco);
-    --sup-b2-borda: rgb(255 255 255 / 0.7);
-    --sup-b2-realce: rgb(255 255 255 / 0.12);
-    --sup-b3-texto: var(--color-branco);
-    --sup-b3-realce: rgb(255 255 255 / 0.1);
-  }
-
-  .sup-amarela {
-    --sup-fundo: var(--color-amarelo);
-    --sup-texto: var(--color-escuro);
-    --sup-titulo: var(--color-azul);
-    --sup-suave: var(--color-azul);
-    --sup-linha: rgb(26 45 109 / 0.2);
+    --sup-suave: var(--color-marinho-200);
+    --sup-linha: rgb(255 255 255 / 0.14);
     --sup-icone: var(--color-azul);
-    --sup-foco: var(--color-azul);
-    --sup-b2-fundo: var(--color-azul);
-    --sup-b2-texto: var(--color-branco);
-    --sup-b2-borda: var(--color-azul);
-    --sup-b2-realce: var(--color-azul-800);
-    --sup-b3-texto: var(--color-azul);
-    --sup-b3-realce: var(--color-amarelo-claro);
-  }
-
-  .sup-escura {
-    --sup-fundo: var(--color-escuro);
-    --sup-texto: var(--color-azul-100);
-    --sup-titulo: var(--color-branco);
-    --sup-suave: var(--color-escuro-300);
-    --sup-linha: var(--color-escuro-800);
-    --sup-icone: var(--color-amarelo);
     --sup-foco: var(--color-amarelo);
-    --sup-b2-fundo: transparent;
+    --sup-b1-fundo: var(--color-branco);
+    --sup-b1-texto: var(--color-marinho);
+    --sup-b1-realce: var(--color-fundo);
     --sup-b2-texto: var(--color-branco);
     --sup-b2-borda: rgb(255 255 255 / 0.6);
     --sup-b2-realce: rgb(255 255 255 / 0.1);
-    --sup-b3-texto: var(--color-branco);
-    --sup-b3-realce: rgb(255 255 255 / 0.08);
+    --sup-link: var(--color-branco);
+  }
+
+  .sup-noite {
+    --sup-fundo: var(--color-noite);
+    --sup-texto: var(--color-marinho-200);
+    --sup-suave: var(--color-marinho-300);
+    --sup-linha: rgb(255 255 255 / 0.1);
   }
 
   .sup-clara,
-  .sup-tinta,
-  .sup-azul,
-  .sup-amarela,
-  .sup-escura {
+  .sup-suave,
+  .sup-marinho,
+  .sup-noite {
     background-color: var(--sup-fundo);
     color: var(--sup-texto);
   }
@@ -216,13 +195,13 @@
     color-scheme: light;
     scroll-padding-top: var(--altura-topo);
     -webkit-text-size-adjust: 100%;
-    scrollbar-color: var(--color-azul-300) var(--color-azul-50);
+    scrollbar-color: var(--color-marinho-300) var(--color-fundo);
     -webkit-tap-highlight-color: transparent;
   }
 
   @media (width >= 48rem) {
     html {
-      --altura-topo: 4.5rem;
+      --altura-topo: 5.5rem;
     }
   }
 
@@ -233,8 +212,8 @@
   }
 
   body {
-    background-color: var(--color-branco);
-    color: var(--color-escuro);
+    background-color: var(--color-fundo);
+    color: var(--color-cinza);
     font-family: var(--font-sans);
     font-size: var(--text-base);
     line-height: var(--text-base--line-height);
@@ -242,16 +221,24 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-synthesis: none;
-    caret-color: var(--color-azul);
+    caret-color: var(--color-marinho);
   }
 
   h1,
   h2,
   h3 {
     color: var(--sup-titulo);
-    font-weight: var(--font-weight-extrabold);
+    font-weight: var(--font-weight-titulo);
     letter-spacing: var(--tracking-titulo);
     text-wrap: balance;
+  }
+
+  h1 {
+    font-weight: var(--font-weight-extrabold);
+  }
+
+  h3 {
+    font-weight: var(--font-weight-bold);
   }
 
   p,
@@ -262,21 +249,45 @@
 
   a {
     text-underline-offset: 0.22em;
-    text-decoration-thickness: 0.09em;
+    text-decoration-thickness: 0.08em;
   }
 
   ::selection {
-    background-color: var(--color-amarelo-claro);
-    color: var(--color-escuro);
+    background-color: var(--color-amarelo);
+    color: var(--color-marinho);
   }
 
   :focus-visible {
-    outline: 3px solid var(--sup-foco);
+    outline: 2.5px solid var(--sup-foco);
     outline-offset: 3px;
   }
 
   .tabular {
     font-variant-numeric: tabular-nums lining-nums;
+  }
+}
+
+/* =====================================================================
+   DETALHES DA MARCA
+   ===================================================================== */
+@layer components {
+  /* Marca-texto amarelo atrás de uma palavra, como nos posts (faixa na metade de baixo).
+     O texto continua marinho: 7,7:1 sobre o amarelo. */
+  .marca-texto {
+    position: relative;
+    z-index: 0;
+    white-space: nowrap;
+  }
+  .marca-texto::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: -0.06em;
+    right: -0.08em;
+    bottom: 0.06em;
+    height: 0.4em;
+    border-radius: 0.06em;
+    background-color: var(--color-amarelo);
   }
 }
 
@@ -288,15 +299,15 @@
 @layer components {
   html.js [data-revelar] {
     opacity: 0;
-    transform: translate3d(0, 1.5rem, 0);
+    transform: translate3d(0, 1rem, 0);
     transition:
       opacity var(--duracao-revelar) var(--ease-saida),
       transform var(--duracao-revelar) var(--ease-saida);
-    transition-delay: calc(min(var(--i, 0), 6) * var(--atraso-sequencia));
+    transition-delay: calc(min(var(--i, 0), 8) * var(--atraso-sequencia));
   }
 
   html.js [data-revelar="lado"] {
-    transform: translate3d(-1.25rem, 0, 0);
+    transform: translate3d(-0.75rem, 0, 0);
   }
 
   html.js [data-revelar].is-visivel {
@@ -315,6 +326,226 @@
 
   @media print {
     html.js [data-revelar] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* =====================================================================
+   ENTRADA DA LOGO (primeira visita da sessão)
+   html.intro é ligada no <head> só com JS, sem movimento reduzido e com sessionStorage.
+   O script do cabeçalho copia a logo para .intro-logo, monta a logo com as ondas de sinal
+   e leva a cópia até o lugar dela no cabeçalho (FLIP). No fim, a cópia e a cobertura somem.
+   Só transform e opacity animam. Total: até 2 s.
+   ===================================================================== */
+@layer components {
+  /* Cobertura clara: a página carrega por baixo. Um toque nela pula a animação. */
+  html.intro body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background-color: var(--color-fundo);
+    /* Segurança: se o script falhar, some sozinha. */
+    animation: intro-seguranca 1ms linear 3s forwards;
+  }
+  html.intro.intro-saindo body::after {
+    opacity: 0;
+    transition: opacity 460ms var(--ease-suave);
+  }
+  html.intro [data-logo-topo] .logo__svg {
+    opacity: 0;
+    animation: intro-seguranca-logo 1ms linear 3s forwards;
+  }
+  @keyframes intro-seguranca {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+  @keyframes intro-seguranca-logo {
+    to {
+      opacity: 1;
+    }
+  }
+
+  .intro-logo {
+    position: fixed;
+    z-index: 61;
+    top: 50%;
+    left: 50%;
+    width: min(78vw, 34rem);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .intro-logo.is-voando {
+    transition: transform 560ms var(--ease-suave);
+  }
+  .intro-logo .logo__svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .intro-logo [data-camada],
+  .intro-logo .logo__onda,
+  html.intro #logo-onda circle {
+    animation-fill-mode: both;
+  }
+
+  /* 1. Um ponto vira a antena */
+  .intro-logo [data-camada="antena"] {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: intro-ponto 380ms var(--ease-mola) both;
+  }
+
+  /* 2. Três ondas azuis saem da antena */
+  .intro-logo .logo__onda {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: intro-onda 760ms cubic-bezier(0.2, 0.6, 0.35, 1) 240ms both;
+  }
+  .intro-logo .logo__onda--2 {
+    animation-delay: 520ms;
+  }
+  .intro-logo .logo__onda--3 {
+    animation-delay: 800ms;
+  }
+
+  /* 1ª onda: revela as ruínas (círculo de recorte cresce junto com a onda) e a torre cresce */
+  html.intro #logo-onda circle {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: intro-revela 760ms cubic-bezier(0.2, 0.6, 0.35, 1) 240ms both;
+  }
+  .intro-logo [data-camada="ruins"] {
+    animation: intro-aparece 260ms linear 250ms both;
+  }
+  .intro-logo [data-camada="tower"] > path:not([data-camada]) {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: intro-cresce 520ms var(--ease-saida) 300ms both;
+  }
+
+  /* 2ª onda: o "info" sobe e o "Missões" dá um pulinho */
+  .intro-logo [data-camada="info"] {
+    animation: intro-sobe 520ms var(--ease-saida) 540ms both;
+  }
+  .intro-logo [data-camada="missoes"] {
+    animation: intro-pulinho 620ms linear 600ms both;
+  }
+
+  /* 3ª onda: acende os arcos e sobe o "PROVEDOR DE INTERNET" */
+  .intro-logo [data-camada="arcs"] {
+    transform-box: view-box;
+    transform-origin: 707.5px 543px;
+    animation: intro-acende 420ms var(--ease-mola) 820ms both;
+  }
+  .intro-logo [data-camada="prov"] {
+    animation: intro-sobe-curto 460ms var(--ease-saida) 860ms both;
+  }
+
+  @keyframes intro-ponto {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    40% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes intro-onda {
+    0% {
+      opacity: 0;
+      transform: scale(0.15);
+    }
+    12% {
+      opacity: 0.9;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(9);
+    }
+  }
+  @keyframes intro-revela {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  @keyframes intro-aparece {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes intro-cresce {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+  @keyframes intro-sobe {
+    from {
+      opacity: 0;
+      transform: translateY(90px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes intro-pulinho {
+    0% {
+      opacity: 0;
+      transform: translateY(40px);
+      animation-timing-function: cubic-bezier(0.2, 0.7, 0.4, 1);
+    }
+    30% {
+      opacity: 1;
+    }
+    45% {
+      transform: translateY(-46px);
+      animation-timing-function: cubic-bezier(0.5, 0, 0.6, 1);
+    }
+    74% {
+      transform: translateY(7px);
+      animation-timing-function: cubic-bezier(0.3, 0, 0.4, 1);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes intro-acende {
+    from {
+      opacity: 0;
+      transform: scale(0.4);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes intro-sobe-curto {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
       opacity: 1;
       transform: none;
     }

@@ -1,5 +1,6 @@
 ---
-// Onde atendemos: lista de cidades de site.ts. Sem cidades, texto geral e verdadeiro sobre a região.
+// Onde atendemos: cidades de site.ts, cada uma com o marcador de sinal.
+// Sem cidades, texto geral e verdadeiro sobre a região.
 import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
 import Icone from '../ui/Icone.astro';
 import Pendente from '../ui/Pendente.astro';
@@ -10,65 +11,84 @@ import { DEV } from '../../lib/dados.ts';
 
 const cidades = site.cidades;
 const temCidades = cidades.length > 0;
-const comLista = temCidades || DEV;
 ---
 
-<Secao id="onde-atendemos" tom="clara">
-  <div class="grid gap-10 lg:grid-cols-12 lg:gap-16">
+<Secao id="onde-atendemos" tom="suave">
+  <div class="grid gap-10 md:gap-12">
     <CabecalhoSecao
-      class={comLista ? 'lg:col-span-5' : 'lg:col-span-7'}
       titulo="Onde atendemos"
       texto={temCidades
         ? 'A Info Missões atende estas cidades da região das Missões, no Rio Grande do Sul.'
         : 'Atendemos a região das Missões, no Rio Grande do Sul.'}
-    >
-      {comLista && <Convite />}
-    </CabecalhoSecao>
+    />
 
     {
       temCidades ? (
-        <ul class="grid content-start sm:grid-cols-2 sm:gap-x-10 lg:col-span-7">
+        <ul class="cidades" aria-label="Cidades atendidas">
           {cidades.map((c, i) => (
-            <li class="cidades__item" data-revelar="lado" style={`--i:${i + 1}`}>
-              <Icone nome="local" class="size-6 shrink-0 text-sup-icone" />
+            <li class="cidade" data-revelar style={`--i:${i + 1}`}>
+              <Icone nome="sinal" class="cidade__marcador" />
               <span>{c}</span>
             </li>
           ))}
         </ul>
-      ) : DEV ? (
-        <Pendente texto="cidades atendidas" campo="cidades" class="min-h-64 lg:col-span-7" />
       ) : (
-        <div class="flex flex-col gap-5 lg:col-span-5 lg:self-end" data-revelar>
-          <Convite />
-        </div>
+        DEV && <Pendente texto="cidades atendidas" campo="cidades" class="min-h-64" />
       )
     }
+
+    <div data-revelar>
+      <Convite />
+    </div>
   </div>
 </Secao>
 
 <style>
   @layer components {
-    .cidades__item {
-      display: flex;
-      align-items: center;
-      gap: 0.875rem;
-      min-height: 4.5rem;
-      border-bottom: 1px solid var(--color-azul-100);
-      color: var(--color-azul);
-      font-size: var(--text-xl);
-      font-weight: var(--font-weight-bold);
-      letter-spacing: var(--tracking-titulo);
-      line-height: var(--leading-titulo);
+    .cidades {
+      display: grid;
+      gap: 0.625rem;
+      align-content: start;
     }
 
-    @media (width >= 40rem) {
-      .cidades__item:nth-child(-n + 2) {
-        border-top: 1px solid var(--color-azul-100);
+    @media (width >= 30rem) {
+      .cidades {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
       }
     }
 
-    .cidades__item:first-child {
-      border-top: 1px solid var(--color-azul-100);
+    @media (width >= 64rem) {
+      .cidades {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+    }
+
+    /* Cada cidade: um bloco branco grande, fácil de achar e de ler */
+    .cidade {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      min-height: 4rem;
+      padding: 0.75rem 1.25rem 0.75rem 1rem;
+      border-radius: var(--radius-lg);
+      background-color: var(--color-branco);
+      box-shadow:
+        inset 0 0 0 1px var(--color-marinho-100),
+        var(--shadow-sm);
+      color: var(--color-marinho);
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: -0.01em;
+      line-height: var(--leading-titulo);
+    }
+
+    .cidade__marcador {
+      width: 1.625rem;
+      height: 1.625rem;
+      flex: none;
+      color: var(--color-azul);
     }
   }
 </style>

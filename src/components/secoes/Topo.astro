@@ -9,8 +9,8 @@ import { secoes } from '../../lib/navegacao.ts';
 <header data-topo class="topo">
   <div class="topo__barra">
     <div class="topo__interno mx-auto flex w-full max-w-pagina items-center justify-between gap-4 px-calha">
-      <a href="#inicio" class="topo__marca">
-        <Logo />
+      <a href="#inicio" class="topo__marca" data-logo-topo>
+        <Logo animada class="topo__logo" />
         <span class="sr-only">, voltar ao início</span>
       </a>
 
@@ -55,16 +55,16 @@ import { secoes } from '../../lib/navegacao.ts';
               </ul>
             </nav>
             <div class="menu__acoes">
-              <Botao href={portal.url} externo variante="secundario" icone="usuario" cheio>
-                {portal.nome}
-              </Botao>
               {
                 whatsapp && (
-                  <Botao href={whatsapp} externo indicador={false} variante="primario" icone="whatsapp" cheio>
+                  <Botao href={whatsapp} externo indicador={false} icone="whatsapp" cheio>
                     Chamar no WhatsApp
                   </Botao>
                 )
               }
+              <Botao href={portal.url} externo variante="secundario" icone="usuario" cheio>
+                {portal.nome}
+              </Botao>
             </div>
           </div>
         </details>
@@ -83,6 +83,71 @@ import { secoes } from '../../lib/navegacao.ts';
   </a>
 </header>
 
+<script is:inline>
+  // Entrada da logo (só com html.intro, ligada no <head>). Copia a logo do cabeçalho, deixa o CSS
+  // montar a cópia no centro e depois leva a cópia até o lugar da original (FLIP).
+  // Toque, clique, tecla ou rolagem pulam direto para o fim. No fim não sobra nada por cima.
+  (function () {
+    var raiz = document.documentElement;
+    if (!raiz.classList.contains('intro')) return;
+    var marca = document.querySelector('[data-logo-topo] .logo__svg');
+    var eventos = ['pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'];
+    var timers = [];
+    var caixa = null;
+    var acabou = false;
+
+    function terminar() {
+      if (acabou) return;
+      acabou = true;
+      timers.forEach(clearTimeout);
+      eventos.forEach(function (e) {
+        window.removeEventListener(e, terminar, true);
+      });
+      if (caixa) caixa.remove();
+      raiz.classList.remove('intro', 'intro-saindo');
+    }
+
+    function voar() {
+      var fim = marca.getBoundingClientRect();
+      var agora = caixa.getBoundingClientRect();
+      if (!fim.width) return terminar();
+      var dx = agora.left + agora.width / 2 - (fim.left + fim.width / 2);
+      var dy = agora.top + agora.height / 2 - (fim.top + fim.height / 2);
+      var escala = agora.width / fim.width;
+      // Last: a cópia vai para o lugar final. Invert: transform que a deixa onde está agora.
+      caixa.style.cssText =
+        'top:' + fim.top + 'px;left:' + fim.left + 'px;width:' + fim.width + 'px;' +
+        'transform:translate(' + dx + 'px,' + dy + 'px) scale(' + escala + ')';
+      caixa.getBoundingClientRect();
+      // Play
+      caixa.classList.add('is-voando');
+      caixa.style.transform = 'none';
+      raiz.classList.add('intro-saindo');
+      timers.push(setTimeout(terminar, 580));
+    }
+
+    try {
+      caixa = document.createElement('div');
+      caixa.className = 'intro-logo';
+      caixa.setAttribute('aria-hidden', 'true');
+      var copia = marca.cloneNode(true);
+      var defs = copia.querySelector('defs');
+      if (defs) defs.remove();
+      copia.removeAttribute('role');
+      copia.removeAttribute('aria-label');
+      caixa.appendChild(copia);
+      document.body.appendChild(caixa);
+      eventos.forEach(function (e) {
+        window.addEventListener(e, terminar, { capture: true, passive: true });
+      });
+      timers.push(setTimeout(voar, 1320));
+      timers.push(setTimeout(terminar, 2000));
+    } catch (erro) {
+      terminar();
+    }
+  })();
+</script>
+
 <style>
   /* Estilos do componente ficam na camada components: utilitários do Tailwind vencem. */
   @layer components {
@@ -91,10 +156,9 @@ import { secoes } from '../../lib/navegacao.ts';
       top: 0;
       z-index: 30;
       isolation: isolate;
-      transition: transform var(--duracao-base) var(--ease-saida);
     }
 
-    /* Sombra do estado compacto: só a opacidade anima */
+    /* Sombra quando a página rola: só a opacidade anima */
     .topo::after {
       content: '';
       position: absolute;
@@ -103,21 +167,22 @@ import { secoes } from '../../lib/navegacao.ts';
       box-shadow: var(--shadow-topo);
       opacity: 0;
       pointer-events: none;
-      transition: opacity var(--duracao-base) var(--ease-saida);
+      transition: opacity var(--duracao-lenta) var(--ease-saida);
+    }
+    .topo.is-compacto::after {
+      opacity: 1;
     }
 
-    /* z-index: o painel do menu (dentro da barra) fica por cima da faixa amarela */
+    /* z-index: o painel do menu (dentro da barra) fica por cima da faixa do portal */
     .topo__barra {
       position: relative;
       z-index: 1;
       background-color: var(--color-branco);
-      box-shadow: inset 0 -1px 0 var(--color-azul-100);
+      box-shadow: inset 0 -1px 0 var(--color-marinho-100);
     }
 
     .topo__interno {
-      position: relative;
-      height: 4rem;
-      transition: transform var(--duracao-base) var(--ease-saida);
+      height: 4.25rem;
     }
 
     .topo__marca {
@@ -126,69 +191,47 @@ import { secoes } from '../../lib/navegacao.ts';
       min-height: 3rem;
       border-radius: var(--radius-sm);
       text-decoration: none;
-      transform-origin: 0 50%;
-      transition: transform var(--duracao-base) var(--ease-saida);
-    }
-
-    /* Compacto: a barra sobe um pouco (transform), o conteúdo desce metade, o logo reduz. */
-    .topo.is-compacto {
-      transform: translate3d(0, -0.5rem, 0);
-    }
-    .topo.is-compacto .topo__interno {
-      transform: translate3d(0, 0.25rem, 0);
-    }
-    .topo.is-compacto .topo__marca {
-      transform: scale(0.92);
-    }
-    .topo.is-compacto::after {
-      opacity: 1;
+      --logo-altura: 2.875rem;
     }
 
     @media (width >= 48rem) {
       .topo__interno {
-        height: 5rem;
+        height: 5.25rem;
       }
-      .topo.is-compacto {
-        transform: translate3d(0, -1rem, 0);
-      }
-      .topo.is-compacto .topo__interno {
-        transform: translate3d(0, 0.5rem, 0);
+      .topo__marca {
+        --logo-altura: 3.75rem;
       }
     }
 
-    /* Links do menu no desktop */
+    /* Links do menu no desktop: sublinhado amarelo que cresce da esquerda */
     .topo__link {
       position: relative;
-      isolation: isolate;
       display: inline-flex;
       align-items: center;
       min-height: 3rem;
-      padding: 0 1rem;
-      border-radius: var(--radius-md);
-      color: var(--color-escuro);
+      padding: 0 0.875rem;
+      border-radius: var(--radius-sm);
+      color: var(--color-marinho);
+      font-size: var(--text-sm);
       font-weight: var(--font-weight-semibold);
       text-decoration: none;
     }
-    .topo__link::before {
+    .topo__link::after {
       content: '';
       position: absolute;
-      inset: 0.25rem 0;
-      z-index: -1;
-      border-radius: inherit;
-      background-color: var(--color-azul-50);
-      opacity: 0;
-      transform: scale(0.94);
-      transition:
-        opacity var(--duracao-base) var(--ease-saida),
-        transform var(--duracao-base) var(--ease-saida);
+      left: 0.875rem;
+      right: 0.875rem;
+      bottom: 0.625rem;
+      height: 2px;
+      border-radius: var(--radius-full);
+      background-color: var(--color-amarelo);
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      transition: transform var(--duracao-lenta) var(--ease-saida);
     }
     @media (hover: hover) {
-      .topo__link:hover {
-        color: var(--color-azul);
-      }
-      .topo__link:hover::before {
-        opacity: 1;
-        transform: none;
+      .topo__link:hover::after {
+        transform: scaleX(1);
       }
     }
 
@@ -197,10 +240,10 @@ import { secoes } from '../../lib/navegacao.ts';
       position: relative;
       isolation: isolate;
       display: block;
-      background-color: var(--color-amarelo);
-      color: var(--color-azul);
+      background-color: var(--color-marinho);
+      color: var(--color-branco);
       text-decoration: none;
-      --sup-foco: var(--color-azul);
+      --sup-foco: var(--color-amarelo);
       container-type: inline-size;
     }
     .topo__faixa::before {
@@ -208,7 +251,7 @@ import { secoes } from '../../lib/navegacao.ts';
       position: absolute;
       inset: 0;
       z-index: -1;
-      background-color: var(--color-amarelo-claro);
+      background-color: var(--color-marinho-800);
       opacity: 0;
       transition: opacity var(--duracao-base) var(--ease-saida);
     }
@@ -219,22 +262,27 @@ import { secoes } from '../../lib/navegacao.ts';
       outline-offset: -4px;
     }
     .topo__faixa-interno {
-      min-height: 3rem;
+      min-height: 2.75rem;
     }
     .topo__faixa-icone {
-      width: 1.375rem;
-      height: 1.375rem;
+      width: 1.25rem;
+      height: 1.25rem;
       flex: none;
+      color: var(--color-amarelo);
     }
     .topo__faixa-rotulo {
+      font-size: var(--text-sm);
       font-weight: var(--font-weight-bold);
       white-space: nowrap;
     }
     .topo__faixa-apoio {
       display: none;
-      color: var(--color-azul);
+      min-width: 0;
+      overflow: hidden;
+      color: var(--color-marinho-200);
       font-size: var(--text-sm);
       white-space: nowrap;
+      text-overflow: ellipsis;
     }
     .topo__faixa-seta {
       width: 1.25rem;
@@ -242,7 +290,7 @@ import { secoes } from '../../lib/navegacao.ts';
       margin-left: auto;
       flex: none;
     }
-    @container (width >= 25rem) {
+    @container (width >= 25.5rem) {
       .topo__faixa-apoio {
         display: inline;
       }
@@ -260,11 +308,12 @@ import { secoes } from '../../lib/navegacao.ts';
       min-height: 3rem;
       padding: 0 1rem 0 0.875rem;
       border-radius: var(--radius-md);
-      color: var(--color-azul);
+      color: var(--color-marinho);
+      font-size: var(--text-sm);
       font-weight: var(--font-weight-bold);
       list-style: none;
       cursor: pointer;
-      box-shadow: inset 0 0 0 2px var(--color-azul-100);
+      box-shadow: inset 0 0 0 1.5px var(--color-marinho-200);
       user-select: none;
       transition: transform var(--duracao-rapida) var(--ease-saida);
     }
@@ -275,8 +324,8 @@ import { secoes } from '../../lib/navegacao.ts';
       transform: scale(0.97);
     }
     .menu__icone {
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 1.375rem;
+      height: 1.375rem;
     }
     .menu__icone--fechar,
     .menu[open] .menu__icone--abrir {
@@ -286,7 +335,7 @@ import { secoes } from '../../lib/navegacao.ts';
       display: block;
     }
     .menu[open] .menu__botao {
-      background-color: var(--color-azul-50);
+      background-color: var(--color-fundo);
     }
 
     .menu__painel {
@@ -295,11 +344,11 @@ import { secoes } from '../../lib/navegacao.ts';
       left: 0;
       right: 0;
       padding: 0.5rem var(--spacing-calha) 1.5rem;
-      border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+      border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
       box-shadow: var(--shadow-lg);
     }
     .menu[open] .menu__painel {
-      animation: menu-entra var(--duracao-base) var(--ease-saida);
+      animation: menu-entra var(--duracao-lenta) var(--ease-saida);
     }
     @media (width >= 48rem) {
       .menu__painel {
@@ -307,7 +356,7 @@ import { secoes } from '../../lib/navegacao.ts';
         right: var(--spacing-calha);
         width: 22rem;
         margin-top: 0.5rem;
-        border-radius: var(--radius-xl);
+        border-radius: var(--radius-2xl);
       }
     }
 
@@ -315,9 +364,9 @@ import { secoes } from '../../lib/navegacao.ts';
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: var(--spacing-toque);
-      border-bottom: 1px solid var(--color-azul-100);
-      color: var(--color-azul);
+      min-height: var(--spacing-toque-lg);
+      border-bottom: 1px solid var(--color-marinho-100);
+      color: var(--color-marinho);
       font-size: var(--text-lg);
       font-weight: var(--font-weight-bold);
       text-decoration: none;
@@ -325,7 +374,7 @@ import { secoes } from '../../lib/navegacao.ts';
     .menu__seta {
       width: 1.25rem;
       height: 1.25rem;
-      color: var(--color-azul-600);
+      color: var(--color-azul);
     }
     .menu__acoes {
       display: flex;
@@ -342,9 +391,8 @@ import { secoes } from '../../lib/navegacao.ts';
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .topo,
-      .topo__interno,
-      .topo__marca {
+      .topo::after,
+      .topo__link::after {
         transition: none;
       }
       .menu[open] .menu__painel {
