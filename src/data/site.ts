@@ -53,6 +53,7 @@ export type Site = {
   logo: string | null;
   favicon: string | null;
   whatsapp: string | null;
+  mensagemWhatsapp: string;
   telefone: string | null;
   endereco: string | null;
   horario: string | null;
@@ -82,8 +83,12 @@ export const site: Site = {
   // TODO: arquivo do favicon em public/, ex.: 'favicon.svg' ou 'favicon.png'.
   favicon: null,
 
-  // TODO: WhatsApp com DDD, ex.: '(55) 99999-9999'. Sem número, os botões de WhatsApp somem.
-  whatsapp: null,
+  // WhatsApp com DDD, como aparece na página. Aceita fixo (DDD + 8 dígitos) ou celular (DDD + 9 dígitos).
+  // Sem número, os botões de WhatsApp somem.
+  whatsapp: '(55) 3365-1025',
+
+  // Mensagem que já vem escrita quando a pessoa abre o WhatsApp por qualquer botão do site.
+  mensagemWhatsapp: 'Olá! Vim pelo site da Info Missões.',
 
   // TODO: telefone com DDD, ex.: '(55) 3333-3333'.
   telefone: null,
@@ -97,8 +102,18 @@ export const site: Site = {
   // TODO: CNPJ, ex.: '00.000.000/0001-00'.
   cnpj: null,
 
-  // TODO: cidades atendidas, ex.: ['Santo Ângelo', 'São Luiz Gonzaga'].
-  cidades: [],
+  // Cidades atendidas, na ordem em que aparecem no site.
+  cidades: [
+    'Pirapó',
+    'Roque Gonzales',
+    'Dezesseis de Novembro',
+    'São Nicolau',
+    'Rolador',
+    'Santo Antônio das Missões',
+    'Itacurubi',
+    'Bossoroca',
+    'São Luiz Gonzaga',
+  ],
 
   // TODO: até 3 planos. NUNCA inventar velocidade, preço ou benefício.
   // Exemplo de formato:

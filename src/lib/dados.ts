@@ -18,8 +18,11 @@ function validar(condicao: boolean, mensagem: string) {
 validar(!site.whatsapp || !!numeroBR(site.whatsapp), `whatsapp inválido: "${site.whatsapp}"`);
 validar(!site.telefone || !!numeroBR(site.telefone), `telefone inválido: "${site.telefone}"`);
 
-export const whatsapp = linkWhatsApp(site.whatsapp);
-export const whatsappMensagem = (mensagem: string) => linkWhatsApp(site.whatsapp, mensagem);
+/** Link do WhatsApp com a mensagem padrão de site.ts já escrita. */
+export const whatsapp = linkWhatsApp(site.whatsapp, site.mensagemWhatsapp);
+/** Mesmo link, com uma frase a mais depois da mensagem padrão. */
+export const whatsappMensagem = (complemento: string) =>
+  linkWhatsApp(site.whatsapp, [site.mensagemWhatsapp, complemento].filter(Boolean).join(' '));
 export const telefone = linkTelefone(site.telefone);
 
 /** Nome do portal com artigo/preposição certos para usar em frases. */
