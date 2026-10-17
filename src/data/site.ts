@@ -39,6 +39,8 @@ export type Diferencial = {
   icone: 'casa' | 'local' | 'loja' | 'celular';
   titulo: string;
   texto: string;
+  /** Só aparece se `endereco` estiver preenchido. */
+  soComEndereco?: boolean;
 };
 
 export type Site = {
@@ -126,11 +128,8 @@ export const site: Site = {
       icone: 'loja',
       titulo: 'Loja para atender você',
       texto: 'Prefere resolver pessoalmente? Venha conversar na nossa loja.',
-    },
-    {
-      icone: 'celular',
-      titulo: 'Conta pela internet',
-      texto: '2ª via, PIX e faturas pela internet, sem sair de casa.',
+      // Sem endereço da loja, este diferencial não aparece no site.
+      soComEndereco: true,
     },
   ],
 };

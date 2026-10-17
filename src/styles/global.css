@@ -37,6 +37,9 @@
   --color-escuro-700: #353c4c;
   --color-escuro-800: #272e3f;
 
+  /* Exceção: verde oficial do WhatsApp. Só no botão flutuante do WhatsApp. */
+  --color-whatsapp: #25d366;
+
   /* Tipografia — Montserrat empacotada no site */
   --font-sans: "Montserrat Variable", "Montserrat Reserva", ui-sans-serif, system-ui, sans-serif;
   --font-weight-medium: 500;

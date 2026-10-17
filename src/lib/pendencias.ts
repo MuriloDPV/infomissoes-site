@@ -28,7 +28,10 @@ export function pendencias(site: Site): Relatorio {
   else if (!numeroBR(site.telefone))
     invalidos.push({ campo: 'telefone', descricao: `"${site.telefone}" não parece um número com DDD` });
 
-  if (!site.endereco) falta('endereco', 'endereço da loja');
+  if (!site.endereco) {
+    const somem = site.diferenciais.filter((d) => d.soComEndereco).map((d) => `o diferencial "${d.titulo}"`);
+    falta('endereco', `endereço da loja (sem ele não aparecem a loja no contato${somem.map((s) => ` nem ${s}`).join('')})`);
+  }
   if (!site.horario) falta('horario', 'horário de atendimento da loja (opcional)');
 
   if (!site.cnpj) falta('cnpj', 'CNPJ (aparece no rodapé)');

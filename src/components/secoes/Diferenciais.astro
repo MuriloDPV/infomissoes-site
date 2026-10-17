@@ -1,23 +1,34 @@
 ---
 // Diferenciais: poucos, curtos e verdadeiros (textos em site.ts).
+// O que depende do endereço da loja só aparece com o endereço preenchido (em dev, aparece com TODO).
 import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
 import Icone from '../ui/Icone.astro';
+import Pendente from '../ui/Pendente.astro';
 import Secao from '../ui/Secao.astro';
 import { site } from '../../data/site.ts';
+import { DEV } from '../../lib/dados.ts';
+
+const diferenciais = site.diferenciais.filter((d) => !d.soComEndereco || site.endereco || DEV);
+
+// Três itens: título em cima e três colunas no desktop. Outros números: título ao lado, duas colunas.
+const trio = diferenciais.length === 3;
 ---
 
 <Secao id="diferenciais" tom="azul" class="diferenciais overflow-hidden">
-  <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
-    <CabecalhoSecao class="lg:col-span-4" titulo="Por que escolher a Info Missões" />
+  <div class:list={['grid gap-12', trio ? 'lg:gap-10' : 'lg:grid-cols-12 lg:gap-16']}>
+    <CabecalhoSecao class={trio ? undefined : 'lg:col-span-4'} titulo="Por que escolher a Info Missões" />
 
-    <ul class="grid gap-x-12 sm:grid-cols-2 lg:col-span-8">
+    <ul class:list={['grid gap-x-12', trio ? 'lg:grid-cols-3' : 'sm:grid-cols-2 lg:col-span-8']}>
       {
-        site.diferenciais.map((d, i) => (
+        diferenciais.map((d, i) => (
           <li class="diferencial" data-revelar style={`--i:${i + 1}`}>
             <Icone nome={d.icone} class="size-8 shrink-0 text-sup-icone" />
             <div class="flex flex-col gap-2">
               <h3 class="text-2xl">{d.titulo}</h3>
               <p class="text-sup-suave">{d.texto}</p>
+              {d.soComEndereco && !site.endereco && (
+                <Pendente texto="endereço da loja (sem ele, este item some)" campo="endereco" forma="linha" />
+              )}
             </div>
           </li>
         ))

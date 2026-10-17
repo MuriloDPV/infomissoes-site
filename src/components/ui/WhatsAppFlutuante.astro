@@ -44,8 +44,9 @@ const DEV = import.meta.env.DEV;
       min-height: var(--spacing-toque);
       padding: 0.75rem 1.25rem 0.75rem 1rem;
       border-radius: var(--radius-full);
-      background-color: var(--color-amarelo);
-      color: var(--color-azul);
+      /* Verde oficial do WhatsApp com o símbolo branco. O rótulo fica escuro para passar em WCAG AA (9:1). */
+      background-color: var(--color-whatsapp);
+      color: var(--color-escuro);
       font-weight: var(--font-weight-bold);
       text-decoration: none;
       box-shadow:
@@ -65,6 +66,7 @@ const DEV = import.meta.env.DEV;
     .flutuante__icone {
       width: 1.75rem;
       height: 1.75rem;
+      color: var(--color-branco);
     }
 
     @media (hover: hover) {

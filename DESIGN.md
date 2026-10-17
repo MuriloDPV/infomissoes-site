@@ -19,6 +19,9 @@ Tons derivados (misturas do azul/escuro com branco, nenhuma cor nova):
 - `azul-800`, `azul-900`: hover e fundo mais fundo
 - `escuro-300`, `escuro-700`, `escuro-800`: texto secundário e linhas no rodapé
 
+Exceção:
+- `whatsapp` #25d366: verde oficial do WhatsApp. Só no botão flutuante do WhatsApp, com o símbolo branco e o rótulo `escuro` (9:1). Os outros botões de WhatsApp seguem a paleta.
+
 Regras:
 - Amarelo nunca é cor de texto sobre branco. Amarelo é fundo, com texto `azul` (8,5:1) ou `escuro`.
 - Todo texto passa em WCAG AA. Os pares usados ficam entre 6,8:1 e 17,9:1.
@@ -34,7 +37,7 @@ Cada seção escolhe uma superfície, e os componentes ajustam as cores sozinhos
 
 Cores semânticas para usar dentro delas: `text-sup-titulo`, `text-sup-suave`, `text-sup-icone`, `border-sup-linha`, `bg-sup`.
 
-Ritmo da página: azul (destaque) → branco → tinta → branco → azul → amarelo → branco → escuro (rodapé).
+Ritmo da página: azul (destaque) → branco → tinta → branco → azul → branco → escuro (rodapé).
 
 ## Tipografia
 
@@ -59,6 +62,7 @@ Ritmo da página: azul (destaque) → branco → tinta → branco → azul → a
 - Não coloque `data-revelar` num elemento que tem transform de hover. Coloque no elemento em volta.
 - `prefers-reduced-motion`: sem deslocamentos, só fades curtos. O sinal da fibra some e o cabeçalho muda sem transição.
 - Detalhe marcante: fios de fibra em leque no fundo do destaque, com um pulso de luz amarela que passa de vez em quando. Pausa quando sai da tela.
+- Destaque sem foto (desktop): o texto fica centralizado e os fios aparecem por baixo, de ponta a ponta. Com foto: texto à esquerda, foto à direita.
 
 ## Componentes (`src/components/ui/`)
 
@@ -67,7 +71,7 @@ Ritmo da página: azul (destaque) → branco → tinta → branco → azul → a
 - `Secao`: superfície, ritmo vertical e largura máxima.
 - `CabecalhoSecao`: h2 com texto de apoio opcional. Não tem sobretítulo.
 - `Selo`: rótulo curto, `amarelo`, `azul` ou `suave`.
-- `WhatsAppFlutuante`: some sem número. Entra quando o botão de WhatsApp do destaque sai da tela.
+- `WhatsAppFlutuante`: verde do WhatsApp (ver Exceção). Some sem número. Entra quando o botão de WhatsApp do destaque sai da tela.
 - `Icone`: ícones de traço 2px (estilo Lucide) mais a marca do WhatsApp. Ícone só onde ajuda a entender.
 - `Foto`: proporção reservada. Sem arquivo, não gera nada no build.
 - `Logo`: sem arquivo, mostra o nome em texto.

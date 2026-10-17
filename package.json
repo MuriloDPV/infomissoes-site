@@ -9,6 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "todos": "node scripts/todos.ts",
+    "pronto": "node scripts/pronto.ts",
     "astro": "astro"
   },
   "dependencies": {

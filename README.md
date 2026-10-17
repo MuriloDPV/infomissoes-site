@@ -40,6 +40,16 @@ npm run todos
 
 Lista no terminal os dados que ainda faltam em `src/data/site.ts`.
 
+Sem endereço da loja, somem o item "Loja" do contato e o diferencial "Loja para atender você".
+
+## Pronto para o domínio?
+
+```bash
+npm run pronto
+```
+
+Rode antes de publicar no domínio. Falha (código de saída 1) se faltar o WhatsApp ou o telefone em `src/data/site.ts`, ou se algum deles não for um número com DDD, e avisa que o site não está pronto. Com os dois preenchidos, sai com 0.
+
 ## Design
 
 Tokens, componentes e regras de uso estão em `DESIGN.md`.
