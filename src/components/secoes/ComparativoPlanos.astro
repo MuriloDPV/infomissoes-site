@@ -1,17 +1,21 @@
 ---
-// Comparativo dos planos (/planos/): tabela com uma coluna por plano e as linhas Download, Upload e
-// Preço por mês. Nenhuma coluna destacada. No celular a tabela vira uma lista por plano, sem rolagem lateral.
+// Comparativo dos planos (/planos/): tabela limpa com uma coluna por plano e as linhas Download, Upload e
+// Preço por mês, com divisória fina. Nenhuma coluna destacada (não há "mais escolhido").
+// No celular a tabela vira uma lista por plano (mesmas linhas), sem rolagem lateral.
 // Fecha com o link para as cidades atendidas.
 import Botao from '../ui/Botao.astro';
 import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
+import Icone, { type IconeNome } from '../ui/Icone.astro';
+import LinhasInfo from '../ui/LinhasInfo.astro';
 import Secao from '../ui/Secao.astro';
-import { site } from '../../data/site.ts';
+import { site, type Plano } from '../../data/site.ts';
+import { valorPreco } from '../../lib/contato.ts';
 
 const planos = site.planos.slice(0, 3);
-const linhas = [
-  { rotulo: 'Download', valor: (p: (typeof planos)[number]) => p.download },
-  { rotulo: 'Upload', valor: (p: (typeof planos)[number]) => p.upload },
-  { rotulo: 'Preço por mês', valor: (p: (typeof planos)[number]) => p.preco },
+const linhas: { rotulo: string; icone?: IconeNome; valor: (p: Plano) => string; preco?: boolean }[] = [
+  { rotulo: 'Download', icone: 'download', valor: (p) => p.download },
+  { rotulo: 'Upload', icone: 'upload', valor: (p) => p.upload },
+  { rotulo: 'Preço por mês', valor: (p) => p.preco, preco: true },
 ];
 ---
 
@@ -36,11 +40,28 @@ const linhas = [
             </thead>
             <tbody>
               {linhas.map((l) => (
-                <tr>
-                  <th scope="row">{l.rotulo}</th>
-                  {planos.map((p) => (
-                    <td class="tabular">{l.valor(p)}</td>
-                  ))}
+                <tr class:list={{ 'comparativo__preco': l.preco }}>
+                  <th scope="row">
+                    <span class="comparativo__rotulo rotulo">
+                      {l.icone && <Icone nome={l.icone} class="comparativo__icone" />}
+                      {l.rotulo}
+                    </span>
+                  </th>
+                  {planos.map((p) => {
+                    const valor = l.valor(p);
+                    const preco = l.preco ? valorPreco(valor) : null;
+                    return (
+                      <td class="tabular">
+                        {preco ? (
+                          <>
+                            <span class="comparativo__moeda">R$</span> {preco}
+                          </>
+                        ) : (
+                          valor
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
@@ -50,14 +71,10 @@ const linhas = [
             {planos.map((p) => (
               <li class="comparativo-lista__plano">
                 <h3 class="comparativo-lista__nome tabular">{p.nome}</h3>
-                <dl>
-                  {linhas.map((l) => (
-                    <div class="comparativo-lista__linha">
-                      <dt>{l.rotulo}</dt>
-                      <dd class="tabular">{l.valor(p)}</dd>
-                    </div>
-                  ))}
-                </dl>
+                <LinhasInfo
+                  compacto
+                  linhas={linhas.map((l) => ({ rotulo: l.rotulo, icone: l.icone, valor: l.valor(p), destaque: l.preco }))}
+                />
               </li>
             ))}
           </ul>
@@ -78,6 +95,7 @@ const linhas = [
       display: none;
       width: 100%;
       border-collapse: collapse;
+      table-layout: fixed;
       text-align: left;
     }
     @media (width >= 48rem) {
@@ -87,23 +105,45 @@ const linhas = [
     }
     .comparativo th,
     .comparativo td {
-      padding: 1.125rem 1rem;
+      padding: 1.25rem 1rem;
       border-bottom: 1px solid var(--sup-linha);
+      vertical-align: middle;
     }
     .comparativo thead th {
+      padding-top: 0;
       color: var(--sup-titulo);
-      font-size: var(--text-xl);
+      font-size: var(--text-2xl);
       font-weight: var(--font-weight-extrabold);
       letter-spacing: var(--tracking-titulo);
     }
-    .comparativo tbody th {
-      color: var(--sup-suave);
-      font-weight: var(--font-weight-semibold);
+    .comparativo thead th,
+    .comparativo thead td {
+      border-bottom-color: var(--color-marinho-200);
+    }
+    .comparativo__rotulo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .comparativo__icone {
+      width: 1.125rem;
+      height: 1.125rem;
+      color: var(--sup-icone);
     }
     .comparativo tbody td {
       color: var(--sup-titulo);
       font-size: var(--text-lg);
       font-weight: var(--font-weight-bold);
+    }
+    .comparativo tbody .comparativo__preco td {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-extrabold);
+      letter-spacing: var(--tracking-titulo);
+    }
+    .comparativo__moeda {
+      font-size: 0.6em;
+      font-weight: var(--font-weight-bold);
+      letter-spacing: 0;
     }
 
     /* Lista: só no celular */
@@ -117,33 +157,21 @@ const linhas = [
       }
     }
     .comparativo-lista__plano {
+      container-type: inline-size;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
       padding: 1.25rem 1.25rem 0.5rem;
       border-radius: var(--radius-2xl);
-      background-color: var(--color-fundo);
+      background-color: var(--sup-cartao);
+      --sup-linha: var(--sup-cartao-linha);
     }
     .comparativo-lista__nome {
       font-size: var(--text-xl);
       font-weight: var(--font-weight-extrabold);
     }
-    .comparativo-lista__linha {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 1rem;
-      padding-block: 0.875rem;
-      border-bottom: 1px solid var(--sup-linha);
-    }
-    .comparativo-lista__linha:last-child {
+    .comparativo-lista__plano :global(.linhas__linha:last-child) {
       border-bottom: 0;
-    }
-    .comparativo-lista__linha dt {
-      color: var(--sup-suave);
-      font-weight: var(--font-weight-semibold);
-    }
-    .comparativo-lista__linha dd {
-      color: var(--sup-titulo);
-      font-weight: var(--font-weight-bold);
-      white-space: nowrap;
     }
   }
 </style>

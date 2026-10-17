@@ -26,8 +26,8 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
       {
         whatsapp ? (
           <div class="flex" data-revelar style="--i:1">
-            <a class="cartao cartao--whatsapp sup-marinho" href={whatsapp} target="_blank" rel="noopener">
-              <span class="cartao__rotulo">
+            <a class="cartao cartao--whatsapp sup-marinho" href={whatsapp} target="_blank" rel="noopener" data-cta-whatsapp>
+              <span class="cartao__rotulo rotulo">
                 <Icone nome="whatsapp" class="cartao__icone" />
                 WhatsApp
               </span>
@@ -45,8 +45,8 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
       }
 
       <div class:list={['flex', largura('instagram')]} data-revelar style="--i:2">
-        <a class="cartao sup-clara" href={site.instagram} target="_blank" rel="noopener">
-          <span class="cartao__rotulo">
+        <a class="cartao cartao--claro" href={site.instagram} target="_blank" rel="noopener">
+          <span class="cartao__rotulo rotulo">
             <Icone nome="instagram" class="cartao__icone" />
             Instagram
           </span>
@@ -62,8 +62,8 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
       {
         telefone ? (
           <div class:list={['flex', largura('telefone')]} data-revelar style="--i:3">
-            <a class="cartao sup-clara" href={telefone}>
-              <span class="cartao__rotulo">
+            <a class="cartao cartao--claro" href={telefone}>
+              <span class="cartao__rotulo rotulo">
                 <Icone nome="telefone" class="cartao__icone" />
                 Telefone
               </span>
@@ -82,8 +82,8 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
       {
         site.endereco ? (
           <div class:list={['flex', largura('loja')]} data-revelar style="--i:4">
-            <div class="cartao cartao--loja sup-clara">
-              <span class="cartao__rotulo">
+            <div class="cartao cartao--claro cartao--loja">
+              <span class="cartao__rotulo rotulo">
                 <Icone nome="loja" class="cartao__icone" />
                 Loja
               </span>
@@ -146,9 +146,10 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
       gap: 0.75rem;
       padding: 1.5rem;
       border-radius: var(--radius-2xl);
-      box-shadow: inset 0 0 0 1px var(--sup-linha);
       text-decoration: none;
-      transition: transform var(--duracao-lenta) var(--ease-saida);
+    }
+    .cartao--claro {
+      background-color: var(--sup-cartao);
     }
 
     @media (width >= 40rem) {
@@ -163,35 +164,28 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
       }
     }
 
-    /* Sombra que aparece no hover (só opacidade) */
+    /* Realce do hover: o fundo escurece um pouco (só a opacidade anima) */
     a.cartao::after {
       content: '';
       position: absolute;
       inset: 0;
       z-index: -1;
       border-radius: inherit;
-      box-shadow: var(--shadow-lg);
+      background-color: var(--sup-cartao-realce);
       opacity: 0;
       pointer-events: none;
-      transition: opacity var(--duracao-lenta) var(--ease-saida);
-    }
-
-    .cartao--whatsapp {
-      box-shadow: var(--shadow-md);
+      transition: opacity var(--duracao-cor) var(--ease-suave);
     }
 
     .cartao__rotulo {
       display: inline-flex;
       align-items: center;
       gap: 0.625rem;
-      color: var(--sup-suave);
-      font-size: var(--text-sm);
-      font-weight: var(--font-weight-semibold);
     }
 
     .cartao__icone {
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 1.25rem;
+      height: 1.25rem;
       color: var(--sup-icone);
     }
 
@@ -253,9 +247,8 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
       min-height: var(--spacing-toque);
       padding: 0.75rem 1.25rem;
       border-radius: var(--radius-md);
-      background-color: var(--color-amarelo);
-      color: var(--color-marinho);
-      box-shadow: inset 0 -2px 0 rgb(8 16 41 / 0.12);
+      background-color: var(--sup-b1-fundo);
+      color: var(--sup-b1-texto);
     }
     .cartao__botao::before {
       content: '';
@@ -263,9 +256,9 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
       inset: 0;
       z-index: -1;
       border-radius: inherit;
-      background-color: rgb(255 255 255 / 0.26);
+      background-color: var(--sup-b1-realce);
       opacity: 0;
-      transition: opacity var(--duracao-base) var(--ease-saida);
+      transition: opacity var(--duracao-cor) var(--ease-suave);
     }
 
     .cartao__link {
@@ -279,14 +272,11 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
       width: 1.25rem;
       height: 1.25rem;
       flex: none;
-      transition: transform var(--duracao-lenta) var(--ease-saida);
+      transition: transform var(--duracao-base) var(--ease-saida);
     }
 
     @media (hover: hover) {
-      a.cartao:hover {
-        transform: translate3d(0, -3px, 0);
-      }
-      a.cartao:hover::after,
+      a.cartao:not(.cartao--whatsapp):hover::after,
       a.cartao:hover .cartao__botao::before {
         opacity: 1;
       }
@@ -301,11 +291,6 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
       }
     }
 
-    a.cartao:active {
-      transform: scale(0.99);
-      transition-duration: var(--duracao-rapida);
-    }
-
     a.cartao:focus-visible {
       outline-offset: 4px;
     }
@@ -318,12 +303,9 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .cartao,
       .cartao__seta {
         transition: none;
       }
-      a.cartao:hover,
-      a.cartao:active,
       a.cartao:hover .cartao__seta {
         transform: none;
       }

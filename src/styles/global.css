@@ -27,6 +27,9 @@
   --color-fundo: #f4f8fc;
   --color-branco: #ffffff;
 
+  /* Segundo fundo claro: marinho 6% sobre o fundo. Faixas e cartões (como as faixas bege editoriais). */
+  --color-faixa: #e7ecf3;
+
   /* Tons derivados: marinho misturado com branco ou com noite. Nenhuma cor nova. */
   --color-marinho-100: #e4e6ed;
   --color-marinho-200: #cdd1df;
@@ -45,7 +48,9 @@
   --font-weight-titulo: 760;
   --font-weight-extrabold: 800;
 
-  /* Escala: nada abaixo de 16px */
+  /* Escala: texto de leitura nunca abaixo de 16px. A única exceção é o rótulo em caixa alta (13px). */
+  --text-rotulo: 0.8125rem;
+  --text-rotulo--line-height: 1.35;
   --text-sm: 1rem;
   --text-sm--line-height: 1.5;
   --text-base: 1.125rem;
@@ -65,6 +70,7 @@
   --tracking-rotulo: 0.01em;
   --tracking-titulo: -0.026em;
   --tracking-destaque: -0.038em;
+  --tracking-caixa: 0.09em;
 
   --leading-justo: 1.1;
   --leading-titulo: 1.2;
@@ -85,7 +91,7 @@
 
   /* Raios */
   --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
+  --radius-md: 0.625rem;
   --radius-lg: 1rem;
   --radius-xl: 1.25rem;
   --radius-2xl: 1.75rem;
@@ -107,6 +113,7 @@
   --ease-entrada: cubic-bezier(0.7, 0, 0.84, 0);
   --ease-suave: cubic-bezier(0.65, 0, 0.35, 1);
   --duracao-rapida: 140ms;
+  --duracao-cor: 200ms;
   --duracao-base: 220ms;
   --duracao-lenta: 420ms;
   --duracao-revelar: 700ms;
@@ -119,6 +126,7 @@
 /* Cores semânticas: cada superfície (.sup-*) define os valores. */
 @theme inline {
   --color-sup: var(--sup-fundo);
+  --color-sup-cartao: var(--sup-cartao);
   --color-sup-texto: var(--sup-texto);
   --color-sup-titulo: var(--sup-titulo);
   --color-sup-suave: var(--sup-suave);
@@ -132,7 +140,8 @@
 @layer base {
   :root,
   .sup-clara,
-  .sup-suave {
+  .sup-suave,
+  .sup-faixa {
     --sup-fundo: var(--color-branco);
     --sup-texto: var(--color-cinza);
     --sup-titulo: var(--color-marinho);
@@ -140,6 +149,10 @@
     --sup-linha: var(--color-marinho-100);
     --sup-icone: var(--color-azul);
     --sup-foco: var(--color-marinho);
+    /* cartão em cima desta superfície (fundo, realce do hover e divisórias dentro dele) */
+    --sup-cartao: var(--color-faixa);
+    --sup-cartao-realce: var(--color-marinho-100);
+    --sup-cartao-linha: var(--color-marinho-200);
     /* botão primário */
     --sup-b1-fundo: var(--color-marinho);
     --sup-b1-texto: var(--color-branco);
@@ -154,6 +167,15 @@
 
   .sup-suave {
     --sup-fundo: var(--color-fundo);
+  }
+
+  /* Faixa: o segundo fundo claro. Os cartões em cima dela ficam brancos. */
+  .sup-faixa {
+    --sup-fundo: var(--color-faixa);
+    --sup-linha: var(--color-marinho-200);
+    --sup-cartao: var(--color-branco);
+    --sup-cartao-realce: var(--color-fundo);
+    --sup-cartao-linha: var(--color-marinho-100);
   }
 
   .sup-marinho,
@@ -172,6 +194,9 @@
     --sup-b2-borda: rgb(255 255 255 / 0.6);
     --sup-b2-realce: rgb(255 255 255 / 0.1);
     --sup-link: var(--color-branco);
+    --sup-cartao: var(--color-marinho-800);
+    --sup-cartao-realce: rgb(255 255 255 / 0.06);
+    --sup-cartao-linha: rgb(255 255 255 / 0.14);
   }
 
   .sup-noite {
@@ -183,6 +208,7 @@
 
   .sup-clara,
   .sup-suave,
+  .sup-faixa,
   .sup-marinho,
   .sup-noite {
     background-color: var(--sup-fundo);
@@ -270,6 +296,16 @@
    DETALHES DA MARCA
    ===================================================================== */
 @layer components {
+  /* Rótulo pequeno em caixa alta (DOWNLOAD, POR MÊS, CIDADES). 13px, nunca texto de leitura. */
+  .rotulo {
+    color: var(--sup-suave);
+    font-size: var(--text-rotulo);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-caixa);
+    line-height: var(--text-rotulo--line-height);
+    text-transform: uppercase;
+  }
+
   /* Marca-texto amarelo atrás de uma palavra, como nos posts (faixa na metade de baixo).
      O texto continua marinho: 7,7:1 sobre o amarelo. */
   .marca-texto {

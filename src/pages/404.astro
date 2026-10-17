@@ -2,14 +2,14 @@
 // Página não encontrada (404.html): mesmo molde do site, sem indexar, com caminho de volta.
 import Base from '../layouts/Base.astro';
 import Botao from '../components/ui/Botao.astro';
-import Ondas from '../components/ui/Ondas.astro';
+import ArteRuinas from '../components/ui/ArteRuinas.astro';
 import { whatsapp } from '../lib/dados.ts';
 ---
 
 <Base titulo="Página não encontrada | Info Missões" descricao="Esta página não existe no site da Info Missões." indexar={false}>
-  <section class="nao-encontrada sup-suave" aria-labelledby="nao-encontrada-titulo">
-    <Ondas class="nao-encontrada__ondas" />
-    <div class="relative mx-auto flex w-full max-w-pagina flex-col items-start gap-6 px-calha py-secao">
+  <section class="nao-encontrada sup-suave" data-pausavel aria-labelledby="nao-encontrada-titulo">
+    <ArteRuinas tom="claro" class="nao-encontrada__arte" />
+    <div class="nao-encontrada__conteudo relative mx-auto flex w-full max-w-pagina flex-col items-start gap-6 px-calha pt-secao">
       <p class="nao-encontrada__codigo tabular" aria-hidden="true">404</p>
       <h1 id="nao-encontrada-titulo" class="max-w-largo text-destaque tracking-destaque">Página não encontrada</h1>
       <p class="max-w-texto text-lg text-sup-suave">
@@ -40,16 +40,22 @@ import { whatsapp } from '../lib/dados.ts';
       isolation: isolate;
       overflow: hidden;
     }
-    .nao-encontrada__ondas {
-      --sx: 100%;
-      --sy: 90%;
-      --tamanho: 900px;
+    /* Celular: a arte fica no pé, embaixo dos botões. Desktop: à direita. */
+    .nao-encontrada__conteudo {
+      padding-bottom: calc(118vw * 0.52 + 1rem);
+    }
+    .nao-encontrada :global(.nao-encontrada__arte) {
+      --arte-largura: 118%;
+      --arte-pe: -0.75rem;
     }
     @media (width >= 64rem) {
-      .nao-encontrada__ondas {
-        --sx: 84%;
-        --sy: 50%;
-        --tamanho: 1300px;
+      .nao-encontrada__conteudo {
+        padding-bottom: var(--spacing-secao);
+      }
+      .nao-encontrada :global(.nao-encontrada__arte) {
+        --arte-largura: min(54vw, 52rem);
+        --arte-x: -4%;
+        --arte-pe: 1.5rem;
       }
     }
     .nao-encontrada__codigo {

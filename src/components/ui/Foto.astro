@@ -34,7 +34,7 @@ const rotuloProporcao = proporcao === 'retrato' ? '4:5, em pé' : '4:3, deitada'
       sizes={sizes}
       loading={prioridade ? 'eager' : 'lazy'}
       fetchpriority={prioridade ? 'high' : undefined}
-      class:list={['w-full rounded-xl object-cover shadow-lg', aspecto, classe]}
+      class:list={['w-full rounded-2xl object-cover', aspecto, classe]}
     />
   ) : (
     <Pendente texto={`${descricao} (${rotuloProporcao})`} campo={campo} class:list={[aspecto, classe]} />

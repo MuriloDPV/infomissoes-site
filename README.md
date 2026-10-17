@@ -37,7 +37,8 @@ As páginas viram pastas (`planos/index.html`) e os links usam barra final (`/pl
 Ficam todos num arquivo só: `src/data/site.ts`. Ali estão o nome do portal, o WhatsApp, o telefone, o endereço, o CNPJ, as cidades, os planos, o logo, o favicon, as fotos e os textos dos diferenciais.
 
 - Logo: coloque o arquivo em `src/assets/marca/` e escreva só o nome em `logo` (e a versão para fundo escuro em `logoFundoEscuro`). Em SVG com camadas, a logo do cabeçalho anima na primeira visita.
-- Fotos: coloque em `src/assets/fotos/` e escreva só o nome em `fotos.destaque` (4:5, em pé) ou `fotos.loja` (4:3, deitada).
+- Fotos: só fotos próprias da Info Missões. Coloque em `src/assets/fotos/` e escreva só o nome em `fotos.destaque` (4:5, em pé) ou `fotos.loja` (4:3, deitada). As imagens de fundo do site não são fotos: são desenhadas por código a partir da logo (ver `DESIGN.md`).
+- Mapa das cidades: a posição de cada sede fica em `src/data/sedes-ibge.ts` (IBGE, Cadastro de Localidades 2010). Cidade nova em `site.ts` precisa da posição lá, senão o mapa some e fica só a lista.
 - Favicon: coloque em `public/` e escreva só o nome em `favicon`.
 
 Se um dado preenchido estiver errado (número sem DDD, arquivo que não existe), o build para com erro em vez de publicar link ou imagem quebrada.
@@ -70,4 +71,4 @@ node scripts/marca/gerar-icones.mjs
 
 ## Design
 
-Tokens, componentes, regras de uso e a animação de entrada da logo estão em `DESIGN.md`.
+Tokens, componentes, regras de uso, a arte desenhada por código (traço das ruínas + fibra de luz) e a animação de entrada da logo estão em `DESIGN.md`.

@@ -2,11 +2,10 @@
 // Planos (dados de site.ts). Sem planos, um convite neutro para consultar.
 // Página /planos/ (padrão): cartões completos com o botão do WhatsApp e o aviso das condições
 // (o h1 fica na abertura da página).
-// `resumo` (Início): faixa marinho com título, cartões compactos e o botão "Ver os planos".
+// `resumo` (Início): faixa clara com título, cartões compactos (brancos) e o botão "Ver os planos".
 import Botao from '../ui/Botao.astro';
 import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
 import CardPlano from '../ui/CardPlano.astro';
-import Ondas from '../ui/Ondas.astro';
 import Pendente from '../ui/Pendente.astro';
 import Secao from '../ui/Secao.astro';
 import { site } from '../../data/site.ts';
@@ -25,13 +24,7 @@ const texto = temPlanos
   : 'Consulte os planos disponíveis no seu endereço. Fale com a gente e informe a sua rua e a sua cidade.';
 ---
 
-<Secao
-  id="planos"
-  tom={resumo ? 'marinho' : 'suave'}
-  class:list={['overflow-hidden', { 'secao--apos-abertura': !resumo }]}
->
-  {resumo && <Ondas ponto={false} class="planos__ondas" />}
-
+<Secao id="planos" tom={resumo ? 'faixa' : 'suave'}>
   {resumo && <CabecalhoSecao titulo="Planos de internet" texto={texto} />}
   {!resumo && !temPlanos && <p class="max-w-texto text-lg text-sup-suave">{texto}</p>}
 
@@ -63,15 +56,15 @@ const texto = temPlanos
     {temPlanos && <p class="planos__aviso">{site.avisoPlanos}</p>}
     {
       resumo && temPlanos ? (
-        <Botao href="/planos/" variante="destaque" tamanho="lg" seta class="planos__acao">
+        <Botao href="/planos/" tamanho="lg" seta class="planos__acao">
           Ver os planos
         </Botao>
       ) : temPlanos ? null : whatsapp ? (
-        <Botao href={whatsapp} externo indicador={false} icone="whatsapp" variante="destaque" tamanho="lg" data-cta-whatsapp>
+        <Botao href={whatsapp} externo indicador={false} icone="whatsapp" tamanho="lg" data-cta-whatsapp>
           Consultar no WhatsApp
         </Botao>
       ) : (
-        <Botao href="/contato/" variante="destaque" tamanho="lg" seta>
+        <Botao href="/contato/" tamanho="lg" seta>
           Ver formas de contato
         </Botao>
       )
@@ -81,19 +74,6 @@ const texto = temPlanos
 
 <style>
   @layer components {
-    .planos__ondas {
-      --sx: 100%;
-      --sy: 100%;
-      --tamanho: 760px;
-    }
-    @media (width >= 64rem) {
-      .planos__ondas {
-        --sx: 96%;
-        --sy: 110%;
-        --tamanho: 1100px;
-      }
-    }
-
     /* Pé da seção: aviso das condições e a ação (lado a lado a partir do tablet) */
     .planos__pe {
       display: flex;

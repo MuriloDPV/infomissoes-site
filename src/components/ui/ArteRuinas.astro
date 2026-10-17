@@ -1,0 +1,216 @@
+---
+// Arte de fundo desenhada por código: o contorno das ruínas (camada `ruins` da logo, sem redesenhar),
+// em traço fino, com linhas de fibra atravessando a cena e um pulso de luz azul percorrendo o traço,
+// como o "traço de luz" dos Reels. Decorativa (aria-hidden). Só SVG + CSS.
+// tom 'escuro': para fundo noite, com um ou outro ponto de luz amarelo nas fibras.
+// tom 'claro': versão calma para fundo claro, em marinho bem suave, com o pulso passando de vez em quando.
+// O movimento só existe com JS (html.js) e sem movimento reduzido; para quando um ancestral recebe
+// .is-pausado (fora da tela). Parada, a luz fica num ponto fixo do traço.
+import { tracoRuinas } from '../../lib/dados.ts';
+
+interface Props {
+  tom?: 'escuro' | 'claro';
+  class?: string;
+  [atributo: string]: unknown;
+}
+
+// `resto` repassa o atributo de escopo do pai (data-astro-cid-*), para os estilos do pai valerem aqui.
+const { tom = 'escuro', class: classe, ...resto } = Astro.props;
+
+// Trechos com o pulso de luz: o muro em degraus (0) e a parede com o telhado (2).
+const comLuz = [0, 2].filter((i) => tracoRuinas[i]);
+
+// Linhas de fibra nas coordenadas da logo (2000 de largura): passam por trás das ruínas e saem da cena.
+// Os pontos amarelos ficam em emendas das curvas (pontos que estão exatamente na linha).
+const fibras = [
+  'M-2600 700C-1500 660-700 600 300 640S1500 820 2300 760 3800 560 4600 600',
+  'M-2600 1010C-1400 990-300 900 650 905S2100 1010 2900 960 4000 880 4600 900',
+  'M-2600 380C-1700 420-1000 520-500 560S600 470 1250 520 2600 690 4600 640',
+];
+const pontos = [
+  { x: 300, y: 640, atraso: 0 },
+  { x: 2300, y: 760, atraso: 2.4 },
+];
+---
+
+<div {...resto} class:list={['arte', `arte--${tom}`, classe]} aria-hidden="true">
+  <svg class="arte__svg" viewBox="0 0 2000 1040" preserveAspectRatio="xMidYMax meet" focusable="false">
+    <g class="arte__fibras">
+      {fibras.map((d) => <path d={d} />)}
+    </g>
+    <g class="arte__luzes">
+      <path class="arte__luz arte__luz--fibra" d={fibras[0]} pathLength="100" style="--ciclo:9s;--atraso:1.2s;--parada:-62" />
+      {
+        tom === 'escuro' && (
+          <path class="arte__luz arte__luz--fibra" d={fibras[1]} pathLength="100" style="--ciclo:12s;--atraso:5s;--parada:-28" />
+        )
+      }
+    </g>
+    {
+      tracoRuinas.length > 0 && (
+        <g class="arte__ruinas">
+          {tracoRuinas.map((d) => (
+            <path d={d} />
+          ))}
+        </g>
+      )
+    }
+    <g class="arte__luzes">
+      {
+        comLuz.map((i, n) => (
+          <>
+            <path
+              class="arte__luz arte__luz--brilho"
+              d={tracoRuinas[i]}
+              pathLength="100"
+              style={`--atraso:${n * 4}s;--parada:${n ? -54 : -26}`}
+            />
+            <path class="arte__luz" d={tracoRuinas[i]} pathLength="100" style={`--atraso:${n * 4}s;--parada:${n ? -54 : -26}`} />
+          </>
+        ))
+      }
+    </g>
+    {
+      tom === 'escuro' && (
+        <g class="arte__pontos">
+          {pontos.map((p) => (
+            <g class="arte__ponto" style={`--atraso:${p.atraso}s`}>
+              <circle cx={p.x} cy={p.y} r="30" class="arte__halo" />
+              <circle cx={p.x} cy={p.y} r="8.5" />
+            </g>
+          ))}
+        </g>
+      )
+    }
+  </svg>
+</div>
+
+<style>
+  @layer components {
+    .arte {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    /* A arte é desenhada grande e ancorada no pé; no celular fica mais larga que a tela (as pontas saem). */
+    .arte__svg {
+      position: absolute;
+      bottom: var(--arte-pe, 0);
+      left: 50%;
+      width: var(--arte-largura, max(100%, 54rem));
+      height: auto;
+      overflow: visible;
+      transform: translateX(var(--arte-x, -50%));
+    }
+
+    .arte path {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .arte__fibras path {
+      stroke: var(--arte-fibra);
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .arte__ruinas path {
+      stroke: var(--arte-traco);
+      stroke-width: 1.25;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* Pulso de luz: um trecho curto do traço aceso. Parado, fica em --parada. */
+    .arte__luz {
+      stroke: var(--color-azul);
+      stroke-width: 5;
+      stroke-dasharray: 7 200;
+      stroke-dashoffset: var(--parada, -30);
+      opacity: var(--arte-luz, 0.95);
+    }
+    .arte__luz--brilho {
+      stroke-width: 18;
+      opacity: var(--arte-brilho, 0.24);
+    }
+    .arte__luz--fibra {
+      stroke-width: 4;
+      stroke-dasharray: 4 200;
+    }
+
+    .arte__ponto {
+      fill: var(--color-amarelo);
+    }
+    .arte__halo {
+      fill: none;
+      stroke: var(--color-amarelo);
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+      opacity: 0.45;
+    }
+
+    /* Escura: traço claro bem discreto sobre o noite */
+    .arte--escuro {
+      --arte-traco: rgb(255 255 255 / 0.26);
+      --arte-fibra: rgb(163 171 197 / 0.22);
+    }
+
+    /* Clara: marinho bem suave; a luz passa de vez em quando e mais fraca */
+    .arte--claro {
+      --arte-traco: rgb(26 45 109 / 0.16);
+      --arte-fibra: rgb(26 45 109 / 0.1);
+      --arte-luz: 0.7;
+      --arte-brilho: 0.12;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      :global(html.js) .arte__luz {
+        animation: arte-luz var(--ciclo, 8s) linear var(--atraso, 0s) infinite both;
+      }
+      :global(html.js) .arte--claro .arte__luz {
+        animation-name: arte-luz-rara;
+        animation-duration: var(--ciclo-claro, 13s);
+      }
+      :global(html.js) .arte__ponto {
+        animation: arte-ponto 4.8s var(--ease-suave) var(--atraso, 0s) infinite alternate both;
+      }
+      :global(.is-pausado) .arte__luz,
+      :global(.is-pausado) .arte__ponto {
+        animation-play-state: paused;
+      }
+    }
+
+    /* A luz entra pelo começo do traço, percorre tudo e sai pelo fim; depois uma pausa. */
+    @keyframes arte-luz {
+      0% {
+        stroke-dashoffset: 7;
+        animation-timing-function: cubic-bezier(0.45, 0, 0.3, 1);
+      }
+      72%,
+      100% {
+        stroke-dashoffset: -100;
+      }
+    }
+    @keyframes arte-luz-rara {
+      0% {
+        stroke-dashoffset: 7;
+        animation-timing-function: cubic-bezier(0.45, 0, 0.3, 1);
+      }
+      44%,
+      100% {
+        stroke-dashoffset: -100;
+      }
+    }
+    @keyframes arte-ponto {
+      from {
+        opacity: 0.45;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  }
+</style>

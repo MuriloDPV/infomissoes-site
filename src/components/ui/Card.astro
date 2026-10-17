@@ -1,29 +1,18 @@
 ---
-// Card: superfície elevada para conteúdo agrupado.
-// variante 'claro' (branco) ou 'marinho'. `interativo` adiciona hover de elevação
-// (use quando o card inteiro é clicável ou contém a ação principal).
+// Card: bloco de conteúdo agrupado. Cantos bem arredondados, sem borda e sem sombra.
+// 'claro' usa o fundo de cartão da superfície em volta (faixa clara; branco em cima da faixa).
+// 'marinho' é o cartão escuro.
 interface Props {
-  as?: 'article' | 'div' | 'li' | 'ul' | 'a';
-  href?: string;
+  as?: 'article' | 'div' | 'li' | 'ul';
   variante?: 'claro' | 'marinho';
-  interativo?: boolean;
   class?: string;
   [atributo: `data-${string}`]: string | boolean | undefined;
 }
 
-const { as: Tag = 'div', variante = 'claro', interativo = false, class: classe, ...resto } = Astro.props;
+const { as: Tag = 'div', variante = 'claro', class: classe, ...resto } = Astro.props;
 ---
 
-<Tag
-  class:list={[
-    'card',
-    `card--${variante}`,
-    variante === 'marinho' ? 'sup-marinho' : 'sup-clara',
-    { 'card--interativo': interativo },
-    classe,
-  ]}
-  {...resto}
->
+<Tag class:list={['card', `card--${variante}`, { 'sup-marinho': variante === 'marinho' }, classe]} {...resto}>
   <slot />
 </Tag>
 
@@ -32,52 +21,14 @@ const { as: Tag = 'div', variante = 'claro', interativo = false, class: classe, 
   @layer components {
     .card {
       position: relative;
-      isolation: isolate;
       display: flex;
       flex-direction: column;
       border-radius: var(--radius-2xl);
-      box-shadow:
-        inset 0 0 0 1px var(--sup-linha),
-        var(--shadow-sm);
-      transition: transform var(--duracao-lenta) var(--ease-saida);
     }
 
-    .card--marinho {
-      box-shadow: var(--shadow-md);
-    }
-
-    /* Sombra maior que aparece no hover (só opacidade anima) */
-    .card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      border-radius: inherit;
-      box-shadow: var(--shadow-lg);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity var(--duracao-lenta) var(--ease-saida);
-    }
-
-    @media (hover: hover) {
-      .card--interativo:hover,
-      .card--interativo:focus-within {
-        transform: translate3d(0, -4px, 0);
-      }
-      .card--interativo:hover::after,
-      .card--interativo:focus-within::after {
-        opacity: 1;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .card {
-        transition: none;
-      }
-      .card--interativo:hover,
-      .card--interativo:focus-within {
-        transform: none;
-      }
+    .card--claro {
+      --sup-linha: var(--sup-cartao-linha);
+      background-color: var(--sup-cartao);
     }
   }
 </style>

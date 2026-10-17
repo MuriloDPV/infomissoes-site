@@ -1,4 +1,6 @@
 ---
+// Rodapé (marinho escuro): logo para fundo escuro e quatro colunas (Páginas, Cidades, Contato,
+// Área do Assinante).
 import Icone from '../ui/Icone.astro';
 import Logo from '../ui/Logo.astro';
 import Pendente from '../ui/Pendente.astro';
@@ -11,17 +13,17 @@ const caminho = Astro.url.pathname;
 ---
 
 <footer class="rodape sup-noite">
-  <div class="mx-auto grid w-full max-w-pagina gap-12 px-calha py-16 md:grid-cols-2 lg:grid-cols-12 lg:py-24">
-    <div class="flex flex-col items-start gap-6 md:col-span-2 lg:col-span-5">
+  <div class="rodape__grade mx-auto w-full max-w-pagina px-calha">
+    <div class="rodape__marca">
       <Logo tom="escuro" class="rodape__logo" />
       <p class="max-w-estreito text-sup-suave">Internet de fibra óptica na região das Missões, Rio Grande do Sul.</p>
       {site.cnpj && <p class="tabular text-sm text-sup-suave">CNPJ {site.cnpj}</p>}
       {DEV && !site.cnpj && <Pendente texto="CNPJ" campo="cnpj" forma="linha" />}
     </div>
 
-    <nav aria-label="Rodapé" class="lg:col-span-3">
-      <h2 class="rodape__titulo">Páginas</h2>
-      <ul class="mt-3 flex flex-col">
+    <nav aria-labelledby="rodape-paginas" class="rodape__coluna">
+      <h2 id="rodape-paginas" class="rodape__titulo rotulo">Páginas</h2>
+      <ul>
         {
           paginas.map((p) => (
             <li>
@@ -34,21 +36,29 @@ const caminho = Astro.url.pathname;
       </ul>
     </nav>
 
-    <div class="lg:col-span-4">
-      <h2 class="rodape__titulo">Atendimento</h2>
-      <ul class="mt-3 flex flex-col">
-        <li>
-          <a class="rodape__link" href={portal.url} target="_blank" rel="noopener">
-            {portal.nome}
-            <Icone nome="externo" class="size-4" />
-            <span class="sr-only"> (abre em nova aba)</span>
-          </a>
-        </li>
+    {
+      site.cidades.length > 0 && (
+        <div class="rodape__coluna rodape__coluna--cidades">
+          <h2 class="rodape__titulo rotulo">
+            <a class="rodape__titulo-link" href="/onde-atendemos/">Cidades</a>
+          </h2>
+          <ul class="rodape__cidades">
+            {site.cidades.map((c) => (
+              <li class="rodape__item">{c}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    <div class="rodape__coluna">
+      <h2 class="rodape__titulo rotulo">Contato</h2>
+      <ul>
         {
           whatsapp && (
             <li>
               <a class="rodape__link" href={whatsapp} target="_blank" rel="noopener">
-                WhatsApp <span class="tabular">{site.whatsapp}</span>
+                WhatsApp <span class="rodape__numero tabular">{site.whatsapp}</span>
                 <span class="sr-only"> (abre em nova aba)</span>
               </a>
             </li>
@@ -58,7 +68,7 @@ const caminho = Astro.url.pathname;
           telefone && (
             <li>
               <a class="rodape__link" href={telefone}>
-                Telefone <span class="tabular">{site.telefone}</span>
+                Telefone <span class="rodape__numero tabular">{site.telefone}</span>
               </a>
             </li>
           )
@@ -70,12 +80,32 @@ const caminho = Astro.url.pathname;
             <span class="sr-only"> (abre em nova aba)</span>
           </a>
         </li>
+        {site.endereco && <li class="rodape__item">{site.endereco}</li>}
+      </ul>
+    </div>
+
+    <div class="rodape__coluna">
+      <h2 class="rodape__titulo rotulo">{portal.nome}</h2>
+      <p class="rodape__item text-sup-suave">2ª via, PIX e faturas.</p>
+      <ul>
+        <li>
+          <a class="rodape__link" href={portal.url} target="_blank" rel="noopener">
+            Entrar {portal.na}
+            <Icone nome="externo" class="size-4" />
+            <span class="sr-only"> (abre em nova aba)</span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>
 
   <div class="border-t border-sup-linha">
-    <p class:list={['mx-auto w-full max-w-pagina px-calha pt-6 text-sm text-sup-suave', whatsapp ? 'pb-28 md:pb-6' : 'pb-6']}>
+    <p
+      class:list={[
+        'mx-auto w-full max-w-pagina px-calha pt-6 text-sm text-sup-suave',
+        whatsapp ? 'pb-28 md:pb-6' : 'pb-6',
+      ]}
+    >
       © {ano} {site.nome}
     </p>
   </div>
@@ -83,42 +113,109 @@ const caminho = Astro.url.pathname;
 
 <style>
   @layer components {
+    .rodape__grade {
+      display: grid;
+      gap: 2.5rem 2rem;
+      padding-block: 4rem 3.5rem;
+    }
+    @media (width >= 30rem) {
+      .rodape__grade {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .rodape__marca {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.25rem;
+    }
+    .rodape__coluna--cidades {
+      grid-column: 1 / -1;
+    }
+    @media (width >= 48rem) {
+      .rodape__grade {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .rodape__coluna--cidades {
+        grid-column: auto;
+      }
+    }
+    @media (width >= 64rem) {
+      .rodape__grade {
+        grid-template-columns: 1.4fr 1fr 1.2fr 1.1fr 1.1fr;
+        padding-block: 5.5rem 4.5rem;
+      }
+      .rodape__marca {
+        grid-column: auto;
+        padding-right: 2rem;
+      }
+    }
+
     .rodape__logo {
       --logo-altura: 4.25rem;
     }
 
-    @media (width >= 48rem) {
-      .rodape__logo {
-        --logo-altura: 5rem;
+    .rodape__titulo {
+      margin-bottom: 0.75rem;
+      color: var(--color-marinho-300);
+    }
+    .rodape__titulo-link {
+      color: inherit;
+      text-decoration: none;
+    }
+    @media (hover: hover) {
+      .rodape__titulo-link:hover {
+        color: var(--color-branco);
       }
     }
 
-    .rodape__titulo {
-      color: var(--color-branco);
-      font-size: var(--text-sm);
-      font-weight: var(--font-weight-bold);
-      letter-spacing: var(--tracking-rotulo);
-    }
-
+    /* Link em linha: o texto quebra normalmente e o ícone segue a última palavra */
     .rodape__link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      min-height: 3rem;
+      display: inline-block;
+      padding-block: 0.6875rem;
+      line-height: 1.4;
       color: var(--sup-texto);
       text-decoration: underline;
       text-decoration-color: transparent;
+      transition:
+        color var(--duracao-cor) var(--ease-suave),
+        text-decoration-color var(--duracao-cor) var(--ease-suave);
     }
-
     .rodape__link[aria-current='page'] {
       color: var(--color-branco);
       text-decoration-color: var(--color-amarelo);
     }
-
     @media (hover: hover) {
       .rodape__link:hover {
         color: var(--color-branco);
         text-decoration-color: var(--color-amarelo);
+      }
+    }
+
+    .rodape__link :global(svg) {
+      display: inline-block;
+      margin-left: 0.25rem;
+      vertical-align: -0.125em;
+    }
+    .rodape__numero {
+      white-space: nowrap;
+    }
+
+    .rodape__item {
+      padding-block: 0.3125rem;
+      line-height: 1.45;
+    }
+
+    /* Nove cidades: duas colunas no celular, uma no desktop */
+    .rodape__cidades {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 2rem;
+    }
+    @media (width >= 48rem) {
+      .rodape__cidades {
+        grid-template-columns: 1fr;
       }
     }
   }

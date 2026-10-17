@@ -65,6 +65,18 @@ function marca(nome: string | null, campo: string): Marca | null {
 }
 
 export const imagemFoto = (foto: Foto, campo: string) => arquivo(fotos, 'fotos', foto.arquivo, campo);
+
+/**
+ * Traço das ruínas: a camada `ruins` da logo em camadas, separada em trechos (cada "M" começa um).
+ * É o elemento gráfico de fundo das artes do site (sem redesenhar nem recolorir a logo).
+ * Sem logo em SVG com essa camada, fica vazio e as artes mostram só as linhas de fibra.
+ */
+export const tracoRuinas: string[] = (() => {
+  const svg = site.logo ? marcasSvg[`/src/assets/marca/${site.logo}`] : undefined;
+  const d = svg?.match(/<g id="ruins"[^>]*>\s*<path[^>]*\sd="([^"]+)"/)?.[1];
+  return d ? d.split(/(?=M)/).filter((t) => t.trim()) : [];
+})();
+
 export const logo = marca(site.logo, 'logo');
 export const logoFundoEscuro = marca(site.logoFundoEscuro, 'logoFundoEscuro');
 

@@ -1,32 +1,30 @@
 ---
-// Destaque (hero). Fundo claro e calmo; ao fundo, ondas de sinal saindo de um ponto,
-// como na antena da logo. De vez em quando uma onda passa (pausa fora da tela).
+// Destaque (hero) da Início. Fundo claro e calmo, título grande e, ao fundo, a versão clara da arte:
+// o traço das ruínas e as linhas de fibra em marinho bem suave, com o pulso de luz passando de vez em
+// quando (pausa fora da tela). A arte fica à direita no desktop e no pé no celular, longe do texto.
+// Com foto própria em site.ts (fotos.destaque), a foto entra à direita.
+import ArteRuinas from '../ui/ArteRuinas.astro';
 import Botao from '../ui/Botao.astro';
 import Foto from '../ui/Foto.astro';
-import Ondas from '../ui/Ondas.astro';
 import Pendente from '../ui/Pendente.astro';
 import { site } from '../../data/site.ts';
 import { DEV, imagemFoto, portal, whatsapp } from '../../lib/dados.ts';
 
 const temFoto = !!imagemFoto(site.fotos.destaque, 'fotos.destaque');
-const mostrarFoto = temFoto || DEV;
-
 ---
 
 <section
   id="inicio"
   data-destaque
-  class:list={['destaque sup-suave', mostrarFoto ? 'destaque--com-foto' : 'destaque--sem-foto']}
+  class:list={['destaque sup-suave', temFoto ? 'destaque--com-foto' : 'destaque--sem-foto']}
   aria-labelledby="destaque-titulo"
 >
-  <Ondas pulso class="destaque__ondas" />
+  <ArteRuinas tom="claro" class="destaque__arte" />
 
   <div
-    class:list={[
-      'relative mx-auto grid w-full max-w-pagina gap-12 px-calha pt-14 pb-20 md:pt-24 md:pb-28 lg:grid-cols-12 lg:items-center lg:pt-28 lg:pb-36',
-    ]}
+    class="relative mx-auto grid w-full max-w-pagina gap-12 px-calha pt-14 md:pt-24 lg:grid-cols-12 lg:items-center lg:pt-28"
   >
-    <div class:list={['flex flex-col gap-6 md:gap-7', mostrarFoto ? 'lg:col-span-7' : 'lg:col-span-8']}>
+    <div class="flex flex-col gap-6 md:gap-7 lg:col-span-7">
       <h1 id="destaque-titulo" class="text-destaque tracking-destaque">
         Internet de fibra óptica nas <span class="marca-texto">Missões</span>
       </h1>
@@ -54,7 +52,7 @@ const mostrarFoto = temFoto || DEV;
     </div>
 
     {
-      mostrarFoto && (
+      temFoto && (
         <div class="lg:col-span-5">
           <Foto
             foto={site.fotos.destaque}
@@ -78,35 +76,36 @@ const mostrarFoto = temFoto || DEV;
       position: relative;
       isolation: isolate;
       overflow: hidden;
+      /* Espaço no pé para a arte aparecer inteira embaixo dos botões no celular
+         (altura da arte: 52% da largura dela) */
+      padding-bottom: calc(118vw * 0.52 + 0.5rem);
     }
 
-    /* Centro das ondas muda conforme a tela e a presença da foto */
-    /* Celular: centro fora da tela, só os arcos aparecem no canto */
-    .destaque__ondas {
-      --sx: 112%;
-      --sy: 104%;
-      --tamanho: 1000px;
+    /* Celular e tablet: a arte fica no pé, um pouco mais larga que a tela */
+    .destaque :global(.destaque__arte) {
+      --arte-largura: 118%;
+      --arte-pe: -0.75rem;
     }
 
     @media (width >= 48rem) {
-      .destaque__ondas {
-        --sx: 96%;
-        --sy: 100%;
-        --tamanho: 1200px;
+      .destaque {
+        padding-bottom: 26rem;
+      }
+      .destaque :global(.destaque__arte) {
+        --arte-largura: 50rem;
+        --arte-x: -42%;
       }
     }
 
+    /* Desktop: a arte vai para a direita, ao lado do texto */
     @media (width >= 64rem) {
-      .destaque--sem-foto .destaque__ondas {
-        --sx: 82%;
-        --sy: 52%;
-        --tamanho: 1400px;
+      .destaque {
+        padding-bottom: 8rem;
       }
-      /* Com foto: o centro fica atrás da foto e as ondas aparecem em volta dela */
-      .destaque--com-foto .destaque__ondas {
-        --sx: 86%;
-        --sy: 70%;
-        --tamanho: 1400px;
+      .destaque :global(.destaque__arte) {
+        --arte-largura: min(54vw, 52rem);
+        --arte-x: -4%;
+        --arte-pe: 1.5rem;
       }
     }
   }

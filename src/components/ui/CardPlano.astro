@@ -1,14 +1,14 @@
 ---
-// Cartão de um plano (dados de site.ts). Download e upload em linhas separadas, com seta e palavra,
-// para não confundir. Preço em destaque, com "R$" menor. Botão: WhatsApp com a mensagem padrão
-// + "Tenho interesse no plano X." (sem WhatsApp, leva à página de contato).
+// Cartão de um plano (dados de site.ts), em linhas com divisória fina:
+// DOWNLOAD / UPLOAD / POR MÊS, cada uma com o rótulo à esquerda e o valor à direita. Download e upload
+// levam a seta para baixo e para cima, para não confundir. O preço é o número grande.
+// Botão: WhatsApp com a mensagem padrão + "Tenho interesse no plano X." (sem WhatsApp, leva à página de contato).
 // `compacto` (resumo da Início): menor e sem botão; o link "Ver os planos" fica fora dos cartões.
 import Botao from './Botao.astro';
 import Card from './Card.astro';
-import Icone from './Icone.astro';
+import LinhasInfo from './LinhasInfo.astro';
 import Selo from './Selo.astro';
 import type { Plano } from '../../data/site.ts';
-import { valorPreco } from '../../lib/contato.ts';
 import { whatsappMensagem } from '../../lib/dados.ts';
 
 interface Props {
@@ -21,52 +21,27 @@ interface Props {
 
 const { plano: p, compacto = false, nivel = 3, class: classe } = Astro.props;
 const Titulo = nivel === 2 ? 'h2' : 'h3';
-const valor = valorPreco(p.preco);
 const link = whatsappMensagem(`Tenho interesse no plano ${p.nome}.`);
-const variante = p.selo ? 'destaque' : 'primario';
 ---
 
-<Card
-  as="article"
-  interativo={!compacto}
-  class:list={['plano w-full', { 'plano--compacto': compacto, 'plano--selo': p.selo }, classe]}
->
+<Card as="article" class:list={['plano w-full', { 'plano--compacto': compacto }, classe]}>
   {p.selo && <Selo class="plano__selo">{p.selo}</Selo>}
   <Titulo class="plano__nome tabular">{p.nome}</Titulo>
 
-  <dl class="plano__velocidades">
-    <div class="plano__velocidade">
-      <dt><Icone nome="download" class="plano__seta" />Download</dt>
-      <dd class="tabular">{p.download}</dd>
-    </div>
-    <div class="plano__velocidade">
-      <dt><Icone nome="upload" class="plano__seta" />Upload</dt>
-      <dd class="tabular">{p.upload}</dd>
-    </div>
-  </dl>
-
-  <p class="plano__preco">
-    {
-      valor ? (
-        <>
-          <span class="plano__moeda">R$</span>
-          <span class="plano__valor tabular">{valor}</span>
-        </>
-      ) : (
-        <span class="plano__valor tabular">{p.preco}</span>
-      )
-    }
-    <span class="plano__periodo">{p.periodo ?? 'por mês'}</span>
-  </p>
+  <LinhasInfo
+    compacto={compacto}
+    linhas={[
+      { rotulo: 'Download', valor: p.download, icone: 'download' },
+      { rotulo: 'Upload', valor: p.upload, icone: 'upload' },
+      { rotulo: p.periodo ?? 'Por mês', valor: p.preco, destaque: true },
+    ]}
+  />
 
   {
     !compacto && p.beneficios && p.beneficios.length > 0 && (
-      <ul class="flex flex-col gap-3">
+      <ul class="plano__beneficios">
         {p.beneficios.map((b) => (
-          <li class="flex gap-3">
-            <Icone nome="check" class="mt-1 size-5 shrink-0 text-sup-icone" />
-            <span>{b}</span>
-          </li>
+          <li>{b}</li>
         ))}
       </ul>
     )
@@ -74,22 +49,13 @@ const variante = p.selo ? 'destaque' : 'primario';
 
   {
     !compacto && (
-      <div class="mt-auto">
+      <div class="plano__acao">
         {link ? (
-          <Botao
-            href={link}
-            externo
-            indicador={false}
-            icone="whatsapp"
-            variante={variante}
-            tamanho="lg"
-            cheio
-            data-cta-whatsapp
-          >
+          <Botao href={link} externo indicador={false} icone="whatsapp" tamanho="lg" cheio data-cta-whatsapp>
             Quero este plano
           </Botao>
         ) : (
-          <Botao href="/contato/" variante={variante} tamanho="lg" seta cheio>
+          <Botao href="/contato/" tamanho="lg" seta cheio>
             Quero este plano
           </Botao>
         )}
@@ -101,124 +67,56 @@ const variante = p.selo ? 'destaque' : 'primario';
 <style>
   @layer components {
     .plano {
-      gap: 1.5rem;
+      container-type: inline-size;
+      gap: 1.75rem;
       padding: 1.75rem 1.5rem 1.5rem;
     }
     @media (width >= 48rem) {
       .plano {
-        padding: 2rem 2rem 1.75rem;
+        padding: 2.25rem 2rem 2rem;
       }
     }
 
-    /* Plano com selo: contorno amarelo */
-    .plano--selo {
-      box-shadow:
-        inset 0 0 0 2px var(--color-amarelo),
-        var(--shadow-md);
-    }
     .plano :global(.plano__selo) {
-      position: absolute;
-      top: -1rem;
-      left: 1.5rem;
-      box-shadow: var(--shadow-sm);
+      align-self: flex-start;
     }
 
+    /* Nome e preço acompanham a largura do cartão (container), sem quebrar linha */
     .plano__nome {
-      font-size: var(--text-3xl);
+      font-size: clamp(1.75rem, 15cqi, 3rem);
+      white-space: nowrap;
       font-weight: var(--font-weight-extrabold);
       letter-spacing: var(--tracking-destaque);
       line-height: var(--leading-justo);
     }
 
-    /* Download e upload: uma linha cada, rótulo à esquerda e velocidade à direita */
-    .plano__velocidades {
+    .plano__beneficios {
       display: flex;
       flex-direction: column;
-      border-block: 1px solid var(--sup-linha);
-    }
-    .plano__velocidade {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      min-height: 3.5rem;
-      padding-block: 0.5rem;
-    }
-    .plano__velocidade + .plano__velocidade {
-      border-top: 1px solid var(--sup-linha);
-    }
-    .plano__velocidade dt {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.625rem;
-      color: var(--sup-texto);
-      font-weight: var(--font-weight-semibold);
-    }
-    .plano__velocidade dd {
-      color: var(--sup-titulo);
-      font-size: var(--text-xl);
-      font-weight: var(--font-weight-bold);
-      letter-spacing: -0.015em;
-      white-space: nowrap;
-    }
-    .plano__seta {
-      width: 1.375rem;
-      height: 1.375rem;
-      flex: none;
-      color: var(--sup-icone);
+      gap: 0.5rem;
+      padding-left: 1.25rem;
+      list-style: disc;
     }
 
-    /* Preço em destaque: bloco de fundo claro dentro do cartão */
-    .plano__preco {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      column-gap: 0.375rem;
-      padding: 1rem 1.25rem;
-      border-radius: var(--radius-lg);
-      background-color: var(--color-fundo);
-      color: var(--sup-titulo);
+    .plano__acao {
+      margin-top: auto;
     }
-    .plano__moeda {
-      font-size: var(--text-xl);
-      font-weight: var(--font-weight-bold);
-    }
-    .plano__valor {
-      font-size: var(--text-3xl);
-      font-weight: var(--font-weight-extrabold);
-      letter-spacing: var(--tracking-destaque);
-      line-height: var(--leading-justo);
-    }
-    /* "por mês" sempre na linha de baixo, igual em todos os cartões */
-    .plano__periodo {
-      flex-basis: 100%;
-      color: var(--sup-suave);
-      font-size: var(--text-sm);
-      font-weight: var(--font-weight-semibold);
+    /* Cartão estreito (3 colunas em telas de ~1024px): o botão continua com 60px, o texto um pouco menor */
+    @container (width < 19rem) {
+      .plano__acao :global(.botao) {
+        gap: 0.5rem;
+        padding-inline: 1rem;
+        font-size: var(--text-base);
+      }
     }
 
     /* Compacto (resumo da Início): mesma leitura, em tamanho menor */
     .plano--compacto {
       gap: 1.25rem;
-      padding: 1.5rem;
+      padding: 1.5rem 1.5rem 1.25rem;
     }
     .plano--compacto .plano__nome {
-      font-size: var(--text-2xl);
-    }
-    .plano--compacto .plano__velocidade {
-      min-height: 3rem;
-    }
-    .plano--compacto .plano__velocidade dd {
-      font-size: var(--text-lg);
-    }
-    .plano--compacto .plano__preco {
-      padding: 0.875rem 1.125rem;
-    }
-    .plano--compacto .plano__moeda {
-      font-size: var(--text-lg);
-    }
-    .plano--compacto .plano__valor {
-      font-size: var(--text-2xl);
+      font-size: clamp(1.5rem, 10cqi, 2.25rem);
     }
   }
 </style>

@@ -1,7 +1,6 @@
 ---
 // Abertura das páginas internas: o h1 da página, grande, e uma frase curta embaixo.
-// A seção seguinte continua na mesma superfície (fundo claro).
-import Ondas from '../ui/Ondas.astro';
+// A seção seguinte continua na mesma superfície (fundo claro). Sem arte: a imagem da página vem depois.
 
 interface Props {
   titulo: string;
@@ -12,7 +11,6 @@ const { titulo, texto } = Astro.props;
 ---
 
 <section class="abertura sup-suave" aria-labelledby="abertura-titulo">
-  <Ondas ponto={false} class="abertura__ondas" />
   <div class="relative mx-auto flex w-full max-w-pagina flex-col gap-5 px-calha pt-14 pb-4 md:gap-6 md:pt-24">
     <h1 id="abertura-titulo" class="max-w-largo text-destaque tracking-destaque">{titulo}</h1>
     {texto && <p class="max-w-texto text-lg text-sup-suave md:text-xl">{texto}</p>}
@@ -24,20 +22,6 @@ const { titulo, texto } = Astro.props;
   @layer components {
     .abertura {
       position: relative;
-      isolation: isolate;
-      overflow: hidden;
-    }
-    .abertura__ondas {
-      --sx: 104%;
-      --sy: 0%;
-      --tamanho: 900px;
-    }
-    @media (width >= 64rem) {
-      .abertura__ondas {
-        --sx: 92%;
-        --sy: 10%;
-        --tamanho: 1300px;
-      }
     }
   }
 </style>

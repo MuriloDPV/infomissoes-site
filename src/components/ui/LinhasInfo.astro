@@ -1,0 +1,125 @@
+---
+// Informação em linhas, com divisória fina: rótulo em caixa alta à esquerda e o valor à direita
+// (DOWNLOAD ······ 300 Mega). `destaque` deixa o valor grande (o preço, um número que importa).
+// O valor pode vir com "R$": a moeda fica menor que o número.
+import Icone, { type IconeNome } from './Icone.astro';
+import { valorPreco } from '../../lib/contato.ts';
+
+export type Linha = {
+  rotulo: string;
+  valor: string;
+  /** Ícone antes do rótulo (ex.: setas de download e upload, para não confundir). */
+  icone?: IconeNome;
+  destaque?: boolean;
+};
+
+interface Props {
+  linhas: Linha[];
+  /** Valores um pouco menores (cartões compactos). */
+  compacto?: boolean;
+  class?: string;
+}
+
+const { linhas, compacto = false, class: classe } = Astro.props;
+---
+
+<dl class:list={['linhas', { 'linhas--compacto': compacto }, classe]}>
+  {
+    linhas.map((l) => {
+      const preco = valorPreco(l.valor);
+      return (
+        <div class:list={['linhas__linha', { 'linhas__linha--destaque': l.destaque }]}>
+          <dt class="linhas__rotulo rotulo">
+            {l.icone && <Icone nome={l.icone} class="linhas__icone" />}
+            {l.rotulo}
+          </dt>
+          <dd class="linhas__valor tabular">
+            {preco ? (
+              <>
+                <span class="linhas__moeda">R$</span> {preco}
+              </>
+            ) : (
+              l.valor
+            )}
+          </dd>
+        </div>
+      );
+    })
+  }
+</dl>
+
+<style>
+  @layer components {
+    .linhas {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .linhas__linha {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: 0.9375rem;
+      border-top: 1px solid var(--sup-linha);
+    }
+    .linhas__linha:last-child {
+      border-bottom: 1px solid var(--sup-linha);
+    }
+
+    .linhas__rotulo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+    .linhas__icone {
+      width: 1.125rem;
+      height: 1.125rem;
+      flex: none;
+      color: var(--sup-icone);
+    }
+
+    .linhas__valor {
+      color: var(--sup-titulo);
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: -0.012em;
+      line-height: 1.2;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* Valor em destaque: o número grande, a moeda menor */
+    .linhas__linha--destaque {
+      align-items: center;
+    }
+    /* O preço acompanha a largura do cartão (container), para nunca encostar na borda */
+    .linhas__linha--destaque .linhas__valor {
+      font-size: clamp(1.75rem, 14cqi, 2.75rem);
+      font-weight: var(--font-weight-extrabold);
+      letter-spacing: var(--tracking-destaque);
+      line-height: 1;
+    }
+    .linhas__moeda {
+      font-size: 0.5em;
+      font-weight: var(--font-weight-bold);
+      letter-spacing: 0;
+      vertical-align: 0.55em;
+    }
+    .linhas__linha:not(.linhas__linha--destaque) .linhas__moeda {
+      font-size: inherit;
+      vertical-align: baseline;
+    }
+
+    .linhas--compacto .linhas__linha {
+      padding-block: 0.75rem;
+    }
+    .linhas--compacto .linhas__valor {
+      font-size: var(--text-base);
+    }
+    .linhas--compacto .linhas__linha--destaque .linhas__valor {
+      font-size: clamp(1.5rem, 9cqi, 2.25rem);
+    }
+  }
+</style>

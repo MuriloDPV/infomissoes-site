@@ -1,8 +1,8 @@
 ---
-// /planos/: abertura, os 3 planos completos com o aviso das condições, a tabela comparativa
-// e o link para as cidades atendidas.
+// /planos/: abertura escura (página de anúncio), os 3 planos completos com o aviso das condições,
+// a tabela comparativa e o link para as cidades atendidas.
 import Base from '../layouts/Base.astro';
-import AberturaPagina from '../components/secoes/AberturaPagina.astro';
+import AberturaEscura from '../components/secoes/AberturaEscura.astro';
 import Planos from '../components/secoes/Planos.astro';
 import ComparativoPlanos from '../components/secoes/ComparativoPlanos.astro';
 import { site } from '../data/site.ts';
@@ -20,7 +20,7 @@ const descricao = planos.length
 ---
 
 <Base titulo={titulo} descricao={descricao}>
-  <AberturaPagina titulo="Planos de internet" texto="Fibra óptica até a sua casa, com atendimento aqui na região." />
+  <AberturaEscura titulo="Planos de internet" texto="Fibra óptica até a sua casa, com atendimento aqui na região." />
   <Planos />
   <ComparativoPlanos />
 </Base>

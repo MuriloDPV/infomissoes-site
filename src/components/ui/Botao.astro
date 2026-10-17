@@ -1,12 +1,12 @@
 ---
 // Botão (link com cara de botão). As cores se ajustam sozinhas à superfície (.sup-*).
-// primario: marinho cheio (branco em fundo escuro) · destaque: amarelo com texto marinho
-// secundario: contorno · link: texto com seta
+// primario: marinho sólido (branco em fundo escuro) · secundario: contorno · link: texto com seta.
+// Sóbrio: no hover só a cor muda (0,2 s) e a seta desliza. Altura mínima de 52px (60px no lg).
 import Icone, { type IconeNome } from './Icone.astro';
 
 interface Props {
   href: string;
-  variante?: 'primario' | 'destaque' | 'secundario' | 'link';
+  variante?: 'primario' | 'secundario' | 'link';
   tamanho?: 'md' | 'lg';
   /** Ícone antes do texto. */
   icone?: IconeNome;
@@ -69,7 +69,6 @@ const {
       letter-spacing: var(--tracking-rotulo);
       text-align: center;
       text-decoration: none;
-      transition: transform var(--duracao-base) var(--ease-saida);
       touch-action: manipulation;
       user-select: none;
     }
@@ -91,27 +90,16 @@ const {
       width: 100%;
     }
 
-    /* Camadas de realce: só a opacidade anima */
-    .botao::before,
-    .botao::after {
+    /* Cor do hover numa camada por baixo do texto: só a opacidade anima (0,2 s) */
+    .botao::before {
       content: '';
       position: absolute;
       inset: 0;
+      z-index: -1;
       border-radius: inherit;
       opacity: 0;
       pointer-events: none;
-      transition: opacity var(--duracao-base) var(--ease-saida);
-    }
-
-    /* Cor de realce, por baixo do texto */
-    .botao::before {
-      z-index: -1;
-    }
-
-    /* Sombra que aparece com a leve elevação */
-    .botao::after {
-      z-index: -2;
-      box-shadow: var(--shadow-botao);
+      transition: opacity var(--duracao-cor) var(--ease-suave);
     }
 
     .botao__icone {
@@ -125,15 +113,11 @@ const {
       height: 1.25rem;
       flex: none;
       margin-right: -0.125rem;
-      transition: transform var(--duracao-lenta) var(--ease-saida);
+      transition: transform var(--duracao-base) var(--ease-saida);
     }
 
     @media (hover: hover) {
-      .botao:hover {
-        transform: translate3d(0, -2px, 0);
-      }
-      .botao:hover::before,
-      .botao:hover::after {
+      .botao:hover::before {
         opacity: 1;
       }
       .botao:hover .botao__seta {
@@ -144,34 +128,17 @@ const {
       }
     }
 
-    .botao:active {
-      transform: translate3d(0, 0, 0) scale(0.98);
-      transition-duration: var(--duracao-rapida);
-    }
     .botao:active::before {
       opacity: 1;
     }
-    .botao:active::after {
-      opacity: 0;
-    }
 
-    /* Primário: marinho cheio (em fundo escuro, branco com texto marinho) */
+    /* Primário: marinho sólido (em fundo escuro, branco com texto marinho) */
     .botao--primario {
       background-color: var(--sup-b1-fundo);
       color: var(--sup-b1-texto);
     }
     .botao--primario::before {
       background-color: var(--sup-b1-realce);
-    }
-
-    /* Destaque: amarelo da marca com texto marinho (7,7:1), em qualquer superfície */
-    .botao--destaque {
-      background-color: var(--color-amarelo);
-      color: var(--color-marinho);
-      box-shadow: inset 0 -2px 0 rgb(8 16 41 / 0.12);
-    }
-    .botao--destaque::before {
-      background-color: rgb(255 255 255 / 0.26);
     }
 
     /* Secundário: contorno */
@@ -190,28 +157,21 @@ const {
       color: var(--sup-link);
       text-decoration: underline;
       text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+      transition: text-decoration-color var(--duracao-cor) var(--ease-suave);
     }
-    .botao--link::before,
-    .botao--link::after {
+    .botao--link::before {
       display: none;
     }
     @media (hover: hover) {
       .botao--link:hover {
-        transform: none;
         text-decoration-color: currentColor;
       }
     }
-    .botao--link:active {
-      transform: none;
-    }
 
     @media (prefers-reduced-motion: reduce) {
-      .botao,
       .botao__seta {
         transition: none;
       }
-      .botao:hover,
-      .botao:active,
       .botao:hover .botao__seta {
         transform: none;
       }

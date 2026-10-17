@@ -1,0 +1,104 @@
+---
+// Abertura escura em tela cheia (página de anúncio): fundo noite com a arte das ruínas e da fibra de luz,
+// e o h1 grande no centro, com uma frase curta embaixo. A arte para quando sai da tela (data-pausavel).
+import ArteRuinas from '../ui/ArteRuinas.astro';
+
+interface Props {
+  titulo: string;
+  texto?: string;
+}
+
+const { titulo, texto } = Astro.props;
+---
+
+<section class="abertura-escura sup-noite" data-pausavel aria-labelledby="abertura-titulo">
+  <ArteRuinas tom="escuro" class="abertura-escura__arte" />
+
+  <div class="abertura-escura__conteudo mx-auto w-full max-w-pagina px-calha">
+    <h1 id="abertura-titulo" class="abertura-escura__titulo">{titulo}</h1>
+    {texto && <p class="abertura-escura__texto">{texto}</p>}
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .abertura-escura {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      overflow: hidden;
+      text-align: center;
+    }
+    @media (width >= 48rem) {
+      .abertura-escura {
+        min-height: clamp(32rem, 72svh, 46rem);
+      }
+    }
+    @media (width >= 64rem) {
+      .abertura-escura {
+        min-height: clamp(36rem, 78svh, 56rem);
+      }
+    }
+
+    /* Celular: texto em cima e a arte inteira no pé, um pouco mais larga que a tela.
+       Desktop: o título fica entre as paredes, sob o telhado, como na logo. */
+    .abertura-escura :global(.abertura-escura__arte) {
+      --arte-largura: 116%;
+      --arte-pe: -0.75rem;
+    }
+    @media (width >= 48rem) {
+      .abertura-escura :global(.abertura-escura__arte) {
+        --arte-largura: 96%;
+        --arte-pe: -2rem;
+      }
+    }
+    @media (width >= 64rem) {
+      .abertura-escura :global(.abertura-escura__arte) {
+        --arte-largura: min(86%, 76rem);
+        --arte-pe: -3rem;
+      }
+    }
+
+    .abertura-escura__conteudo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 1rem;
+      padding-block: 3.25rem calc(56vw + 2rem);
+    }
+    @media (width >= 48rem) {
+      .abertura-escura__conteudo {
+        justify-content: center;
+        gap: 1.25rem;
+        padding-block: 4rem 10rem;
+      }
+    }
+    @media (width >= 64rem) {
+      .abertura-escura__conteudo {
+        padding-block: 4rem 12rem;
+      }
+    }
+
+    .abertura-escura__titulo {
+      max-width: 14ch;
+      color: var(--color-branco);
+      font-size: var(--text-destaque);
+      font-weight: var(--font-weight-extrabold);
+      letter-spacing: var(--tracking-destaque);
+      line-height: var(--text-destaque--line-height);
+    }
+    .abertura-escura__texto {
+      max-width: var(--container-estreito);
+      color: var(--color-marinho-200);
+      font-size: var(--text-lg);
+      line-height: var(--text-lg--line-height);
+    }
+    @media (width >= 48rem) {
+      .abertura-escura__texto {
+        font-size: var(--text-xl);
+        line-height: 1.45;
+      }
+    }
+  }
+</style>

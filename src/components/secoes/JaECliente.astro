@@ -41,7 +41,8 @@ const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
 
 <style>
   @layer components {
-    /* Atalho com cara de botão grande: fundo claro, contorno fino, sobe um pouco no hover */
+    /* Atalho com cara de botão grande: cartão no segundo fundo claro, sem borda. No hover o fundo
+       escurece um pouco e a seta anda. */
     .atalho {
       position: relative;
       isolation: isolate;
@@ -52,39 +53,28 @@ const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
       width: 100%;
       min-height: 5.5rem;
       padding: 1.125rem 1.125rem 1.125rem 1.25rem;
-      border-radius: var(--radius-xl);
-      background-color: var(--color-fundo);
-      box-shadow: inset 0 0 0 1px var(--color-marinho-100);
+      border-radius: var(--radius-2xl);
+      background-color: var(--sup-cartao);
       color: var(--color-cinza);
       text-decoration: none;
-      transition: transform var(--duracao-lenta) var(--ease-saida);
       touch-action: manipulation;
     }
 
-    /* Realce (branco com contorno mais forte) e sombra: só opacidade */
-    .atalho::before,
-    .atalho::after {
+    .atalho::before {
       content: '';
       position: absolute;
       inset: 0;
+      z-index: -1;
       border-radius: inherit;
+      background-color: var(--sup-cartao-realce);
       opacity: 0;
       pointer-events: none;
-      transition: opacity var(--duracao-lenta) var(--ease-saida);
-    }
-    .atalho::before {
-      z-index: -1;
-      background-color: var(--color-branco);
-      box-shadow: inset 0 0 0 1px var(--color-marinho-200);
-    }
-    .atalho::after {
-      z-index: -2;
-      box-shadow: var(--shadow-md);
+      transition: opacity var(--duracao-cor) var(--ease-suave);
     }
 
     .atalho__icone {
-      width: 1.875rem;
-      height: 1.875rem;
+      width: 1.75rem;
+      height: 1.75rem;
       color: var(--color-azul);
     }
 
@@ -112,15 +102,11 @@ const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
       width: 1.375rem;
       height: 1.375rem;
       color: var(--color-marinho);
-      transition: transform var(--duracao-lenta) var(--ease-saida);
+      transition: transform var(--duracao-base) var(--ease-saida);
     }
 
     @media (hover: hover) {
-      .atalho:hover {
-        transform: translate3d(0, -3px, 0);
-      }
-      .atalho:hover::before,
-      .atalho:hover::after {
+      .atalho:hover::before {
         opacity: 1;
       }
       .atalho:hover .atalho__seta {
@@ -128,10 +114,6 @@ const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
       }
     }
 
-    .atalho:active {
-      transform: scale(0.985);
-      transition-duration: var(--duracao-rapida);
-    }
     .atalho:active::before {
       opacity: 1;
     }
@@ -146,13 +128,13 @@ const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
         grid-template-columns: 1fr auto;
         grid-template-rows: auto 1fr;
         align-items: start;
-        row-gap: 1.75rem;
+        row-gap: 2.5rem;
         height: 100%;
-        padding: 1.5rem 1.5rem 1.625rem;
+        padding: 1.75rem 1.75rem 1.875rem;
       }
       .atalho__icone {
-        width: 2.125rem;
-        height: 2.125rem;
+        width: 2rem;
+        height: 2rem;
       }
       .atalho__textos {
         grid-column: 1 / -1;
@@ -170,12 +152,9 @@ const atalhos: { icone: IconeNome; titulo: string; texto: string }[] = [
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .atalho,
       .atalho__seta {
         transition: none;
       }
-      .atalho:hover,
-      .atalho:active,
       .atalho:hover .atalho__seta {
         transform: none;
       }

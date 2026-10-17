@@ -1,7 +1,9 @@
 ---
-// Onde atendemos (/onde-atendemos/): cidades de site.ts, cada uma com o marcador de sinal, e o convite.
+// Onde atendemos (/onde-atendemos/): o número de cidades em destaque, a lista em linhas com divisória
+// fina e, ao lado, o mapa com as sedes como pontos de luz. Depois, o convite "A fibra chega na sua rua?".
 // O h1 e o texto ficam na abertura da página. Sem cidades, só o convite.
 import Icone from '../ui/Icone.astro';
+import MapaCidades from '../ui/MapaCidades.astro';
 import Pendente from '../ui/Pendente.astro';
 import Secao from '../ui/Secao.astro';
 import Convite from './OndeAtendemosConvite.astro';
@@ -13,17 +15,30 @@ const temCidades = cidades.length > 0;
 ---
 
 <Secao id="onde-atendemos" tom="suave" class="secao--apos-abertura">
-  <div class="grid gap-10 md:gap-12">
+  <div class="grid gap-12 md:gap-16">
     {
       temCidades ? (
-        <ul class="cidades" aria-label="Cidades atendidas">
-          {cidades.map((c, i) => (
-            <li class="cidade" data-revelar style={`--i:${i + 1}`}>
-              <Icone nome="sinal" class="cidade__marcador" />
-              <span>{c}</span>
-            </li>
-          ))}
-        </ul>
+        <div class="onde">
+          <div class="onde__lista" data-revelar>
+            <p class="onde__total">
+              <span class="rotulo">Cidades</span>
+              <span class="onde__numero tabular">
+                <span class="marca-texto">{cidades.length}</span>
+              </span>
+            </p>
+            <ul class="cidades" aria-label="Cidades atendidas">
+              {cidades.map((c) => (
+                <li class="cidade">
+                  <Icone nome="sinal" class="cidade__marcador" />
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="onde__mapa" data-revelar style="--i:2">
+            <MapaCidades />
+          </div>
+        </div>
       ) : (
         DEV && <Pendente texto="cidades atendidas" campo="cidades" class="min-h-64" />
       )
@@ -37,38 +52,53 @@ const temCidades = cidades.length > 0;
 
 <style>
   @layer components {
+    .onde {
+      display: grid;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    @media (width >= 64rem) {
+      .onde {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 4rem;
+      }
+    }
+
+    /* Número de cidades: rótulo em caixa alta e o número grande, com o marca-texto amarelo */
+    .onde__total {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+    }
+    .onde__numero {
+      color: var(--color-marinho);
+      font-size: var(--text-destaque);
+      font-weight: var(--font-weight-extrabold);
+      letter-spacing: var(--tracking-destaque);
+      line-height: 1;
+    }
+
+    /* Cidades em linhas com divisória fina; duas colunas a partir do tablet */
     .cidades {
       display: grid;
-      gap: 0.625rem;
-      align-content: start;
+      column-gap: 2rem;
+      border-top: 1px solid var(--color-marinho-200);
     }
-
-    @media (width >= 30rem) {
+    @media (width >= 40rem) {
       .cidades {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.75rem;
       }
     }
 
-    @media (width >= 64rem) {
-      .cidades {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 1rem;
-      }
-    }
-
-    /* Cada cidade: um bloco branco grande, fácil de achar e de ler */
     .cidade {
       display: flex;
       align-items: center;
-      gap: 0.875rem;
-      min-height: 4rem;
-      padding: 0.75rem 1.25rem 0.75rem 1rem;
-      border-radius: var(--radius-lg);
-      background-color: var(--color-branco);
-      box-shadow:
-        inset 0 0 0 1px var(--color-marinho-100),
-        var(--shadow-sm);
+      gap: 0.75rem;
+      min-height: 3.5rem;
+      padding-block: 0.625rem;
+      border-bottom: 1px solid var(--color-marinho-100);
       color: var(--color-marinho);
       font-size: var(--text-lg);
       font-weight: var(--font-weight-bold);
@@ -77,8 +107,8 @@ const temCidades = cidades.length > 0;
     }
 
     .cidade__marcador {
-      width: 1.625rem;
-      height: 1.625rem;
+      width: 1.25rem;
+      height: 1.25rem;
       flex: none;
       color: var(--color-azul);
     }
