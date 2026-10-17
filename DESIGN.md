@@ -64,7 +64,7 @@ Ritmo da página: suave (destaque) → clara (já é cliente) → marinho (plano
 
 ## Movimento
 
-- Curvas: `ease-saida` (entradas), `ease-entrada` (saídas), `ease-suave` (ida e volta), `ease-mola` (pequeno exagero, ex.: o ponto da antena).
+- Curvas: `ease-saida` (entradas), `ease-entrada` (saídas), `ease-suave` (ida e volta). Sem curvas de quique ou mola; o único "pulinho" é o do "Missões" na entrada da logo, feito por quadros-chave.
 - Durações: `--duracao-rapida` 140ms, `--duracao-base` 220ms, `--duracao-lenta` 420ms, `--duracao-revelar` 700ms, `--atraso-sequencia` 70ms.
 - Só `transform` e `opacity` animam (e o traço das ondas em SVG). Sombras e realces de hover aparecem por opacidade de uma camada.
 - Entrada ao rolar: atributo `data-revelar` (sobe 16px) ou `data-revelar="lado"`, com `style="--i:N"` para a sequência. O estado escondido só existe com `html.js`. Sem JS, tudo aparece.
