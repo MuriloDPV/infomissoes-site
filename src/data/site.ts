@@ -62,6 +62,8 @@ export type Site = {
   endereco: string | null;
   horario: string | null;
   cnpj: string | null;
+  /** Razão social que aparece no rodapé junto com o CNPJ. */
+  razaoSocial: string | null;
   cidades: string[];
   planos: Plano[];
   avisoPlanos: string;
@@ -100,14 +102,15 @@ export const site: Site = {
   // Telefone com DDD, no mesmo formato do WhatsApp. É o mesmo número (fixo, atende ligação).
   telefone: '(55) 3365-1025',
 
-  // TODO: endereço da loja: rua, número, bairro e cidade/UF.
-  endereco: null,
+  // Endereço da loja (Google Maps, 28/10/2026).
+  endereco: 'Av. Senador Pinheiro Machado, 2840 - Centro, São Luiz Gonzaga/RS',
 
-  // TODO (opcional): horário de atendimento da loja: dias e horas.
-  horario: null,
+  // Horário da loja (Google Maps, 28/10/2026). A CONFIRMAR o sábado.
+  horario: 'Segunda a sexta, 8h às 12h e 13h30 às 18h · Sábado, 8h às 18h',
 
-  // TODO: CNPJ, com 14 dígitos (com ou sem pontuação).
-  cnpj: null,
+  // CNPJ da matriz (Receita: INFO MISSOES NET LTDA, Roque Gonzales/RS).
+  cnpj: '08.853.712/0001-65',
+  razaoSocial: 'Info Missões Net Ltda',
 
   // Cidades atendidas, na ordem em que aparecem no site.
   cidades: [
