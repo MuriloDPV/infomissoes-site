@@ -1,6 +1,7 @@
 ---
 // Abertura escura em tela cheia (página de anúncio): fundo noite com a arte das ruínas e da fibra de luz,
 // e o h1 grande no centro, com uma frase curta embaixo. A arte para quando sai da tela (data-pausavel).
+// O slot fica embaixo da frase (nas páginas de planos, o seletor Para sua casa / Para sua empresa / Interior).
 import ArteRuinas from '../ui/ArteRuinas.astro';
 
 interface Props {
@@ -17,6 +18,11 @@ const { titulo, texto } = Astro.props;
   <div class="abertura-escura__conteudo mx-auto w-full max-w-pagina px-calha">
     <h1 id="abertura-titulo" class="abertura-escura__titulo">{titulo}</h1>
     {texto && <p class="abertura-escura__texto">{texto}</p>}
+    {Astro.slots.has('default') && (
+      <div class="abertura-escura__extra">
+        <slot />
+      </div>
+    )}
   </div>
 </section>
 
@@ -98,6 +104,16 @@ const { titulo, texto } = Astro.props;
       .abertura-escura__texto {
         font-size: var(--text-xl);
         line-height: 1.45;
+      }
+    }
+
+    .abertura-escura__extra {
+      width: 100%;
+      margin-top: 0.75rem;
+    }
+    @media (width >= 48rem) {
+      .abertura-escura__extra {
+        margin-top: 1.25rem;
       }
     }
   }

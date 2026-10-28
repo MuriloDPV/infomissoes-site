@@ -102,6 +102,11 @@ const {
       transition: opacity var(--duracao-cor) var(--ease-suave);
     }
 
+    /* Rótulo longo que não cabe numa linha (celular estreito): quebra em duas linhas parecidas */
+    .botao:not(.botao--link) .botao__rotulo {
+      text-wrap: balance;
+    }
+
     .botao__icone {
       width: 1.375rem;
       height: 1.375rem;

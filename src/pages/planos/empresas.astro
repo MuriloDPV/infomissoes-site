@@ -1,0 +1,39 @@
+---
+// /planos/empresas/ (Para sua empresa): a mesma abertura escura com o seletor, o plano empresarial (preço sob
+// consulta, botão de proposta no WhatsApp) e, ao lado, um texto curto para comércios e empresas e as condições.
+import Base from '../../layouts/Base.astro';
+import AberturaEscura from '../../components/secoes/AberturaEscura.astro';
+import Planos from '../../components/secoes/Planos.astro';
+import SeletorPlanos from '../../components/ui/SeletorPlanos.astro';
+import { porExtenso, SOB_CONSULTA } from '../../lib/contato.ts';
+import { whatsapp } from '../../lib/dados.ts';
+import { categoria, planosDa } from '../../lib/planos.ts';
+
+const { tecnologia } = categoria('empresa');
+const planos = planosDa('empresa');
+const canal = whatsapp ? 'pelo WhatsApp' : 'para a gente';
+const titulo = 'Internet para empresas | Info Missões';
+const lista = porExtenso(
+  planos.map(
+    (p) =>
+      `${p.nome}, com ${p.download} de download e ${p.upload} de upload (${
+        p.preco === SOB_CONSULTA ? 'preço sob consulta' : `${p.preco} por mês`
+      })`
+  )
+);
+const descricao = planos.length
+  ? `Internet ${tecnologia} para comércios e empresas na região das Missões (RS): ${
+      planos.length > 1 ? 'planos' : 'plano'
+    } ${lista}. Peça uma proposta ${canal}.`
+  : `Internet ${tecnologia} para comércios e empresas na região das Missões (RS). Peça uma proposta ${canal}.`;
+const texto = `${
+  planos.some((p) => p.preco === SOB_CONSULTA) ? 'O preço é sob consulta. ' : ''
+}Peça uma proposta ${canal} e conte do que o seu comércio ou a sua empresa precisa.`;
+---
+
+<Base titulo={titulo} descricao={descricao}>
+  <AberturaEscura titulo="Planos de internet" texto={`${tecnologia} para comércios e empresas da região.`}>
+    <SeletorPlanos atual="empresa" />
+  </AberturaEscura>
+  <Planos categoria="empresa" texto={texto} />
+</Base>

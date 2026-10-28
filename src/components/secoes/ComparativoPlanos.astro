@@ -1,17 +1,15 @@
 ---
-// Comparativo dos planos (/planos/): tabela limpa com uma coluna por plano e as linhas Download, Upload e
-// Preço por mês, com divisória fina. Nenhuma coluna destacada (não há "mais escolhido").
-// No celular a tabela vira uma lista por plano (mesmas linhas), sem rolagem lateral.
-// Fecha com o link para as cidades atendidas.
-import Botao from '../ui/Botao.astro';
+// Comparativo dos planos para casa (/planos/): tabela limpa com uma coluna por plano e as linhas Download,
+// Upload e Preço por mês, com divisória fina. Nenhuma coluna destacada (não há "mais escolhido").
+// Só no desktop (a partir de 64rem): no celular e no tablet ficam só os cartões, que já têm as mesmas linhas.
 import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
 import Icone, { type IconeNome } from '../ui/Icone.astro';
-import LinhasInfo from '../ui/LinhasInfo.astro';
 import Secao from '../ui/Secao.astro';
-import { site, type Plano } from '../../data/site.ts';
+import type { Plano } from '../../data/site.ts';
 import { valorPreco } from '../../lib/contato.ts';
+import { planosDa } from '../../lib/planos.ts';
 
-const planos = site.planos.casa.slice(0, 3);
+const planos = planosDa('casa');
 const linhas: { rotulo: string; icone?: IconeNome; valor: (p: Plano) => string; preco?: boolean }[] = [
   { rotulo: 'Download', icone: 'download', valor: (p) => p.download },
   { rotulo: 'Upload', icone: 'upload', valor: (p) => p.upload },
@@ -20,8 +18,8 @@ const linhas: { rotulo: string; icone?: IconeNome; valor: (p: Plano) => string; 
 ---
 
 {
-  planos.length > 0 && (
-    <Secao id="comparativo" tom="clara">
+  planos.length > 1 && (
+    <Secao id="comparativo" tom="clara" class="hidden lg:block">
       <div class="grid gap-10 md:gap-12">
         <CabecalhoSecao titulo="Compare os planos" />
 
@@ -56,6 +54,8 @@ const linhas: { rotulo: string; icone?: IconeNome; valor: (p: Plano) => string; 
                           <>
                             <span class="comparativo__moeda">R$</span> {preco}
                           </>
+                        ) : l.preco ? (
+                          'Sob consulta'
                         ) : (
                           valor
                         )}
@@ -66,23 +66,7 @@ const linhas: { rotulo: string; icone?: IconeNome; valor: (p: Plano) => string; 
               ))}
             </tbody>
           </table>
-
-          <ul class="comparativo-lista">
-            {planos.map((p) => (
-              <li class="comparativo-lista__plano">
-                <h3 class="comparativo-lista__nome tabular">{p.nome}</h3>
-                <LinhasInfo
-                  compacto
-                  linhas={linhas.map((l) => ({ rotulo: l.rotulo, icone: l.icone, valor: l.valor(p), destaque: l.preco }))}
-                />
-              </li>
-            ))}
-          </ul>
         </div>
-
-        <Botao href="/onde-atendemos/" variante="link" seta class="justify-self-start">
-          Ver as cidades onde atendemos
-        </Botao>
       </div>
     </Secao>
   )
@@ -90,24 +74,18 @@ const linhas: { rotulo: string; icone?: IconeNome; valor: (p: Plano) => string; 
 
 <style>
   @layer components {
-    /* Tabela: só a partir do tablet */
     .comparativo {
-      display: none;
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
       text-align: left;
-    }
-    @media (width >= 48rem) {
-      .comparativo {
-        display: table;
-      }
     }
     .comparativo th,
     .comparativo td {
       padding: 1.25rem 1rem;
       border-bottom: 1px solid var(--sup-linha);
       vertical-align: middle;
+      white-space: nowrap;
     }
     .comparativo thead th {
       padding-top: 0;
@@ -144,34 +122,6 @@ const linhas: { rotulo: string; icone?: IconeNome; valor: (p: Plano) => string; 
       font-size: 0.6em;
       font-weight: var(--font-weight-bold);
       letter-spacing: 0;
-    }
-
-    /* Lista: só no celular */
-    .comparativo-lista {
-      display: grid;
-      gap: 1rem;
-    }
-    @media (width >= 48rem) {
-      .comparativo-lista {
-        display: none;
-      }
-    }
-    .comparativo-lista__plano {
-      container-type: inline-size;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      padding: 1.25rem 1.25rem 0.5rem;
-      border-radius: var(--radius-2xl);
-      background-color: var(--sup-cartao);
-      --sup-linha: var(--sup-cartao-linha);
-    }
-    .comparativo-lista__nome {
-      font-size: var(--text-xl);
-      font-weight: var(--font-weight-extrabold);
-    }
-    .comparativo-lista__plano :global(.linhas__linha:last-child) {
-      border-bottom: 0;
     }
   }
 </style>

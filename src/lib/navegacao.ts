@@ -7,8 +7,12 @@ export const paginas = [
   { href: '/contato/', rotulo: 'Contato' },
 ] as const;
 
-/** `aria-current="page"` para o link da página aberta (recebe `Astro.url.pathname`). */
-export function atual(href: string, caminho: string): 'page' | undefined {
+/**
+ * `aria-current` do link (recebe `Astro.url.pathname`): "page" na página aberta e "true" nas páginas de dentro
+ * dela (em /planos/empresas/, o link Planos fica marcado).
+ */
+export function atual(href: string, caminho: string): 'page' | 'true' | undefined {
   const normalizado = caminho.endsWith('/') ? caminho : `${caminho}/`;
-  return normalizado === href ? 'page' : undefined;
+  if (normalizado === href) return 'page';
+  return href !== '/' && normalizado.startsWith(href) ? 'true' : undefined;
 }

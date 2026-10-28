@@ -1,22 +1,25 @@
 ---
-// Início: destaque, "Já é cliente?", resumo dos planos, diferenciais e a chamada final para o WhatsApp.
+// Início: destaque, "Já é cliente?", soluções para cada perfil (casa, empresa, interior), resumo dos planos
+// para casa, diferenciais e a chamada final para o WhatsApp.
 import Base from '../layouts/Base.astro';
 import Destaque from '../components/secoes/Destaque.astro';
 import JaECliente from '../components/secoes/JaECliente.astro';
+import Solucoes from '../components/secoes/Solucoes.astro';
 import Planos from '../components/secoes/Planos.astro';
 import Diferenciais from '../components/secoes/Diferenciais.astro';
 import ChamadaFinal from '../components/secoes/ChamadaFinal.astro';
 import { portal, whatsapp } from '../lib/dados.ts';
 
 const titulo = 'Info Missões | Internet de fibra óptica nas Missões';
-const descricao = `Internet de fibra óptica na região das Missões (RS). Conheça os planos, ${
-  whatsapp ? 'fale com a gente pelo WhatsApp' : 'fale com a gente'
+const descricao = `Internet de fibra óptica na região das Missões (RS), para casa e empresa, e internet via rádio no interior. ${
+  whatsapp ? 'Fale com a gente pelo WhatsApp' : 'Fale com a gente'
 } ou acesse ${portal.a} para 2ª via, PIX e faturas.`;
 ---
 
 <Base titulo={titulo} descricao={descricao}>
   <Destaque />
   <JaECliente />
+  <Solucoes />
   <Planos resumo />
   <Diferenciais />
   <ChamadaFinal />

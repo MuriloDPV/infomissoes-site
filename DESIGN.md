@@ -10,7 +10,7 @@ Tokens: `src/styles/global.css` (bloco `@theme`). Os padrões do Tailwind foram 
 - O traço das ruínas é a camada `ruins` da logo em camadas, usada como está (tirada do SVG no build, em `tracoRuinas`, `src/lib/dados.ts`): só o contorno, em traço fino. A logo em si nunca é redesenhada nem recolorida.
 - Linhas de fibra: curvas finas e longas que atravessam a cena, como cabos. Um pulso de luz azul percorre o traço e as fibras, como o "traço de luz" dos Reels. Na versão escura, um ou outro ponto de luz amarelo nas fibras.
 - Onde aparece:
-  - /planos: abertura escura (noite) com as ruínas grandes; o título fica entre as paredes, sob o telhado, como na logo.
+  - /planos, /planos/empresas e /planos/interior: a mesma abertura escura (noite) com as ruínas grandes; o título fica entre as paredes, sob o telhado, como na logo, com o seletor das categorias embaixo da frase.
   - Início: versão clara e calma (marinho bem suave, a luz passa de vez em quando), à direita no desktop e no pé no celular, longe do título e dos botões.
   - /onde-atendemos: o mapa das cidades (ver Mapa).
   - 404: a mesma versão clara da Início.
@@ -22,7 +22,7 @@ Oficiais (as mesmas da logo e dos posts aprovados):
 - `marinho` #1a2d6d: títulos, botão primário
 - `noite` #081029: rodapé, abertura de /planos, mapa
 - `azul` #0199da: o pulso de luz, ícones e detalhes
-- `amarelo` #f7c12d: acento único. Marca só o que importa: o marca-texto ("Missões", o número de cidades), os pontos de luz na arte escura, o sublinhado do link atual no rodapé e o foco em fundo escuro. Nunca é fundo de botão.
+- `amarelo` #f7c12d: acento único. Marca só o que importa: o marca-texto ("Missões", o número de cidades), os pontos de luz na arte escura, o sublinhado do link atual no rodapé, o traço da aba aberta no seletor de planos e o foco em fundo escuro. Nunca é fundo de botão.
 - `cinza` #363435: texto do corpo
 - `fundo` #f4f8fc: fundo claro padrão
 - `branco` #ffffff
@@ -54,8 +54,9 @@ Cada seção escolhe uma superfície, e os componentes ajustam as cores sozinhos
 Cores semânticas para usar dentro delas: `text-sup-titulo`, `text-sup-suave`, `text-sup-icone`, `border-sup-linha`, `bg-sup`, `bg-sup-cartao`. Cada superfície também define o fundo do cartão em cima dela (`--sup-cartao`: faixa no claro, branco na faixa), o realce do hover (`--sup-cartao-realce`) e a divisória dentro do cartão (`--sup-cartao-linha`).
 
 Ritmo das páginas (o cabeçalho e o rodapé noite são os mesmos em todas):
-- Início: suave (destaque com a arte clara) → clara (já é cliente) → faixa (resumo dos planos, cartões brancos) → clara (diferenciais) → suave (chamada final).
-- Planos: abertura escura → suave (cartões e aviso) → clara (comparativo).
+- Início: suave (destaque com a arte clara) → clara (já é cliente) → suave (soluções para cada perfil) → faixa (resumo dos planos para casa, cartões brancos) → clara (diferenciais) → suave (chamada final).
+- Planos (casa): abertura escura com o seletor → suave (cartões, condições e aviso) → clara (comparativo, só no desktop).
+- Planos (empresa e interior): abertura escura com o seletor → suave (o cartão e, ao lado no desktop, o texto curto da categoria, as condições e o aviso).
 - Onde atendemos: abertura suave (h1 e frase curta) → a seção continua no mesmo fundo (`secao--apos-abertura`), com a lista e o mapa escuro.
 - Contato: abertura suave → cartões (o do WhatsApp escuro, os outros na faixa).
 - 404: suave, com a arte clara.
@@ -73,8 +74,18 @@ Ritmo das páginas (o cabeçalho e o rodapé noite são os mesmos em todas):
 ## Informação em linhas
 
 - `LinhasInfo`: rótulo em caixa alta à esquerda e o valor à direita, separados por divisória fina (como os cartões de lançamento editoriais). `destaque` deixa o valor grande (o preço).
-- Cartão do plano: o nome grande e as linhas DOWNLOAD / UPLOAD / POR MÊS. Download e upload levam a seta para baixo e para cima, para não confundir.
-- Comparativo: tabela limpa (colunas 300, 500 e 700 Mega; linhas Download, Upload e Preço por mês), nenhuma coluna destacada. No celular vira uma lista por plano com as mesmas linhas, sem rolagem lateral.
+- Cartão do plano: o nome grande e as linhas DOWNLOAD / UPLOAD / POR MÊS. Download e upload levam a seta para baixo e para cima, para não confundir. Nome com tipo ("600 Mega Empresarial", "20 Mega Rural"): a velocidade fica grande e o tipo, em `text-xl` e `sup-suave`, embaixo. Preço sob consulta: no lugar da linha POR MÊS, "Preço sob consulta" em `text-xl` extrabold (nunca "R$ Consulte").
+- Comparativo: tabela limpa (colunas 300, 500 e 700 Mega; linhas Download, Upload e Preço por mês), nenhuma coluna destacada. Só no desktop (a partir de 64rem); no celular e no tablet ficam só os cartões.
+- Condições dos planos (sem franquia, roteador em comodato): uma vez só, embaixo dos cartões (ou ao lado, com um plano só), uma linha por condição com o ícone azul à esquerda, em texto de leitura. Não se repetem em cada cartão.
+
+## Planos por categoria
+
+- Três páginas: Para sua casa (/planos/), Para sua empresa (/planos/empresas/) e Interior (/planos/interior/). A lista fica em `src/lib/planos.ts`.
+- Seletor (`SeletorPlanos`): parece abas, mas são links, com a troca de página de sempre. Fica na abertura escura, embaixo da frase, igual nas três páginas (mesmo título e frases de duas linhas, para as abas não mudarem de lugar). Abas com 60px de altura; a aberta fica branca com o traço amarelo de 3px embaixo, as outras em `sup-suave` (no hover, branco com traço claro). No celular, as três dividem a largura e os rótulos encurtam (Casa, Empresa, Interior); o leitor de tela ouve o nome inteiro.
+- No menu e no rodapé, o link Planos fica marcado também nas páginas de dentro (`aria-current="true"`).
+- Interior é via rádio: nenhum texto do plano rural fala em fibra.
+- Botão de cada plano: "Quero este plano" (casa), "Pedir proposta no WhatsApp" (empresa) e "Consultar no WhatsApp" (interior). Rótulo que não cabe numa linha (celular estreito) quebra em duas linhas parecidas (`text-wrap: balance`).
+- Início: "Soluções para cada perfil", três cartões-link no fundo de cartão (ícone casa, loja e sinal), com uma frase que sai dos dados. Mesma leitura dos atalhos de "Já é cliente?".
 - Cidades: em linhas com divisória fina, com o marcador de sinal.
 
 ## Espaço, raio, sombra
@@ -142,6 +153,7 @@ Ritmo das páginas (o cabeçalho e o rodapé noite são os mesmos em todas):
 - `Botao`: ver Botões.
 - `Card`: bloco agrupado, `claro` (fundo de cartão da superfície) ou `marinho`. Cantos de 28px, sem borda e sem sombra.
 - `CardPlano`: cartão do plano em linhas (ver Informação em linhas). `compacto` no resumo da Início.
+- `SeletorPlanos`: ver Planos por categoria.
 - `LinhasInfo`: ver Informação em linhas.
 - `ArteRuinas`: a arte de fundo (traço das ruínas, fibras e luz), `escuro` ou `claro`. Tamanho e posição pelas variáveis `--arte-largura`, `--arte-x` e `--arte-pe`. O pai precisa de position, overflow hidden e isolation.
 - `MapaCidades`: ver Mapa.

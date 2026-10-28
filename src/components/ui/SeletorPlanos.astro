@@ -1,0 +1,132 @@
+---
+// Seletor das páginas de planos (Para sua casa, Para sua empresa, Interior): parece abas, mas são links.
+// Cada um abre a sua página, com a troca de página de sempre, e funciona sem JS. A página aberta fica marcada
+// (aria-current="page", texto branco e traço amarelo embaixo, como o link atual do rodapé).
+// Feito para a abertura escura. No celular as três abas dividem a largura e os rótulos encurtam
+// (Casa, Empresa, Interior); o leitor de tela ouve sempre o nome inteiro.
+import { categorias, type ChaveCategoria } from '../../lib/planos.ts';
+
+interface Props {
+  atual: ChaveCategoria;
+}
+
+const { atual } = Astro.props;
+---
+
+<nav aria-label="Tipos de plano" class="seletor">
+  <ul class="seletor__lista">
+    {
+      categorias.map((c) => {
+        const encurta = c.curto !== c.rotulo;
+        return (
+          <li class="seletor__item">
+            <a class="seletor__aba" href={c.href} aria-current={c.chave === atual ? 'page' : undefined}>
+              <span class:list={{ 'max-sm:sr-only': encurta }}>{c.rotulo}</span>
+              {encurta && (
+                <span class="sm:hidden" aria-hidden="true">
+                  {c.curto}
+                </span>
+              )}
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>
+
+<style>
+  @layer components {
+    .seletor {
+      width: 100%;
+    }
+
+    /* Celular: as três abas dividem a largura. A partir de 40rem: cada aba do tamanho do texto, no centro. */
+    .seletor__lista {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-bottom: 1px solid var(--sup-linha);
+    }
+    @media (width >= 40rem) {
+      .seletor__lista {
+        display: flex;
+        justify-content: center;
+        width: fit-content;
+        margin-inline: auto;
+      }
+    }
+
+    .seletor__aba {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--spacing-toque-lg);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      color: var(--sup-suave);
+      font-size: var(--text-sm);
+      font-weight: var(--font-weight-bold);
+      line-height: var(--leading-titulo);
+      text-align: center;
+      text-decoration: none;
+      touch-action: manipulation;
+      transition: color var(--duracao-cor) var(--ease-suave);
+    }
+    @media (width >= 40rem) {
+      .seletor__aba {
+        padding-inline: 1.375rem;
+        font-size: var(--text-base);
+      }
+    }
+
+    /* Traço embaixo da aba (por cima da linha da lista): aparece claro no hover e amarelo na página aberta */
+    .seletor__aba::after {
+      content: '';
+      position: absolute;
+      left: 0.75rem;
+      right: 0.75rem;
+      bottom: -1px;
+      height: 3px;
+      border-radius: var(--radius-full);
+      background-color: var(--sup-linha);
+      transform: scaleX(0);
+      transition: transform var(--duracao-lenta) var(--ease-saida);
+    }
+    @media (width >= 40rem) {
+      .seletor__aba::after {
+        left: 1.375rem;
+        right: 1.375rem;
+      }
+    }
+    @media (hover: hover) {
+      .seletor__aba:hover {
+        color: var(--sup-titulo);
+      }
+      .seletor__aba:hover::after {
+        transform: scaleX(1);
+      }
+    }
+    .seletor__aba:active {
+      color: var(--sup-titulo);
+    }
+
+    .seletor__aba[aria-current='page'] {
+      color: var(--sup-titulo);
+    }
+    .seletor__aba[aria-current='page']::after {
+      background-color: var(--color-amarelo);
+      transform: scaleX(1);
+    }
+
+    .seletor__aba:focus-visible {
+      outline-offset: -2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .seletor__aba::after {
+        transition: none;
+      }
+    }
+  }
+</style>

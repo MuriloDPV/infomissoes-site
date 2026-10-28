@@ -2,13 +2,17 @@
 // Cartão de um plano (dados de site.ts), em linhas com divisória fina:
 // DOWNLOAD / UPLOAD / POR MÊS, cada uma com o rótulo à esquerda e o valor à direita. Download e upload
 // levam a seta para baixo e para cima, para não confundir. O preço é o número grande.
-// Botão: WhatsApp com a mensagem padrão + "Tenho interesse no plano X." (sem WhatsApp, leva à página de contato).
+// Preço 'sob consulta': no lugar da linha POR MÊS, o texto "Preço sob consulta".
+// Nome com tipo ("600 Mega Empresarial"): a velocidade fica grande e o tipo, menor, embaixo.
+// Botão: WhatsApp com a mensagem padrão + `mensagem` (padrão: "Tenho interesse no plano X.")
+// e o texto `acao` (sem WhatsApp, "Quero este plano" leva à página de contato).
 // `compacto` (resumo da Início): menor e sem botão; o link "Ver os planos" fica fora dos cartões.
 import Botao from './Botao.astro';
 import Card from './Card.astro';
-import LinhasInfo from './LinhasInfo.astro';
+import LinhasInfo, { type Linha } from './LinhasInfo.astro';
 import Selo from './Selo.astro';
 import type { Plano } from '../../data/site.ts';
+import { SOB_CONSULTA } from '../../lib/contato.ts';
 import { whatsappMensagem } from '../../lib/dados.ts';
 
 interface Props {
@@ -16,26 +20,43 @@ interface Props {
   compacto?: boolean;
   /** Nível do título: h2 quando o h1 da página é "Planos", h3 dentro de uma seção. */
   nivel?: 2 | 3;
+  /** Frase depois da mensagem padrão do WhatsApp. */
+  mensagem?: string;
+  /** Texto do botão do WhatsApp. */
+  acao?: string;
   class?: string;
 }
 
-const { plano: p, compacto = false, nivel = 3, class: classe } = Astro.props;
+const {
+  plano: p,
+  compacto = false,
+  nivel = 3,
+  mensagem = `Tenho interesse no plano ${p.nome}.`,
+  acao = 'Quero este plano',
+  class: classe,
+} = Astro.props;
 const Titulo = nivel === 2 ? 'h2' : 'h3';
-const link = whatsappMensagem(`Tenho interesse no plano ${p.nome}.`);
+const link = whatsappMensagem(mensagem);
+const sobConsulta = p.preco === SOB_CONSULTA;
+const [, velocidade, tipo] = /^(\S+ \S+) (.+)$/.exec(p.nome) ?? [null, p.nome, null];
+
+const linhas: Linha[] = [
+  { rotulo: 'Download', valor: p.download, icone: 'download' },
+  { rotulo: 'Upload', valor: p.upload, icone: 'upload' },
+];
+if (!sobConsulta) linhas.push({ rotulo: p.periodo ?? 'Por mês', valor: p.preco, destaque: true });
 ---
 
 <Card as="article" class:list={['plano w-full', { 'plano--compacto': compacto }, classe]}>
   {p.selo && <Selo class="plano__selo">{p.selo}</Selo>}
-  <Titulo class="plano__nome tabular">{p.nome}</Titulo>
+  <Titulo class="plano__nome tabular">
+    {velocidade}{tipo && <>{' '}<span class="plano__tipo">{tipo}</span></>}
+  </Titulo>
 
-  <LinhasInfo
-    compacto={compacto}
-    linhas={[
-      { rotulo: 'Download', valor: p.download, icone: 'download' },
-      { rotulo: 'Upload', valor: p.upload, icone: 'upload' },
-      { rotulo: p.periodo ?? 'Por mês', valor: p.preco, destaque: true },
-    ]}
-  />
+  <div class="plano__linhas">
+    <LinhasInfo compacto={compacto} linhas={linhas} />
+    {sobConsulta && <p class="plano__consulta">Preço sob consulta</p>}
+  </div>
 
   {
     !compacto && p.beneficios && p.beneficios.length > 0 && (
@@ -52,7 +73,7 @@ const link = whatsappMensagem(`Tenho interesse no plano ${p.nome}.`);
       <div class="plano__acao">
         {link ? (
           <Botao href={link} externo indicador={false} icone="whatsapp" tamanho="lg" cheio data-cta-whatsapp>
-            Quero este plano
+            {acao}
           </Botao>
         ) : (
           <Botao href="/contato/" tamanho="lg" seta cheio>
@@ -88,6 +109,30 @@ const link = whatsappMensagem(`Tenho interesse no plano ${p.nome}.`);
       font-weight: var(--font-weight-extrabold);
       letter-spacing: var(--tracking-destaque);
       line-height: var(--leading-justo);
+    }
+    /* Tipo do plano (Empresarial, Rural): embaixo da velocidade, menor */
+    .plano__tipo {
+      display: block;
+      margin-top: 0.375rem;
+      color: var(--sup-suave);
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: -0.01em;
+      line-height: var(--leading-titulo);
+    }
+
+    .plano__linhas {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    /* Sem preço fixo: o texto ocupa o lugar do número grande */
+    .plano__consulta {
+      color: var(--sup-titulo);
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-extrabold);
+      letter-spacing: -0.015em;
+      line-height: var(--leading-titulo);
     }
 
     .plano__beneficios {

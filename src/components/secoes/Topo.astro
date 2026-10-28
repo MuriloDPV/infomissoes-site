@@ -5,7 +5,8 @@ import Logo from '../ui/Logo.astro';
 import { portal, whatsapp } from '../../lib/dados.ts';
 import { atual, paginas } from '../../lib/navegacao.ts';
 
-// Página aberta: o link dela fica marcado (aria-current="page" + estilo próprio no desktop e no menu).
+// Página aberta: o link dela fica marcado (aria-current="page", ou "true" nas páginas de dentro, como
+// /planos/empresas/; estilo próprio no desktop e no menu).
 const caminho = Astro.url.pathname;
 ---
 
@@ -249,7 +250,7 @@ const caminho = Astro.url.pathname;
 
     /* Página aberta: sublinhado fixo em marinho, mais grosso que o do hover (o peso do texto
        não muda, para os links não andarem ao trocar de página) */
-    .topo__link[aria-current='page']::after {
+    .topo__link[aria-current]::after {
       height: 3px;
       background-color: var(--color-marinho);
       transform: scaleX(1);
@@ -398,12 +399,12 @@ const caminho = Astro.url.pathname;
     }
 
     /* Página aberta no menu do celular: traço amarelo à esquerda e "Você está aqui" no lugar da seta */
-    .menu__link[aria-current='page'] {
+    .menu__link[aria-current] {
       position: relative;
       padding-left: 1rem;
       font-weight: var(--font-weight-extrabold);
     }
-    .menu__link[aria-current='page']::before {
+    .menu__link[aria-current]::before {
       content: '';
       position: absolute;
       left: 0;

@@ -1,0 +1,30 @@
+---
+// /planos/ (Para sua casa): abertura escura (página de anúncio) com o seletor das categorias, os planos para
+// casa com as condições e o aviso, e a tabela comparativa (só no desktop).
+import Base from '../../layouts/Base.astro';
+import AberturaEscura from '../../components/secoes/AberturaEscura.astro';
+import Planos from '../../components/secoes/Planos.astro';
+import ComparativoPlanos from '../../components/secoes/ComparativoPlanos.astro';
+import SeletorPlanos from '../../components/ui/SeletorPlanos.astro';
+import { porExtenso } from '../../lib/contato.ts';
+import { whatsapp } from '../../lib/dados.ts';
+import { categoria, planosDa } from '../../lib/planos.ts';
+
+const { tecnologia } = categoria('casa');
+const planos = planosDa('casa');
+const titulo = 'Planos de internet para sua casa | Info Missões';
+const lista = porExtenso(planos.map((p) => `${p.nome} (${p.preco} por mês)`));
+const descricao = planos.length
+  ? `Planos de internet ${tecnologia} para sua casa: ${lista}. ${
+      whatsapp ? 'Contrate pelo WhatsApp.' : 'Fale com a gente para contratar.'
+    }`
+  : `Planos de internet ${tecnologia} da Info Missões na região das Missões (RS). Consulte os planos no seu endereço.`;
+---
+
+<Base titulo={titulo} descricao={descricao}>
+  <AberturaEscura titulo="Planos de internet" texto={`${tecnologia} até a sua casa, com atendimento aqui na região.`}>
+    <SeletorPlanos atual="casa" />
+  </AberturaEscura>
+  <Planos categoria="casa" />
+  <ComparativoPlanos />
+</Base>
