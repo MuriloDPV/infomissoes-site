@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ImageMetadata } from 'astro';
 import { site, type Foto } from '../data/site.ts';
-import { linkTelefone, linkWhatsApp, numeroBR, valorPreco } from './contato.ts';
+import { linkTelefone, linkWhatsApp, numeroBR, precoValido } from './contato.ts';
 
 export const DEV = import.meta.env.DEV;
 
@@ -17,9 +17,14 @@ function validar(condicao: boolean, mensagem: string) {
 
 validar(!site.whatsapp || !!numeroBR(site.whatsapp), `whatsapp inválido: "${site.whatsapp}"`);
 validar(!site.telefone || !!numeroBR(site.telefone), `telefone inválido: "${site.telefone}"`);
-site.planos.forEach((p, i) =>
-  validar(!!valorPreco(p.preco), `planos[${i}].preco fora do formato "R$ 99,90": "${p.preco}"`)
-);
+for (const [categoria, planos] of Object.entries(site.planos)) {
+  planos.forEach((p, i) =>
+    validar(
+      precoValido(p.preco),
+      `planos.${categoria}[${i}].preco fora do formato "R$ 99,90" (ou "sob consulta"): "${p.preco}"`
+    )
+  );
+}
 
 /** Link do WhatsApp com a mensagem padrão de site.ts já escrita. */
 export const whatsapp = linkWhatsApp(site.whatsapp, site.mensagemWhatsapp);

@@ -21,8 +21,11 @@ export type Plano = {
   download: string;
   /** Velocidade de upload, como deve aparecer. */
   upload: string;
-  /** Preço por mês: "R$", espaço e o valor com vírgula e dois centavos. */
-  preco: string;
+  /**
+   * Preço por mês: "R$", espaço e o valor com vírgula e dois centavos.
+   * Ou 'sob consulta': o cartão mostra "Preço sob consulta" (nunca "R$ Consulte").
+   */
+  preco: `R$ ${string}` | 'sob consulta';
   /** Opcional. Padrão: 'por mês'. */
   periodo?: string;
   /** Opcional. Itens incluídos no plano (só o que for verdade). Sem itens, a lista não aparece. */
@@ -36,6 +39,20 @@ export type Foto = {
   arquivo: string | null;
   /** Descrição da foto para leitores de tela. */
   alt: string;
+};
+
+export type Planos = {
+  /** Para sua casa (residencial): página /planos/ e o resumo da Início. */
+  casa: Plano[];
+  /** Para sua empresa (empresarial): página /planos/empresas/. */
+  empresa: Plano[];
+  /** Interior (rural): página /planos/interior/. */
+  interior: Plano[];
+};
+
+export type Condicao = {
+  icone: 'infinito' | 'wifi';
+  texto: string;
 };
 
 export type Diferencial = {
@@ -65,7 +82,9 @@ export type Site = {
   /** Razão social que aparece no rodapé junto com o CNPJ. */
   razaoSocial: string | null;
   cidades: string[];
-  planos: Plano[];
+  planos: Planos;
+  /** Condições que valem para todos os planos. Aparecem uma vez, embaixo dos cartões. */
+  condicoesPlanos: Condicao[];
   avisoPlanos: string;
   fotos: { destaque: Foto; loja: Foto };
   diferenciais: Diferencial[];
@@ -125,12 +144,28 @@ export const site: Site = {
     'São Luiz Gonzaga',
   ],
 
-  // Planos, na ordem em que aparecem (até 3). Só o que a Info Missões informou:
+  // Planos por categoria, na ordem em que aparecem (até 3 em cada). Só o que a Info Missões informou:
   // NUNCA inventar velocidade, preço, benefício, selo ou condição.
-  planos: [
-    { nome: '300 Mega', download: '300 Mega', upload: '300 Mega', preco: 'R$ 85,90' },
-    { nome: '500 Mega', download: '500 Mega', upload: '250 Mega', preco: 'R$ 99,90' },
-    { nome: '700 Mega', download: '700 Mega', upload: '400 Mega', preco: 'R$ 120,90' },
+  planos: {
+    // Para sua casa: 100% fibra óptica. Sem plano de 1 Giga.
+    casa: [
+      { nome: '300 Mega', download: '300 Mega', upload: '300 Mega', preco: 'R$ 85,90' },
+      { nome: '500 Mega', download: '500 Mega', upload: '250 Mega', preco: 'R$ 99,90' },
+      { nome: '700 Mega', download: '700 Mega', upload: '400 Mega', preco: 'R$ 120,90' },
+    ],
+    // Para sua empresa: 100% fibra óptica. Preço sob consulta (botão "Pedir proposta no WhatsApp").
+    empresa: [{ nome: '600 Mega Empresarial', download: '600 Mega', upload: '600 Mega', preco: 'sob consulta' }],
+    // Interior: via RÁDIO, não é fibra (não escrever "fibra" neste plano).
+    interior: [{ nome: '20 Mega Rural', download: '20 Mega', upload: '10 Mega', preco: 'R$ 99,90' }],
+  },
+
+  // Valem para todos os planos (casa, empresa e interior).
+  condicoesPlanos: [
+    { icone: 'infinito', texto: 'Sem franquia de dados.' },
+    {
+      icone: 'wifi',
+      texto: 'Roteador Wi-Fi com ONU integrada em comodato, sem custo adicional enquanto durar a assinatura.',
+    },
   ],
 
   // Aviso fixo que aparece embaixo dos planos.

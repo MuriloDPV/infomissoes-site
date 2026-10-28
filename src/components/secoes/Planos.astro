@@ -16,7 +16,7 @@ interface Props {
 }
 
 const { resumo = false } = Astro.props;
-const planos = site.planos.slice(0, 3);
+const planos = site.planos.casa.slice(0, 3);
 const temPlanos = planos.length > 0;
 
 const texto = temPlanos

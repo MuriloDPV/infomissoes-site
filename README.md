@@ -36,6 +36,7 @@ As páginas viram pastas (`planos/index.html`) e os links usam barra final (`/pl
 
 Ficam todos num arquivo só: `src/data/site.ts`. Ali estão o nome do portal, o WhatsApp, o telefone, o endereço, o CNPJ, as cidades, os planos, o logo, o favicon, as fotos e os textos dos diferenciais.
 
+- Planos: ficam em `planos`, separados por categoria: `casa` (residencial, fibra), `empresa` (empresarial, fibra) e `interior` (rural, via rádio). Até 3 em cada. O preço é `'R$ 99,90'` ou `'sob consulta'` (o site mostra "Preço sob consulta" e o botão de proposta). As condições que valem para todos os planos (sem franquia, roteador em comodato) ficam em `condicoesPlanos` e aparecem uma vez, embaixo dos cartões; o aviso da instalação fica em `avisoPlanos`.
 - Logo: coloque o arquivo em `src/assets/marca/` e escreva só o nome em `logo` (e a versão para fundo escuro em `logoFundoEscuro`). Em SVG com camadas, a logo do cabeçalho anima na primeira visita.
 - Fotos: só fotos próprias da Info Missões. Coloque em `src/assets/fotos/` e escreva só o nome em `fotos.destaque` (4:5, em pé) ou `fotos.loja` (4:3, deitada). As imagens de fundo do site não são fotos: são desenhadas por código a partir da logo (ver `DESIGN.md`).
 - Mapa das cidades: a posição de cada sede fica em `src/data/sedes-ibge.ts` (IBGE, Cadastro de Localidades 2010). Cidade nova em `site.ts` precisa da posição lá, senão o mapa some e fica só a lista.
@@ -59,7 +60,7 @@ Sem endereço da loja, somem o item "Loja" do contato e o diferencial "Loja para
 npm run pronto
 ```
 
-Rode antes de publicar no domínio. Falha (código de saída 1) se faltar o WhatsApp ou o telefone em `src/data/site.ts`, ou se algum deles não for um número com DDD, e avisa que o site não está pronto. Com os dois preenchidos, sai com 0.
+Rode antes de publicar no domínio. Falha (código de saída 1) se faltar o WhatsApp ou o telefone em `src/data/site.ts`, se algum deles não for um número com DDD, ou se algum plano estiver com dado errado (campo vazio, preço fora do formato, mais de 3 numa categoria), e avisa que o site não está pronto. Com tudo certo, sai com 0 e mostra quantos planos há em cada categoria.
 
 ## Logo, favicon e imagem de compartilhamento
 

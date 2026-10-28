@@ -11,7 +11,7 @@ import Secao from '../ui/Secao.astro';
 import { site, type Plano } from '../../data/site.ts';
 import { valorPreco } from '../../lib/contato.ts';
 
-const planos = site.planos.slice(0, 3);
+const planos = site.planos.casa.slice(0, 3);
 const linhas: { rotulo: string; icone?: IconeNome; valor: (p: Plano) => string; preco?: boolean }[] = [
   { rotulo: 'Download', icone: 'download', valor: (p) => p.download },
   { rotulo: 'Upload', icone: 'upload', valor: (p) => p.upload },

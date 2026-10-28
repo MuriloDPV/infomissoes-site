@@ -32,6 +32,14 @@ export function valorPreco(texto: string | null | undefined): string | null {
   return m ? m[1] : null;
 }
 
+/** Preço de plano que o site mostra como "Preço sob consulta". */
+export const SOB_CONSULTA = 'sob consulta';
+
+/** Preço de plano válido: "R$ 99,90" ou "sob consulta". */
+export function precoValido(texto: string | null | undefined): boolean {
+  return texto === SOB_CONSULTA || !!valorPreco(texto);
+}
+
 /** Junta itens como no texto: "a, b e c" (ou "a, b ou c"). */
 export function porExtenso(itens: string[], conjuncao: 'e' | 'ou' = 'e'): string {
   return itens.length <= 1 ? (itens[0] ?? '') : `${itens.slice(0, -1).join(', ')} ${conjuncao} ${itens.at(-1)}`;

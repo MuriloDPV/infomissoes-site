@@ -9,7 +9,7 @@ import { site } from '../data/site.ts';
 import { porExtenso } from '../lib/contato.ts';
 import { whatsapp } from '../lib/dados.ts';
 
-const planos = site.planos.slice(0, 3);
+const planos = site.planos.casa.slice(0, 3);
 const titulo = 'Planos de internet | Info Missões';
 const lista = porExtenso(planos.map((p) => `${p.nome} (${p.preco} por mês)`));
 const descricao = planos.length
