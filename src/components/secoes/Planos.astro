@@ -1,8 +1,8 @@
 ---
 // Planos de uma categoria (dados de site.ts; categorias em src/lib/planos.ts). Sem planos, um convite neutro
 // para consultar.
-// Páginas de planos (padrão): cartões completos com o botão do WhatsApp e, embaixo, as condições que valem para
-// todos os planos (uma vez só, cada uma com o seu ícone), o aviso da instalação e o link para as cidades
+// Páginas de planos (padrão): cartões completos com o botão do WhatsApp e, embaixo, as condições da categoria
+// (uma vez só, cada uma com o seu ícone), o aviso da instalação e o link para as cidades
 // (o h1 fica na abertura da página). Com um plano só, as condições ficam ao lado do cartão no desktop, depois
 // de um texto curto da categoria (`texto`).
 // `resumo` (Início): faixa clara com título, cartões compactos (brancos) dos planos para casa e o botão
@@ -15,7 +15,7 @@ import Pendente from '../ui/Pendente.astro';
 import Secao from '../ui/Secao.astro';
 import { site } from '../../data/site.ts';
 import { DEV, whatsapp } from '../../lib/dados.ts';
-import { categoria as porChave, planosDa, type ChaveCategoria } from '../../lib/planos.ts';
+import { categoria as porChave, condicoesDa, planosDa, type ChaveCategoria } from '../../lib/planos.ts';
 
 interface Props {
   categoria?: ChaveCategoria;
@@ -27,6 +27,7 @@ interface Props {
 const { categoria: chave = 'casa', resumo = false, texto: textoCategoria } = Astro.props;
 const categoria = porChave(chave);
 const planos = planosDa(chave);
+const condicoes = condicoesDa(chave);
 const temPlanos = planos.length > 0;
 const unico = !resumo && planos.length === 1;
 
@@ -59,14 +60,16 @@ const texto = temPlanos
         {!resumo && (
           <div class="planos__condicoes" data-revelar style={unico ? '--i:2' : undefined}>
             {textoCategoria && <p class="planos__texto">{textoCategoria}</p>}
-            <ul class="planos__lista">
-              {site.condicoesPlanos.map((c) => (
-                <li class="planos__condicao">
-                  <Icone nome={c.icone} class="planos__icone" />
-                  <span>{c.texto}</span>
-                </li>
-              ))}
-            </ul>
+            {condicoes.length > 0 && (
+              <ul class="planos__lista">
+                {condicoes.map((c) => (
+                  <li class="planos__condicao">
+                    <Icone nome={c.icone} class="planos__icone" />
+                    <span>{c.texto}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
             <p class="planos__aviso">{site.avisoPlanos}</p>
             <Botao href="/onde-atendemos/" variante="link" seta>
               Ver as cidades atendidas
@@ -124,7 +127,7 @@ const texto = temPlanos
       }
     }
 
-    /* Condições comuns a todos os planos: uma vez só, embaixo dos cartões, cada uma com o seu ícone */
+    /* Condições da categoria: uma vez só, embaixo dos cartões, cada uma com o seu ícone */
     .planos__condicoes {
       display: flex;
       flex-direction: column;

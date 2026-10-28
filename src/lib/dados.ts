@@ -25,6 +25,12 @@ for (const [categoria, planos] of Object.entries(site.planos)) {
     )
   );
 }
+site.condicoesPlanos.forEach((c, i) =>
+  validar(
+    c.categorias.length > 0 && c.categorias.every((k) => k in site.planos),
+    `condicoesPlanos[${i}].categorias precisa ter casa, empresa ou interior: ${JSON.stringify(c.categorias)}`
+  )
+);
 
 /** Link do WhatsApp com a mensagem padrão de site.ts já escrita. */
 export const whatsapp = linkWhatsApp(site.whatsapp, site.mensagemWhatsapp);

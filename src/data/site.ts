@@ -53,6 +53,8 @@ export type Planos = {
 export type Condicao = {
   icone: 'infinito' | 'wifi';
   texto: string;
+  /** Em quais categorias a condição aparece. O interior é via rádio: nada de fibra nem ONU nele. */
+  categorias: (keyof Planos)[];
 };
 
 export type Diferencial = {
@@ -83,7 +85,7 @@ export type Site = {
   razaoSocial: string | null;
   cidades: string[];
   planos: Planos;
-  /** Condições que valem para todos os planos. Aparecem uma vez, embaixo dos cartões. */
+  /** Condições dos planos, cada uma nas suas categorias. Aparecem uma vez, embaixo dos cartões. */
   condicoesPlanos: Condicao[];
   avisoPlanos: string;
   fotos: { destaque: Foto; loja: Foto };
@@ -159,12 +161,14 @@ export const site: Site = {
     interior: [{ nome: '20 Mega Rural', download: '20 Mega', upload: '10 Mega', preco: 'R$ 99,90' }],
   },
 
-  // Valem para todos os planos (casa, empresa e interior).
+  // Condições dos planos. `categorias` diz em quais páginas cada uma aparece (casa, empresa, interior).
   condicoesPlanos: [
-    { icone: 'infinito', texto: 'Sem franquia de dados.' },
+    { icone: 'infinito', texto: 'Sem franquia de dados.', categorias: ['casa', 'empresa', 'interior'] },
     {
       icone: 'wifi',
       texto: 'Roteador Wi-Fi com ONU integrada em comodato, sem custo adicional enquanto durar a assinatura.',
+      // ONU é equipamento de fibra: não vale para o interior (via rádio).
+      categorias: ['casa', 'empresa'],
     },
   ],
 

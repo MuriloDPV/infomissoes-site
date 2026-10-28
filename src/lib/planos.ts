@@ -60,6 +60,9 @@ export const categoria = (chave: ChaveCategoria) => categorias.find((c) => c.cha
 /** Os planos de uma categoria, até 3 (o layout foi feito para até 3). */
 export const planosDa = (chave: ChaveCategoria) => site.planos[chave].slice(0, 3);
 
+/** As condições que aparecem numa categoria (cada condição diz as suas em `categorias`). */
+export const condicoesDa = (chave: ChaveCategoria) => site.condicoesPlanos.filter((c) => c.categorias.includes(chave));
+
 /** Número e unidade juntos na mesma linha ("300 Mega", "R$ 99,90"). */
 const semQuebra = (texto: string) => texto.replace(/(\d|R\$) /g, '$1 ');
 
