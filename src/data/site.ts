@@ -165,8 +165,8 @@ export const site: Site = {
       { nome: '300 Mega', download: '300 Mega', upload: '300 Mega', preco: 'R$ 85,90' },
       { nome: '500 Mega', download: '500 Mega', upload: '250 Mega', preco: 'R$ 99,90' },
       { nome: '700 Mega', download: '700 Mega', upload: '400 Mega', preco: 'R$ 120,90' },
-      // A CONFIRMAR: upload do 1 Giga (o post não informa; sem ele a linha de upload não aparece).
-      { nome: '1 Giga', download: '1 Giga', upload: null, preco: 'R$ 179,90' },
+      // Upload do 1 Giga: 500 Mega, como estava no site antigo ("1 GIGA: até 1024 Mbps / até 500 Mbps"), visto em 29/10/2026.
+      { nome: '1 Giga', download: '1 Giga', upload: '500 Mega', preco: 'R$ 179,90' },
     ],
     // Para sua empresa: 100% fibra óptica. Preço sob consulta (botão "Pedir proposta no WhatsApp").
     empresa: [{ nome: '600 Mega Empresarial', download: '600 Mega', upload: '600 Mega', preco: 'sob consulta' }],

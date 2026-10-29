@@ -1,6 +1,10 @@
 # Site Info Missões
 
-Site institucional estático (Astro + Tailwind). O build gera HTML, CSS e fontes em `dist/`, sem servidor Node, sem segredos e sem nada de terceiros.
+Site institucional da [Info Missões](https://infomissoes.net.br), provedor de internet por fibra óptica no Rio Grande do Sul, criado por **Murilo dos Passos Vieira** ([@MuriloDPV](https://github.com/MuriloDPV)).
+
+No ar em https://infomissoes.net.br.
+
+Site estático (Astro + Tailwind). O build gera HTML, CSS e fontes em `dist/`, sem servidor Node, sem segredos e sem nada de terceiros.
 
 Precisa de Node 22.22 ou mais novo.
 
@@ -24,13 +28,13 @@ npm run preview
 
 ## Páginas
 
-- `/` Início: destaque, "Já é cliente?", "Soluções para cada perfil" (casa, empresa e interior, cada um levando à sua página), resumo dos planos para casa, diferenciais e chamada para o WhatsApp.
+- `/` Início: destaque, as cidades atendidas logo no começo, resumo dos planos para casa, contato (atendimento e plantão), "Já é cliente?", "Soluções para cada perfil" (casa, empresa e interior, cada um levando à sua página) e diferenciais.
 - `/planos/` Para sua casa: os planos para casa, as condições, o aviso, o link para as cidades e o comparativo (só no desktop).
 - `/planos/empresas/` Para sua empresa: o plano empresarial (preço sob consulta, botão de proposta), um texto curto para comércios e empresas e as condições.
 - `/planos/interior/` Interior: o plano rural via rádio, um texto curto sobre consultar se o sinal chega na localidade e as condições.
 - As três páginas de planos têm no topo o seletor Para sua casa / Para sua empresa / Interior: parece abas, mas são links (funciona sem JS).
 - `/onde-atendemos/`: as cidades e o convite "A fibra chega na sua rua?".
-- `/contato/`: WhatsApp, Instagram, e telefone e loja quando preenchidos.
+- `/contato/`: WhatsApp do atendimento, plantão (só WhatsApp), Instagram, e telefone e loja quando preenchidos.
 - `404.html`, `sitemap.xml` e `robots.txt` também saem do build.
 
 As páginas viram pastas (`planos/index.html`) e os links usam barra final (`/planos/`), então qualquer nginx serve sem configuração especial. Para a 404 aparecer, aponte `error_page 404 /404.html;`. O menu, o rodapé e o `sitemap.xml` saem da lista de `src/lib/navegacao.ts`; as páginas de planos (o seletor, o bloco da Início e o resto do `sitemap.xml`), de `src/lib/planos.ts`, que também tem a mensagem do WhatsApp e o texto do botão de cada categoria.
@@ -76,3 +80,7 @@ node scripts/marca/gerar-icones.mjs
 ## Design
 
 Tokens, componentes, regras de uso, a arte desenhada por código (traço das ruínas + fibra de luz) e a animação de entrada da logo estão em `DESIGN.md`.
+
+## Autor
+
+Criado e desenvolvido por **Murilo dos Passos Vieira** ([@MuriloDPV](https://github.com/MuriloDPV)).
