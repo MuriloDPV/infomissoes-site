@@ -1,13 +1,15 @@
 ---
-// Início: destaque, "Já é cliente?", soluções para cada perfil (casa, empresa, interior), resumo dos planos
-// para casa, diferenciais e a chamada final para o WhatsApp.
+// Início (ordem pedida pelo Murilo em 29/10/2026): destaque, cidades atendidas logo no começo, resumo dos
+// planos para casa, contato (atendimento e plantão), "Já é cliente?", soluções para cada perfil e diferenciais.
+// A chamada final saiu: o contato já faz esse papel.
 import Base from '../layouts/Base.astro';
 import Destaque from '../components/secoes/Destaque.astro';
 import JaECliente from '../components/secoes/JaECliente.astro';
 import Solucoes from '../components/secoes/Solucoes.astro';
 import Planos from '../components/secoes/Planos.astro';
+import CidadesInicio from '../components/secoes/CidadesInicio.astro';
+import Contato from '../components/secoes/Contato.astro';
 import Diferenciais from '../components/secoes/Diferenciais.astro';
-import ChamadaFinal from '../components/secoes/ChamadaFinal.astro';
 import { portal, whatsapp } from '../lib/dados.ts';
 
 const titulo = 'Info Missões | Internet de fibra óptica nas Missões';
@@ -18,9 +20,10 @@ const descricao = `Internet de fibra óptica na região das Missões (RS), para 
 
 <Base titulo={titulo} descricao={descricao}>
   <Destaque />
+  <CidadesInicio />
+  <Planos resumo />
+  <Contato inicio />
   <JaECliente />
   <Solucoes />
-  <Planos resumo />
   <Diferenciais />
-  <ChamadaFinal />
 </Base>

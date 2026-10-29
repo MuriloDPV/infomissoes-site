@@ -40,10 +40,9 @@ const link = whatsappMensagem(mensagem);
 const sobConsulta = p.preco === SOB_CONSULTA;
 const [, velocidade, tipo] = /^(\S+ \S+) (.+)$/.exec(p.nome) ?? [null, p.nome, null];
 
-const linhas: Linha[] = [
-  { rotulo: 'Download', valor: p.download, icone: 'download' },
-  { rotulo: 'Upload', valor: p.upload, icone: 'upload' },
-];
+const linhas: Linha[] = [{ rotulo: 'Download', valor: p.download, icone: 'download' }];
+// Sem upload informado (null), a linha não aparece.
+if (p.upload) linhas.push({ rotulo: 'Upload', valor: p.upload, icone: 'upload' });
 if (!sobConsulta) linhas.push({ rotulo: p.periodo ?? 'Por mês', valor: p.preco, destaque: true });
 ---
 

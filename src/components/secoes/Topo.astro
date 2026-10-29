@@ -194,8 +194,12 @@ const caminho = Astro.url.pathname;
       box-shadow: inset 0 -1px 0 var(--color-marinho-100);
     }
 
+    /* Logo em destaque (pedido de 29/10/2026): grande no topo da página e menor quando a página rola
+       (.is-compacto, ligado pelo Base.astro). A entrada da logo mede o lugar final na hora, então pousa
+       no tamanho grande. */
     .topo__interno {
-      height: 4.25rem;
+      height: 5.5rem;
+      transition: height var(--duracao-lenta) var(--ease-saida);
     }
 
     .topo__marca {
@@ -204,15 +208,38 @@ const caminho = Astro.url.pathname;
       min-height: 3rem;
       border-radius: var(--radius-sm);
       text-decoration: none;
+      --logo-altura: 4.25rem;
+    }
+    .topo__marca :global(.logo) {
+      transition: height var(--duracao-lenta) var(--ease-saida);
+    }
+
+    .topo.is-compacto .topo__interno {
+      height: 4.25rem;
+    }
+    .topo.is-compacto .topo__marca {
       --logo-altura: 2.875rem;
     }
 
     @media (width >= 48rem) {
       .topo__interno {
-        height: 5.25rem;
+        height: 8rem;
       }
       .topo__marca {
+        --logo-altura: 6.75rem;
+      }
+      .topo.is-compacto .topo__interno {
+        height: 5.25rem;
+      }
+      .topo.is-compacto .topo__marca {
         --logo-altura: 3.75rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .topo__interno,
+      .topo__marca :global(.logo) {
+        transition: none;
       }
     }
 

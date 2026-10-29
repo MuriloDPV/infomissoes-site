@@ -47,7 +47,8 @@ export function pendencias(site: Site): Relatorio {
     if (planos.length === 0)
       falta(campo, 'planos: nome, download, upload e preço (sem eles a página mostra "Consulte os planos")');
     planos.forEach((p, i) => {
-      const vazio = (['nome', 'download', 'upload', 'preco'] as const).filter((k) => !p[k]?.trim());
+      const vazio = (['nome', 'download', 'preco'] as const).filter((k) => !p[k]?.trim());
+      if (!p.upload?.trim()) falta(`${campo}[${i}].upload`, `upload do plano ${p.nome} (sem ele a linha não aparece)`);
       if (vazio.length) invalidos.push({ campo: `${campo}[${i}]`, descricao: `faltam: ${vazio.join(', ')}` });
       else if (!precoValido(p.preco))
         invalidos.push({
@@ -55,8 +56,8 @@ export function pendencias(site: Site): Relatorio {
           descricao: `"${p.preco}" não está no formato "R$ 99,90" (nem é "sob consulta")`,
         });
     });
-    if (planos.length > 3)
-      invalidos.push({ campo, descricao: `${planos.length} planos; o layout foi feito para até 3` });
+    if (planos.length > 4)
+      invalidos.push({ campo, descricao: `${planos.length} planos; o layout foi feito para até 4` });
   }
 
   if (!site.fotos.destaque.arquivo) falta('fotos.destaque', 'foto do destaque, em pé (4:5)');

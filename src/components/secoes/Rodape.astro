@@ -5,7 +5,7 @@ import Icone from '../ui/Icone.astro';
 import Logo from '../ui/Logo.astro';
 import Pendente from '../ui/Pendente.astro';
 import { site } from '../../data/site.ts';
-import { DEV, portal, telefone, whatsapp } from '../../lib/dados.ts';
+import { DEV, plantao, portal, telefone, whatsapp } from '../../lib/dados.ts';
 import { atual, paginas } from '../../lib/navegacao.ts';
 
 const ano = new Date().getFullYear();
@@ -63,6 +63,16 @@ const caminho = Astro.url.pathname;
             <li>
               <a class="rodape__link" href={whatsapp} target="_blank" rel="noopener">
                 WhatsApp <span class="rodape__numero tabular">{site.whatsapp}</span>
+                <span class="sr-only"> (abre em nova aba)</span>
+              </a>
+            </li>
+          )
+        }
+        {
+          plantao && (
+            <li>
+              <a class="rodape__link" href={plantao} target="_blank" rel="noopener">
+                Plantão (só WhatsApp) <span class="rodape__numero tabular">{site.plantao}</span>
                 <span class="sr-only"> (abre em nova aba)</span>
               </a>
             </li>

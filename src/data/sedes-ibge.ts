@@ -21,4 +21,7 @@ export const sedesIbge: Record<string, Sede> = {
   Itacurubi: { geocodigo: '4310553', lat: -28.802205033087, lon: -55.2327232640516 },
   Bossoroca: { geocodigo: '4302501', lat: -28.7307243302239, lon: -54.9098109252545 },
   'São Luiz Gonzaga': { geocodigo: '4318903', lat: -28.4066469530094, lon: -54.9596595493639 },
+  // A CONFIRMAR: posição aproximada da sede (centro de São Borja), NÃO copiada do arquivo do IBGE.
+  // Trocar pelos valores do BR_Localidades_2010_v1 (geocódigo 4318002) quando der.
+  'São Borja': { geocodigo: '4318002', lat: -28.6608, lon: -56.0042 },
 };

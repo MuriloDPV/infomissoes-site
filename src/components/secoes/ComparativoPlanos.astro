@@ -12,7 +12,7 @@ import { planosDa } from '../../lib/planos.ts';
 const planos = planosDa('casa');
 const linhas: { rotulo: string; icone?: IconeNome; valor: (p: Plano) => string; preco?: boolean }[] = [
   { rotulo: 'Download', icone: 'download', valor: (p) => p.download },
-  { rotulo: 'Upload', icone: 'upload', valor: (p) => p.upload },
+  { rotulo: 'Upload', icone: 'upload', valor: (p) => p.upload ?? '—' },
   { rotulo: 'Preço por mês', valor: (p) => p.preco, preco: true },
 ];
 ---

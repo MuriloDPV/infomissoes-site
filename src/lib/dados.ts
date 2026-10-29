@@ -17,6 +17,7 @@ function validar(condicao: boolean, mensagem: string) {
 
 validar(!site.whatsapp || !!numeroBR(site.whatsapp), `whatsapp inválido: "${site.whatsapp}"`);
 validar(!site.telefone || !!numeroBR(site.telefone), `telefone inválido: "${site.telefone}"`);
+validar(!site.plantao || !!numeroBR(site.plantao), `plantao inválido: "${site.plantao}"`);
 for (const [categoria, planos] of Object.entries(site.planos)) {
   planos.forEach((p, i) =>
     validar(
@@ -38,6 +39,8 @@ export const whatsapp = linkWhatsApp(site.whatsapp, site.mensagemWhatsapp);
 export const whatsappMensagem = (complemento: string) =>
   linkWhatsApp(site.whatsapp, [site.mensagemWhatsapp, complemento].filter(Boolean).join(' '));
 export const telefone = linkTelefone(site.telefone);
+/** WhatsApp do plantão (só mensagem). */
+export const plantao = linkWhatsApp(site.plantao, site.mensagemWhatsapp);
 
 /** Nome do portal com artigo/preposição certos para usar em frases. */
 const feminino = site.artigoPortal === 'a';

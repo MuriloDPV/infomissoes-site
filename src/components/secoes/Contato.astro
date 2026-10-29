@@ -1,26 +1,44 @@
 ---
-// Contato (/contato/): WhatsApp em destaque (com o número), Instagram, e telefone e loja só quando
-// preenchidos em site.ts. O h1 e o texto ficam na abertura da página.
+// Contato: WhatsApp do atendimento em destaque (com o número), plantão (só WhatsApp), Instagram, e telefone e
+// loja só quando preenchidos em site.ts.
+// Em /contato/ o h1 e o texto ficam na abertura da página. Na Início (`inicio`), a seção tem o próprio título.
+import CabecalhoSecao from '../ui/CabecalhoSecao.astro';
 import Foto from '../ui/Foto.astro';
 import Icone from '../ui/Icone.astro';
 import Pendente from '../ui/Pendente.astro';
 import Secao from '../ui/Secao.astro';
 import { site } from '../../data/site.ts';
-import { DEV, imagemFoto, telefone, whatsapp } from '../../lib/dados.ts';
+import { DEV, imagemFoto, plantao, telefone, whatsapp } from '../../lib/dados.ts';
+
+interface Props {
+  /** Na Início: título próprio e sem a foto da loja. */
+  inicio?: boolean;
+}
+
+const { inicio = false } = Astro.props;
 
 const usuarioInstagram = '@' + site.instagram.replace(/\/+$/, '').split('/').pop();
 
 const temFoto = !!imagemFoto(site.fotos.loja, 'fotos.loja');
-const mostrarFoto = temFoto || DEV;
+const mostrarFoto = !inicio && (temFoto || DEV);
 
 // Cartões que aparecem. Com número ímpar, o último ocupa a linha toda.
-const total = (whatsapp ? 1 : 0) + 1 + (telefone ? 1 : 0) + (site.endereco ? 1 : 0);
+const total = (whatsapp ? 1 : 0) + (plantao ? 1 : 0) + 1 + (telefone ? 1 : 0) + (site.endereco ? 1 : 0);
 const largoNoFim = total % 2 === 1 && total > 1;
 const ultimo = site.endereco ? 'loja' : telefone ? 'telefone' : 'instagram';
 const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--largo' : undefined);
 ---
 
-<Secao id="contato" tom="suave" class="secao--apos-abertura">
+<Secao id="contato" tom="suave" class={inicio ? undefined : 'secao--apos-abertura'}>
+  {
+    inicio && (
+      <CabecalhoSecao
+        titulo="Fale com a gente"
+        texto="Atendimento pelo WhatsApp. O plantão também é só por mensagem."
+        class="mb-10 md:mb-12"
+      />
+    )
+  }
   <div class="grid gap-10 md:gap-12">
     <div class="contatos">
       {
@@ -29,7 +47,7 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
             <a class="cartao cartao--whatsapp sup-marinho" href={whatsapp} target="_blank" rel="noopener" data-cta-whatsapp>
               <span class="cartao__rotulo rotulo">
                 <Icone nome="whatsapp" class="cartao__icone" />
-                WhatsApp
+                {site.rotuloWhatsapp}
               </span>
               <span class="cartao__numero tabular">{site.whatsapp}</span>
               <span class="cartao__botao">
@@ -44,7 +62,27 @@ const largura = (nome: string) => (largoNoFim && ultimo === nome ? 'cartao--larg
         )
       }
 
-      <div class:list={['flex', largura('instagram')]} data-revelar style="--i:2">
+      {
+        plantao && (
+          <div class="flex" data-revelar style="--i:2">
+            <a class="cartao cartao--claro" href={plantao} target="_blank" rel="noopener">
+              <span class="cartao__rotulo rotulo">
+                <Icone nome="whatsapp" class="cartao__icone" />
+                Plantão
+              </span>
+              <span class="cartao__valor tabular">{site.plantao}</span>
+              <span class="cartao__extra">Só WhatsApp. Este número não atende ligação.</span>
+              <span class="cartao__link">
+                Chamar o plantão
+                <Icone nome="seta" class="cartao__seta" />
+              </span>
+              <span class="sr-only"> (abre em nova aba)</span>
+            </a>
+          </div>
+        )
+      }
+
+      <div class:list={['flex', largura('instagram')]} data-revelar style="--i:3">
         <a class="cartao cartao--claro" href={site.instagram} target="_blank" rel="noopener">
           <span class="cartao__rotulo rotulo">
             <Icone nome="instagram" class="cartao__icone" />

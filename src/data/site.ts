@@ -19,8 +19,8 @@ export type Plano = {
   nome: string;
   /** Velocidade de download, como deve aparecer. */
   download: string;
-  /** Velocidade de upload, como deve aparecer. */
-  upload: string;
+  /** Velocidade de upload, como deve aparecer. null = ainda não informado: a linha de upload não aparece. */
+  upload: string | null;
   /**
    * Preço por mês: "R$", espaço e o valor com vírgula e dois centavos.
    * Ou 'sob consulta': o cartão mostra "Preço sob consulta" (nunca "R$ Consulte").
@@ -76,6 +76,10 @@ export type Site = {
   logoFundoEscuro: string | null;
   favicon: string | null;
   whatsapp: string | null;
+  /** Nome do WhatsApp principal nos cartões de contato. */
+  rotuloWhatsapp: string;
+  /** WhatsApp do plantão (só mensagem, não atende ligação). */
+  plantao: string | null;
   mensagemWhatsapp: string;
   telefone: string | null;
   endereco: string | null;
@@ -114,14 +118,19 @@ export const site: Site = {
   favicon: 'favicon.svg',
 
   // WhatsApp com DDD, como aparece na página. Aceita fixo (DDD + 8 dígitos) ou celular (DDD + 9 dígitos).
-  // Sem número, os botões de WhatsApp somem.
-  whatsapp: '(55) 3365-1025',
+  // Sem número, os botões de WhatsApp somem. É o número de TODOS os botões de WhatsApp do site.
+  // Atendimento de São Luiz Gonzaga (Murilo, 29/10/2026).
+  whatsapp: '(55) 98409-1659',
+  rotuloWhatsapp: 'Atendimento São Luiz Gonzaga',
+
+  // Plantão: só WhatsApp, NÃO atende ligação (Murilo, 29/10/2026). Aparece no contato e no rodapé.
+  plantao: '(55) 3365-1025',
 
   // Mensagem que já vem escrita quando a pessoa abre o WhatsApp por qualquer botão do site.
   mensagemWhatsapp: 'Olá! Vim pelo site da Info Missões.',
 
-  // Telefone com DDD, no mesmo formato do WhatsApp. É o mesmo número (fixo, atende ligação).
-  telefone: '(55) 3365-1025',
+  // Telefone para ligação. Tirado do site em 29/10/2026 (Murilo): o 3365-1025 é só WhatsApp (plantão).
+  telefone: null,
 
   // Endereço da loja (Google Maps, 28/10/2026).
   endereco: 'Av. Senador Pinheiro Machado, 2840 - Centro, São Luiz Gonzaga/RS',
@@ -144,16 +153,20 @@ export const site: Site = {
     'Itacurubi',
     'Bossoroca',
     'São Luiz Gonzaga',
+    // Nova em 29/10/2026 (Murilo).
+    'São Borja',
   ],
 
-  // Planos por categoria, na ordem em que aparecem (até 3 em cada). Só o que a Info Missões informou:
+  // Planos por categoria, na ordem em que aparecem (até 4 em cada). Só o que a Info Missões informou:
   // NUNCA inventar velocidade, preço, benefício, selo ou condição.
   planos: {
-    // Para sua casa: 100% fibra óptica. Sem plano de 1 Giga.
+    // Para sua casa: 100% fibra óptica. 1 Giga confirmado pelo Murilo em 29/10/2026 (post de 24/04 no Instagram).
     casa: [
       { nome: '300 Mega', download: '300 Mega', upload: '300 Mega', preco: 'R$ 85,90' },
       { nome: '500 Mega', download: '500 Mega', upload: '250 Mega', preco: 'R$ 99,90' },
       { nome: '700 Mega', download: '700 Mega', upload: '400 Mega', preco: 'R$ 120,90' },
+      // A CONFIRMAR: upload do 1 Giga (o post não informa; sem ele a linha de upload não aparece).
+      { nome: '1 Giga', download: '1 Giga', upload: null, preco: 'R$ 179,90' },
     ],
     // Para sua empresa: 100% fibra óptica. Preço sob consulta (botão "Pedir proposta no WhatsApp").
     empresa: [{ nome: '600 Mega Empresarial', download: '600 Mega', upload: '600 Mega', preco: 'sob consulta' }],

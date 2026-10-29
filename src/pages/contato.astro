@@ -5,10 +5,15 @@ import AberturaPagina from '../components/secoes/AberturaPagina.astro';
 import Contato from '../components/secoes/Contato.astro';
 import { site } from '../data/site.ts';
 import { porExtenso } from '../lib/contato.ts';
-import { telefone, whatsapp } from '../lib/dados.ts';
+import { plantao, telefone, whatsapp } from '../lib/dados.ts';
 
 const titulo = 'Contato | Info Missões';
-const canais = [whatsapp && `WhatsApp ${site.whatsapp}`, telefone && `telefone ${site.telefone}`, 'Instagram'];
+const canais = [
+  whatsapp && `WhatsApp ${site.whatsapp}`,
+  plantao && `plantão ${site.plantao} (só WhatsApp)`,
+  telefone && `telefone ${site.telefone}`,
+  'Instagram',
+];
 const descricao = `Fale com a Info Missões: ${porExtenso(canais.filter((c) => !!c), 'ou')}.${
   site.endereco ? ` Loja: ${site.endereco}.` : ''
 }`;

@@ -42,7 +42,7 @@ const texto = temPlanos
 
   {
     temPlanos && (
-      <div class:list={['planos', { 'planos--unico': unico }]}>
+      <div class:list={['planos', { 'planos--unico': unico, 'planos--quatro': planos.length === 4 }]}>
         <ul class:list={['planos__cartoes', resumo && 'mt-10 md:mt-12']}>
           {planos.map((p, i) => (
             <li class="flex" data-revelar style={`--i:${i + 1}`}>
@@ -126,6 +126,14 @@ const texto = temPlanos
         align-items: stretch;
       }
     }
+    /* Quatro planos: sempre 2×2 a partir do tablet (quatro lado a lado não cabem: os valores estouram) */
+    @media (width >= 48rem) {
+      .planos.planos--quatro:not(.planos--unico) .planos__cartoes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+      }
+    }
+
 
     /* Condições da categoria: uma vez só, embaixo dos cartões, cada uma com o seu ícone */
     .planos__condicoes {
