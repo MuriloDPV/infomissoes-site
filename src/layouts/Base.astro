@@ -110,10 +110,32 @@ const fontes = `
               revelar.observe(el);
             });
 
+            // Cabeçalho compacto ao rolar, com folga (histerese): o cabeçalho encolhe e a página "sobe" um
+            // pouco; com um limite só, o navegador corrigia a rolagem e o cabeçalho ficava abrindo e fechando.
+            // Encolhe depois de 96px e só volta ao tamanho grande perto do topo (menos de 8px).
             var topo = document.querySelector('[data-topo]');
-            observar(document.querySelector('[data-sentinela]'), function (visivel) {
-              if (topo) topo.classList.toggle('is-compacto', !visivel);
-            });
+            if (topo) {
+              var compacto = false;
+              var agendado = false;
+              var ajustarTopo = function () {
+                agendado = false;
+                var y = window.scrollY || 0;
+                if (!compacto && y > 96) compacto = true;
+                else if (compacto && y < 8) compacto = false;
+                else return;
+                topo.classList.toggle('is-compacto', compacto);
+              };
+              window.addEventListener(
+                'scroll',
+                function () {
+                  if (agendado) return;
+                  agendado = true;
+                  requestAnimationFrame(ajustarTopo);
+                },
+                { passive: true }
+              );
+              ajustarTopo();
+            }
 
             // Animações de fundo param fora da tela
             document.querySelectorAll('[data-destaque], [data-pausavel], .logo--animada').forEach(function (el) {
