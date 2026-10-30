@@ -132,8 +132,8 @@ export const site: Site = {
   // Telefone para ligação. Tirado do site em 29/10/2026 (Murilo): o 3365-1025 é só WhatsApp (plantão).
   telefone: null,
 
-  // Endereço da loja (Google Maps, 28/10/2026).
-  endereco: 'Av. Senador Pinheiro Machado, 2840 - Centro, São Luiz Gonzaga/RS',
+  // Endereço da loja: mudou do 2840 para o 2813 (Murilo, 30/10/2026).
+  endereco: 'Av. Senador Pinheiro Machado, 2813 - Centro, São Luiz Gonzaga/RS',
 
   // Horário da loja (Google Maps, 28/10/2026). A CONFIRMAR o sábado.
   horario: 'Segunda a sexta, 8h às 12h e 13h30 às 18h · Sábado, 8h às 18h',
