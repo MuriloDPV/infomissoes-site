@@ -22,6 +22,48 @@ const canonica = indexar ? new URL(Astro.url.pathname, site.url).href : null;
 // Imagem de compartilhamento (1200x630, com a logo), gerada por scripts/marca/gerar-icones.mjs.
 const imagemOg = imagemCompartilhar ? new URL(imagemCompartilhar, site.url).href : null;
 
+// Dados estruturados (schema.org) só na Início: a empresa, a loja, o horário e as cidades atendidas.
+// Ajuda o Google a ligar o site ao perfil da empresa. Nome, telefone, cidades e Instagram saem de site.ts.
+// Endereço e horário estão escritos aqui por partes: se mudarem em site.ts, mude aqui também.
+const soDigitos = (t: string | null) => (t ? t.replace(/\D/g, '') : '');
+const telefoneLd = soDigitos(site.whatsapp) ? `+55 ${soDigitos(site.whatsapp).slice(0, 2)} ${soDigitos(site.whatsapp).slice(2)}` : null;
+const empresaLd =
+  indexar && Astro.url.pathname === '/'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'LocalBusiness',
+        '@id': `${site.url}/#empresa`,
+        name: site.nome,
+        ...(site.razaoSocial ? { legalName: site.razaoSocial } : {}),
+        ...(site.cnpj ? { taxID: site.cnpj } : {}),
+        url: site.url,
+        ...(imagemOg ? { image: imagemOg, logo: imagemOg } : {}),
+        ...(telefoneLd ? { telephone: telefoneLd } : {}),
+        ...(site.endereco
+          ? {
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: 'Av. Senador Pinheiro Machado, 2813 - Centro',
+                addressLocality: 'São Luiz Gonzaga',
+                addressRegion: 'RS',
+                addressCountry: 'BR',
+              },
+            }
+          : {}),
+        ...(site.horario
+          ? {
+              openingHoursSpecification: [
+                { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '08:00', closes: '12:00' },
+                { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '13:30', closes: '18:00' },
+                { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '08:00', closes: '18:00' },
+              ],
+            }
+          : {}),
+        areaServed: site.cidades.map((c) => ({ '@type': 'City', name: `${c}, RS` })),
+        sameAs: [site.instagram],
+      }
+    : null;
+
 const fontes = `
 @font-face{font-family:"Montserrat Variable";font-style:normal;font-display:swap;font-weight:100 900;src:url(${fonteMontserrat}) format("woff2-variations"),url(${fonteMontserrat}) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:"Montserrat Reserva";src:local("Arial");size-adjust:113.39%;ascent-override:85.37%;descent-override:22.14%;line-gap-override:0%}
@@ -52,6 +94,7 @@ const fontes = `
     {imagemOg && <meta property="og:image:width" content="1200" />}
     {imagemOg && <meta property="og:image:height" content="630" />}
     {imagemOg && <meta name="twitter:card" content="summary_large_image" />}
+    {empresaLd && <script type="application/ld+json" set:html={JSON.stringify(empresaLd)} />}
 
     {/* O .ico vem antes e com sizes="32x32" para o navegador que entende SVG escolher o SVG. */}
     {icones.ico && <link rel="icon" href={icones.ico} sizes="32x32" />}

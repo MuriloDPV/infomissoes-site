@@ -22,7 +22,7 @@ Oficiais (as mesmas da logo e dos posts aprovados):
 - `marinho` #1a2d6d: títulos, botão primário
 - `noite` #081029: rodapé, abertura de /planos, mapa
 - `azul` #0199da: o pulso de luz, ícones e detalhes
-- `amarelo` #f7c12d: acento único. Marca só o que importa: o marca-texto ("Missões", o número de cidades), os pontos de luz na arte escura, o sublinhado do link atual no rodapé, o traço da aba aberta no seletor de planos e o foco em fundo escuro. Nunca é fundo de botão.
+- `amarelo` #f7c12d: acento único. Marca só o que importa: o marca-texto ("cidade" na Início, o número de cidades), os pontos de luz na arte escura, o sublinhado do link atual no rodapé, o traço da aba aberta no seletor de planos e o foco em fundo escuro. Nunca é fundo de botão.
 - `cinza` #363435: texto do corpo
 - `fundo` #f4f8fc: fundo claro padrão
 - `branco` #ffffff
@@ -68,7 +68,7 @@ Ritmo das páginas (o cabeçalho e o rodapé noite são os mesmos em todas):
 - Pesos: destaque 800, títulos de seção 760, subtítulos 700, corpo 500. Títulos grandes com espaçamento levemente negativo (`tracking-titulo`, `tracking-destaque`).
 - Rótulo (`.rotulo`): 13px, caixa alta, SemiBold, espaçamento `tracking-caixa` (0,09em), cor `sup-suave`. Para DOWNLOAD, UPLOAD, POR MÊS, CIDADES e os títulos das colunas do rodapé. Nunca para texto de leitura.
 - Números (velocidade e preço) grandes e com algarismos tabulares (`.tabular`). No preço, o "R$" fica menor que o número.
-- Marca-texto (`.marca-texto`): faixa amarela atrás da metade de baixo de uma palavra ou número, como nos posts. No máximo um por tela ("Missões" na Início, o "9" em Onde atendemos).
+- Marca-texto (`.marca-texto`): faixa amarela atrás da metade de baixo de uma palavra ou número, como nos posts. No máximo um por tela ("cidade" na Início, o "9" em Onde atendemos).
 - Não tem sobretítulo acima de título.
 
 ## Informação em linhas

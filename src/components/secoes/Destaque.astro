@@ -10,6 +10,12 @@ import Pendente from '../ui/Pendente.astro';
 import { site } from '../../data/site.ts';
 import { DEV, imagemFoto, portal, whatsapp } from '../../lib/dados.ts';
 
+// Frase do destaque: a loja fica em São Luiz Gonzaga; as outras cidades saem de site.cidades.
+const outras = site.cidades.filter((c) => c !== 'São Luiz Gonzaga').length;
+const frase = site.cidades.includes('São Luiz Gonzaga') && outras > 0
+  ? `A Info Missões leva fibra óptica até a sua casa em São Luiz Gonzaga e em mais ${outras} cidades da região, com loja e atendimento aqui perto.`
+  : 'A Info Missões leva fibra óptica até a sua casa, com loja e atendimento aqui perto.';
+
 const temFoto = !!imagemFoto(site.fotos.destaque, 'fotos.destaque');
 ---
 
@@ -26,10 +32,10 @@ const temFoto = !!imagemFoto(site.fotos.destaque, 'fotos.destaque');
   >
     <div class="flex flex-col gap-6 md:gap-7 lg:col-span-7">
       <h1 id="destaque-titulo" class="text-destaque tracking-destaque">
-        Internet de fibra óptica nas <span class="marca-texto">Missões</span>
+        Internet de fibra óptica na sua <span class="marca-texto">cidade</span>
       </h1>
       <p class="max-w-texto text-lg text-sup-suave md:text-xl">
-        A Info Missões leva internet por fibra óptica até a sua casa, com atendimento aqui mesmo, na região.
+        {frase}
       </p>
       <div class="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap md:pt-4">
         {

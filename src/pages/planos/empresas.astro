@@ -22,10 +22,10 @@ const lista = porExtenso(
   )
 );
 const descricao = planos.length
-  ? `Internet ${tecnologia} para comércios e empresas na região das Missões (RS): ${
+  ? `Internet ${tecnologia} para comércios e empresas em São Luiz Gonzaga e região (RS): ${
       planos.length > 1 ? 'planos' : 'plano'
     } ${lista}. Peça uma proposta ${canal}.`
-  : `Internet ${tecnologia} para comércios e empresas na região das Missões (RS). Peça uma proposta ${canal}.`;
+  : `Internet ${tecnologia} para comércios e empresas em São Luiz Gonzaga e região (RS). Peça uma proposta ${canal}.`;
 const texto = `${
   planos.some((p) => p.preco === SOB_CONSULTA) ? 'O preço é sob consulta. ' : ''
 }Peça uma proposta ${canal} e conte do que o seu comércio ou a sua empresa precisa.`;

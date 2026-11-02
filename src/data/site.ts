@@ -204,8 +204,8 @@ export const site: Site = {
     },
     {
       icone: 'local',
-      titulo: 'Gente da região',
-      texto: 'Somos das Missões. Quem atende você conhece a sua cidade.',
+      titulo: 'Atendimento perto de você',
+      texto: 'Quem atende você mora aqui e conhece a sua cidade.',
     },
     {
       icone: 'loja',

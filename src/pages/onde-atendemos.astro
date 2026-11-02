@@ -8,16 +8,16 @@ import { porExtenso } from '../lib/contato.ts';
 
 const titulo = 'Onde atendemos | Info Missões';
 const descricao = site.cidades.length
-  ? `A Info Missões leva internet de fibra óptica a ${site.cidades.length} cidades das Missões (RS): ${porExtenso(site.cidades)}.`
-  : 'A Info Missões leva internet de fibra óptica à região das Missões, no Rio Grande do Sul.';
+  ? `A Info Missões leva internet de fibra óptica a ${site.cidades.length} cidades do Rio Grande do Sul: ${porExtenso(site.cidades)}.`
+  : 'A Info Missões leva internet de fibra óptica a São Luiz Gonzaga e região, no Rio Grande do Sul.';
 ---
 
 <Base titulo={titulo} descricao={descricao}>
   <AberturaPagina
     titulo="Onde atendemos"
     texto={site.cidades.length
-      ? 'A Info Missões atende estas cidades da região das Missões, no Rio Grande do Sul.'
-      : 'Atendemos a região das Missões, no Rio Grande do Sul.'}
+      ? 'A Info Missões atende estas cidades do Rio Grande do Sul, com loja em São Luiz Gonzaga.'
+      : 'Atendemos São Luiz Gonzaga e região, no Rio Grande do Sul.'}
   />
   <OndeAtendemos />
 </Base>
