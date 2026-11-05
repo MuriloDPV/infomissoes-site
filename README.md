@@ -39,6 +39,12 @@ npm run preview
 
 As páginas viram pastas (`planos/index.html`) e os links usam barra final (`/planos/`), então qualquer nginx serve sem configuração especial. Para a 404 aparecer, aponte `error_page 404 /404.html;`. O menu, o rodapé e o `sitemap.xml` saem da lista de `src/lib/navegacao.ts`; as páginas de planos (o seletor, o bloco da Início e o resto do `sitemap.xml`), de `src/lib/planos.ts`, que também tem a mensagem do WhatsApp e o texto do botão de cada categoria.
 
+## Publicar (deploy)
+
+No PowerShell, na pasta do projeto: `npm run deploy`.
+
+O script (`scripts/deploy.ps1`) faz o build, envia o `dist/` para `murilo@site:/var/www/site/`, acerta as permissões (pastas 755, arquivos 644; sem isso o nginx não lê os CSS e as fontes e o site fica sem estilo, como aconteceu em 04/11/2026) e confere se a página e o CSS abrem. Precisa do Tailscale ligado. O container do site é o CT 101 no Proxmox novo (antes 104); o endereço `murilo@site` continua o mesmo.
+
 ## Dados do negócio
 
 Ficam todos num arquivo só: `src/data/site.ts`. Ali estão o nome do portal, o WhatsApp, o telefone, o endereço, o CNPJ, as cidades, os planos, o logo, o favicon, as fotos e os textos dos diferenciais.
