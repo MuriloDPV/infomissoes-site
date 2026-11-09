@@ -124,17 +124,14 @@ const caminho = Astro.url.pathname;
       var fim = marca.getBoundingClientRect();
       var agora = caixa.getBoundingClientRect();
       if (!fim.width) return terminar();
-      var dx = agora.left + agora.width / 2 - (fim.left + fim.width / 2);
-      var dy = agora.top + agora.height / 2 - (fim.top + fim.height / 2);
-      var escala = agora.width / fim.width;
-      // Last: a cópia vai para o lugar final. Invert: transform que a deixa onde está agora.
-      caixa.style.cssText =
-        'top:' + fim.top + 'px;left:' + fim.left + 'px;width:' + fim.width + 'px;' +
-        'transform:translate(' + dx + 'px,' + dy + 'px) scale(' + escala + ')';
-      caixa.getBoundingClientRect();
-      // Play
+      // Só transform: a caixa não muda de top/left/width (mudar isso conta como "troca de layout" no
+      // PageSpeed e derrubava a nota). Ela continua centralizada pelo CSS e voa até a logo do cabeçalho.
+      var dx = fim.left + fim.width / 2 - (agora.left + agora.width / 2);
+      var dy = fim.top + fim.height / 2 - (agora.top + agora.height / 2);
+      var escala = fim.width / agora.width;
       caixa.classList.add('is-voando');
-      caixa.style.transform = 'none';
+      caixa.style.transform =
+        'translate(-50%, -50%) translate(' + dx + 'px,' + dy + 'px) scale(' + escala + ')';
       raiz.classList.add('intro-saindo');
       timers.push(setTimeout(terminar, 580));
     }
