@@ -210,7 +210,7 @@ export const site: Site = {
     {
       icone: 'loja',
       titulo: 'Loja para atender você',
-      texto: 'Prefere resolver pessoalmente? Venha conversar na nossa loja.',
+      texto: 'Prefere resolver pessoalmente? Venha conversar com a gente na loja.',
       // Sem endereço da loja, este diferencial não aparece no site.
       soComEndereco: true,
     },

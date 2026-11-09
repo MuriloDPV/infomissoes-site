@@ -10,7 +10,7 @@ import Pendente from '../ui/Pendente.astro';
 import { site } from '../../data/site.ts';
 import { DEV, imagemFoto, portal, whatsapp } from '../../lib/dados.ts';
 
-// Frase do destaque: a loja fica em São Luiz Gonzaga; as outras cidades saem de site.cidades.
+// Frase do destaque: São Luiz Gonzaga e as outras cidades de site.cidades. Não dizer onde fica a loja (há lojas em outras cidades; 09/11/2026).
 const outras = site.cidades.filter((c) => c !== 'São Luiz Gonzaga').length;
 const frase = site.cidades.includes('São Luiz Gonzaga') && outras > 0
   ? `A Info Missões leva fibra óptica até a sua casa em São Luiz Gonzaga e em mais ${outras} cidades da região, com loja e atendimento aqui perto.`
